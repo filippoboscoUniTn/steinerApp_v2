@@ -1,0 +1,104 @@
+.modal{
+    display: none;
+    position: all;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modale stampa PDF per Anno Scolastico*/
+.modalContentPDF{
+    z-index: 1;
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 30%;
+    height: 200px;
+    width: 500px;
+    background-color: #eee;
+}
+.modalHeaderPDF{
+    position: absolute;
+    top: 0px;
+    height: fixed;
+    height:25%;
+    width: 100%;
+    background-color: #337AB7;
+}
+.modalHeaderPDF > h3 {
+    color: #eee;
+    margin-right: 25px;
+    margin-left: 70px;
+    display: inline-block;
+}
+.modalHeaderPDF > button {
+    background-color: #eee;
+    position: absolute;
+    top:15%;
+    left:90%;
+}
+.modalHeaderPDF > button> span{
+    color:#337AB7;
+}
+.modalBodyPDF{
+    position: absolute;
+    top:20%;
+    height: 80%;
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Modale modifica Anno Scolastico*/
+.modalContentModificaAnnoScolastico{
+    z-index: 1;
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 30%;
+    height: 500px;
+    width: 500px;
+    background-color: #eee;
+}
+.modalHeaderModificaAnnoScolastico{
+    position: absolute;
+    top: 0px;
+    height: fixed;
+    height:10%;
+    width: 100%;
+    background-color: #337AB7;
+}
+.modalHeaderModificaAnnoScolastico > h3 {
+    color: #eee;
+    margin-right: 25px;
+    margin-left: 70px;
+    display: inline-block;
+
+}
+.modalHeaderModificaAnnoScolastico > button {
+    background-color: #eee;
+    position: absolute;
+    top:15%;
+    left:90%;
+
+}
+.modalHeaderModificaAnnoScolastico > button > span {
+    color:#337AB7;
+}
+.modalBodyModificaAnnoScolastico {
+    position: absolute;
+    top:10%;
+    height: 80%;
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
+}
+.modalBodyModificaAnnoScolastico > h5 {
+    margin-left: 15px;
+}
+.modalBodyModificaAnnoScolastico > form > input{
+    margin-right: 10px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
