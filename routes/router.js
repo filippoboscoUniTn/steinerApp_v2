@@ -19,20 +19,21 @@ router.use('/register',registerRoute);
 
 router.use('/logout',logoutRoute);
 
-router.use('/',userAuthentication,function (req,res){
-    res.redirect('/index');
-});
 router.use('/index',indexRoute);
 router.use('/pagelle',pagelleRoute);
 
 router.use('/admin',adminAuthentication,adminRoute);
+
+router.use('/',userAuthentication,function (req,res){
+    res.redirect('/index');
+});
 
 router.use(function(req,res,next){
     let err = new Error('Page Not Found!');
     err.status = 404;
     next(err);
 });
-router.use(function(err,req,res,next){
+router.use(function(err,req,res){
     res.status = (err.status || 500);
     if(req.isAuthenticated()){
         res.render('./errorPages/authedError',{layout:'authLayout',error_n:(err.status||500),error_message:err.message})

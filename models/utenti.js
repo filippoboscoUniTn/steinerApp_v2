@@ -1,14 +1,15 @@
 "use strict";
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
-let dbConnection = require('../modules/databaseConnection');
-let bCrypt = require('bcryptjs');
-let salt = 10;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const bCrypt = require('bcryptjs');
+
+const dbConnection = require('../modules/databaseConnection');
+const salt = 10;
 
 
 let userSchema = new Schema({
-    name : String,
-    surname : String,
+    nome : String,
+    cognome : String,
     email : String,
     username : String,
     password : String,
@@ -17,13 +18,12 @@ let userSchema = new Schema({
         enum:['ADMIN','TEACHER'],
         default:'TEACHER'
     },
-    permissions : [ {as:String, permessi:[ {subject:String,classes:[Number]} ] } ],
     status :{
         type:String,
         enum:['PENDING','ACCEPTED'],
         default:'PENDING'
     }
-});
+},{collection:'Utenti'});
 
 userSchema.methods.insertUser = function(user,callback){
     //Generate hash's salt
@@ -67,7 +67,7 @@ module.exports.findByName = function (username,callback){
     })
 };
 
-//Compares input password (password) and user's password from the database
+//Compares input password and user's password from the database
 module.exports.comparePasswords = function (password,userPassword,callback){
     bCrypt.compare(password,userPassword,function(err,isMatch){
         if(err){

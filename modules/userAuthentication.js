@@ -4,7 +4,7 @@ let router = express.Router();
 
 router.use('/',function(req,res,next){
     if(req.isAuthenticated() && req.user.status === 'ACCEPTED'){
-        return next();
+        next();
     }
     else{
         req.flash('error_msg','Login necessario')

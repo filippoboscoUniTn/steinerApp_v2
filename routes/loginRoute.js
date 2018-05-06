@@ -45,7 +45,12 @@ router.post('/',passport.authenticate('local',{successRedirect:'/index',failureR
 });
 
 router.get('/',function(req,res){
-    res.render('./accesso/login',{layout:'noAuthLayout',title:'Login',subTitle:'Login'})
+    if(req.isAuthenticated() && req.user.status === 'ACCEPTED'){//User is alredy loged in, redirect to homepage
+        res.redirect('/index');
+    }
+    else{//User is not yet authenticated, render login page
+        res.render('./accesso/login',{layout:'noAuthLayout',title:'Login',subTitle:'Login'});
+    }
 });
 
 

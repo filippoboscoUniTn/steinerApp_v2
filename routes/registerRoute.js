@@ -30,8 +30,8 @@ router.post('/',function(req,res,next){
         if(validationResult.isEmpty()){ //Non ci sono stati errori di validzione
             let newUser = new users(
                 {
-                    name:req.body.name,
-                    surname:req.body.surname,
+                    nome:req.body.name,
+                    cognome:req.body.surname,
                     email:req.body.email,
                     username:req.body.username,
                     password:req.body.password
