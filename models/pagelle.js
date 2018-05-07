@@ -39,8 +39,8 @@ let pagelleSchema = new Schema({
     }
 },{collection:"Pagelle"});
 
-pagelleSchema.index({idStudente,materia,classe,sezione,annoScolastico},{unique:true});
+pagelleSchema.index({idStudente:1,materia:1,classe:1,sezione:1,annoScolastico:1},{unique:true});
 
-let Pagelle = mongoose.model(pagelleSchema);
+let Pagelle = mongoose.model('Pagelle',pagelleSchema);
 
 module.exports = Pagelle;

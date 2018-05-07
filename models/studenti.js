@@ -22,7 +22,21 @@ let studentiSchema = new Schema({
     },
     ammesso:{
         type: Boolean,
-        default:true}
+        default:true},
+    luogoNascita:{
+        type:String,
+    },
+    dataNascita:{
+        type:Date
+    },
+    residenza:{
+        comune:String,
+        cap:Number,
+        indirizzo:{
+            via:String,
+            numeroCivico:Number
+        }
+    }
 },{collection:'Studenti'});
 
 studentiSchema.pre('save',function(next){

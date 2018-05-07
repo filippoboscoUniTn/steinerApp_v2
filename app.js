@@ -21,6 +21,7 @@ const util = require('util');
 //MODULES
 const dbConnection = require('./modules/databaseConnection');
 const hbs = require('./modules/handlebarsEngine');
+const dbPop = require('./modules/databasePopulation');
 
 //MODELS
 const users = require("./models/utenti");
@@ -115,9 +116,17 @@ function(conf) {
         next()
     });
 
-
+//Routing
     app.use('/',router);
 
+//Database population
+    //dbPop.popUtenti();
+    //dbPop.popAnniSc();
+    //dbPop.popAutoInc();
+    //dbPop.popStudente();
+    //dbPop.popClasse();
+    //dbPop.popPermessiUtente();
+    //dbPop.popPagelle();
 
     app.listen(app.get('port'), function() {
         console.log('SteinerApp is running on port', app.get('port'));
@@ -126,4 +135,4 @@ function(conf) {
 
     module.exports = app;
 
-})
+});

@@ -2,14 +2,28 @@
   <dictionary name="filippo">
     <words>
       <w>accesso</w>
+      <w>ammesso</w>
       <w>authed</w>
+      <w>civico</w>
+      <w>classe</w>
+      <w>classi</w>
+      <w>cognome</w>
+      <w>comune</w>
+      <w>indirizzo</w>
+      <w>luogo</w>
+      <w>nascita</w>
       <w>necessario</w>
+      <w>numero</w>
       <w>pagelle</w>
+      <w>permessi</w>
+      <w>residenza</w>
       <w>scolastici</w>
       <w>sezione</w>
       <w>studente</w>
       <w>studenti</w>
       <w>titolo</w>
+      <w>utente</w>
+      <w>utenti</w>
     </words>
   </dictionary>
 </component>
