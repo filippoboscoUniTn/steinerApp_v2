@@ -86,7 +86,8 @@ module.exports.getStudentiFromAnnoScolasticoClasseSezione = function (annoScolas
             callback(err,null)
         }
         else{
-            console.log("results = "+ results)
+            let studenti = results[0].studenti;
+            callback(null,studenti);
         }
     })
-}
+};

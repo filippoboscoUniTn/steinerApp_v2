@@ -53,3 +53,25 @@ studentiSchema.pre('save',function(next){
 let Studenti = mongoose.model('Studente',studentiSchema);
 
 module.exports = Studenti;
+
+module.exports.getStudentiFromID = function (idStudenti,callback){
+  let promiseChainStudenti = [];
+  for(let i=0;i<idStudenti.length;i++){
+      let promiseInfoStudente = new Promise(function (resolve,reject){
+          Studenti.find({id:idStudenti[i]},function (err,results){
+              if(err){
+                  reject(err)
+              }
+              else{
+                  resolve(results[0]);
+              }
+          })
+      });
+      promiseChainStudenti.push(promiseInfoStudente);
+  }
+  Promise.all(promiseChainStudenti).then(studenti =>{
+        callback(null,studenti)
+  },err =>{
+      callback(err,null);
+  })
+};
