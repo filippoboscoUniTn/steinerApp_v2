@@ -5,11 +5,76 @@ const express = require('express');
 const Classi = require('../models/classi');
 const PermessiUtente = require('../models/permessiUtente');
 const Studenti = require('../models/studenti');
+const Pagelle = require('../models/pagelle');
 
 //Modules
 const utilityFunctions = require('../modules/utilityFunctions');
 
+const util = require('util');
+
 let router = express.Router();
+
+
+router.post('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8])/:sezione/:nome/:cognome/:id/:semestre',function (req,res){
+    let nuovaPagella = req.body.content;
+    let annoScolastico = req.params.as;
+    let materia = req.params.materia;
+    let classe = req.params.classe;
+    let sezione = req.params.sezione;
+    let semestre = req.params.semestre;
+    console.log("semestre = " + semestre);
+    let studente = {
+        nome:req.params.nome,
+        cognome:req.params.cognome,
+        id:req.params.id
+    };
+    Pagelle.updatePagellaFromSemestre(annoScolastico,materia,classe,sezione,studente,semestre,nuovaPagella,function (err,numAffected){
+        if(err){
+            console.log("err = " + err);
+            res.send("error");
+        }
+        else{
+            console.log("ok");
+            res.send('ok');
+        }
+    })
+});
+
+
+router.get('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8])/:sezione/:nome/:cognome/:id',function(req,res,next) {
+    let annoScolastico = req.params.as;
+    let materia = req.params.materia;
+    let classe = req.params.classe;
+    let sezione = req.params.sezione;
+    let studente = {
+        nome:req.params.nome,
+        cognome:req.params.cognome,
+        id : req.params.id
+    };
+    Pagelle.getPagellaFromStudente(annoScolastico,materia,classe,sezione,studente,function (err,pagelle){
+        if(err){
+            next(err);
+        }
+        else{
+            let pagellaPrimoSemestre;
+            let pagellaSecondoSemestre;
+            if(pagelle.primoSemestre !== 'undefined' || pagelle.primoSemestre !== null){
+                pagellaPrimoSemestre = pagelle.primoSemestre;
+            }
+            else{
+                pagellaPrimoSemestre = "";
+            }
+            if(pagelle.secondoSemestre !== 'undefined' || pagelle.secondoSemestre !== null){
+                pagellaSecondoSemestre = pagelle.secondoSemestre;
+            }
+            else{
+                pagellaSecondoSemestre = "";
+            }
+            res.render('./areaUtente/pagelle',{layout:'authLayout',title:'Pagelle',subTitle:"<a href='\\index '>"+'Anni Scolastici'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"'>"+'Materie'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"'>"+'Classi'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"/"+classe+"'>"+'Sezioni'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"/"+classe+"/"+sezione+"'>"+'Studenti'+"</a>",h4_1:'Pagelle :',annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,studente:studente,pagellaPrimoSemestre:pagellaPrimoSemestre,pagellaSecondoSemestre:pagellaSecondoSemestre})
+        }
+    })
+});
+
 
 router.get('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8])/:sezione',function (req,res,next){
     let annoScolastico = req.params.as;
@@ -26,7 +91,6 @@ router.get('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8])
                     next(err)
                 }
                 else{
-                    //console.log("studenti = " + studenti);
                     res.render('./areaUtente/studenti',{layout:'authLayout',title:'Studenti',subTitle:"<a href='\\index '>"+'Anni Scolastici'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"'>"+'Materie'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"'>"+'Classi'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"/"+classe+"'>"+'Sezioni'+"</a>",h4_1:'Studenti :',annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,studenti:studenti})
                 }
             })

@@ -78,6 +78,26 @@ let handlebarsHelpers = {
             ret+='<a class="centered" href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'"><h3>'+studenti[i].nome+' '+studenti[i].cognome+'</h3></a></div>'
         }
         return ret;
+    },
+    printPagelle: function (annoScolastico,materia,classe,sezione,studente,pagellaPrimoSemestre,pagellaSecondoSemestre){
+        let ret = "";
+
+        //Prima Area testo
+        ret += '<div class="textareaContainer"><p class="myP">Primo Semestre</p>';
+        ret += '<button class="glyphRight btn-blue" onclick="collapseForm(\'textArea_1\')"><span class="glyphicon glyphicon-menu-down"></span></button>';
+        ret += '<form id="textArea_1"><textarea class="myTextArea" name="1">';
+        ret += pagellaPrimoSemestre;
+        ret += '</textarea><br><button type="button" class="btn btn-md btn-blue btn1" id="1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',1,this)">Save</button></form>';
+
+        //Seconda Area testo
+        ret += '</div><br><div class="textareaContainer"><p class="myP">Secondo Semestre</p>';
+        ret += '<button class="glyphRight btn-blue" onclick="collapseForm(\'textArea_2\')"><span class="glyphicon glyphicon-menu-down"></span></button>';
+        ret += '<form id="textArea_2"><textarea class="myTextArea" name="2">';
+        ret += pagellaSecondoSemestre;
+        ret+='</textarea><br><button type="button" class="btn btn-md btn-blue btn1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',2,this)" id="2">Save</button></form>';
+        ret +='</div>';
+
+        return ret;
     }
 };
 
