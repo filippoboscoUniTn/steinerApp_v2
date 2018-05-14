@@ -1,0 +1,77 @@
+<div class="modal" id="modal">
+
+    <div class="modalContentPDF">
+
+        <div class="modalHeaderPDF">
+            <h3 id="modalTitle"></h3>
+            <button class="btn btn-md " onclick="closeModalPDF(this)">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+
+        <div class="modalBodyPDF" id="modalBody">
+            <form method="POST" id="pdfForm" action="/">
+                <div class="form-group centered">
+                    <div class="col-sm-4">
+                        <label for="semestre">Semestre</label>
+                        <select class="form-control" name="semestre" id='semestre'>
+                            <option value=1>1 Semestre</option>
+                            <option value=2>2 Semestre</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="semestre">Font Size</label>
+                        <select class="form-control" name="fontSize" id='font'>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option selected="true">10</option>
+                            <option>11</option>
+                            <option>12</option>
+                            <option>13</option>
+                            <option>14</option>
+                            <option>15</option>
+                            <option>16</option>
+                            <option>17</option>
+                            <option>18</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <br>
+                        <button id="toPdfBtn" class="btn btn-sm btn-blue">Stampa PDF</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="modalContentModificaAnnoScolastico">
+
+        <div class="modalHeaderModificaAnnoScolastico">
+            <h3 id="modalTitle">Modifica Anno Scolastico</h3>
+            <button class="btn btn-md " onclick="closeModalModificaAnnoScolastico(this)">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+
+        <div class="modalBodyModificaAnnoScolastico" id="modalBody">
+            <form method="POST" id="modificaAnnoForm" action="/">
+                <div class="form-group centered">
+                    <div class="col-sm-4">
+                        <select class="form-control" name="inizioAnno" id='inizioAnno'></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="fineAnno" id='fineAnno'></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-sm btn-blue">Save</button>
+                        <button type="button" id="deleteAnnoBtn" class="btn btn-sm btn-blue">Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

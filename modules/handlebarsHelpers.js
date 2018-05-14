@@ -7,6 +7,7 @@ const compareModule = require('./comparisonFunctions');
 
 
 let handlebarsHelpers = {
+    //Helpers Area Utente
     printAnniScolastici:function (anniScolastici){
         let ret='';
         if(anniScolastici != null){
@@ -97,6 +98,38 @@ let handlebarsHelpers = {
         ret+='</textarea><br><button type="button" class="btn btn-md btn-blue btn1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',2,this)" id="2">Save</button></form>';
         ret +='</div>';
 
+        return ret;
+    },
+    //Helpers Area Amministratore
+    printAnniGestione:function (anniScolastici){
+        console.log("anni = " + util.inspect(anni))
+        var ret= '<div class="row">';
+        for(var i=0;i<anni.length;i++){
+            if( (i+2)%2 ==0 ){
+                ret+= '<div class="col-sm-12 col-md-5 gray">'
+            }
+            else{
+                ret +='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">'
+            }
+            ret+= '<a href="/admin/gestioneAnni/'+anni[i].nome+'"><h3>'+anni[i].nome+'</h3></a>'
+            ret+= '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModalAnno(this,\''+anni[i].nome+'\')" ><span class="glyphicon glyphicon-cog blue"></span></button>'
+            ret+= '<button class="btn btn-md btn-right5 btn-blue" onclick="openModalPDF(this,\''+anni[i].nome+'\')"><span class="glyphicon glyphicon-print blue"></span></button>'
+            ret+= '</div> '
+            if( (i+1)%3==0){
+                ret+= '</div><div class="row">'
+            }
+
+        }
+
+        if(anni.length == 0 || anni.length % 2 == 0){
+            ret +='<div class="col-sm-12 col-md-5 gray">'
+        }
+        else{
+
+            ret+='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">'
+        }
+        ret+='<a href="/admin/gestioneAnni/nuovoAnno"><h3>Nuovo Anno</h3></a></div>'
+        ret+='</div>'
         return ret;
     }
 };
