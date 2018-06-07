@@ -1,0 +1,30 @@
+<!-- modale per la GESTIONE di un ANNO SCOLASTICO -->
+<div class="modalContentGestioneAnnoScolastico">
+
+    <div class="modalHeaderGestioneAnnoScolastico">
+        <h3 id="modalTitleGestioneAnnoScolastico">Modifica Anno Scolastico</h3>
+        <button class="btn btn-md " onclick="closeModalGestioneAnnoScolastico()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+
+    <div class="modalBodyGestioneAnnoScolastico" id="modalBody">
+
+        <form method="POST" id="formGestioneAnnoScolastico" action="/">
+            <div class="form-group centered">
+                <div class="col-sm-4">
+                    <select class="form-control" name="inizioAnno" id='inizioAnno'></select>
+                </div>
+                <div class="col-sm-4">
+                    <select class="form-control" name="fineAnno" id='fineAnno'></select>
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-sm btn-blue">Save</button>
+                    <button type="button" id="deleteAnnoBtn" class="btn btn-sm btn-blue">Delete</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>

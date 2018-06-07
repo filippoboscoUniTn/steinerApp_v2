@@ -1,13 +1,20 @@
 "use strict";
+
+//-------------------------------- PACKAGES ------------------------------------
 const path = require('path');
 const util = require('util');
+//----------------------------------- END --------------------------------------
 
-//Modules
+
+//--------------------------------- MODULI -------------------------------------
 const compareModule = require('./comparisonFunctions');
+//----------------------------------- END --------------------------------------
 
 
+//--------------------- HANDLEBARS HELPER FUNCTIONS ----------------------------
 let handlebarsHelpers = {
-    //Helpers Area Utente
+
+    //------------------------- HELPERS AREA UTENTE ----------------------------
     printAnniScolastici:function (anniScolastici){
         let ret='';
         if(anniScolastici != null){
@@ -100,38 +107,180 @@ let handlebarsHelpers = {
 
         return ret;
     },
-    //Helpers Area Amministratore
+    //--------------------------------- END ------------------------------------
+
+
+    //---------------------- HELPERS AREA AMMINISTRATORE -----------------------
     printAnniGestione:function (anniScolastici){
-        console.log("anni = " + util.inspect(anni))
-        var ret= '<div class="row">';
-        for(var i=0;i<anni.length;i++){
-            if( (i+2)%2 ==0 ){
-                ret+= '<div class="col-sm-12 col-md-5 gray">'
+        let ret= "";
+        let reqUrlCreazioneNuovoAnnoScolastico = "/admin/gestioneAnni/creaNuovoAnnoScolastico";
+        let titleModaleNuovoAnnoScolastico = "Crea Nuovo Anno Scolastico";
+        ret += "<div class='row'>";
+        for(let i=0;i<anniScolastici.length;i++){
+
+            let formActionModaleStampa = "/admin/stampaPDF/stampaAnnoScolastico/" + anniScolastici[i].nome ;
+            let titleModaleStampa = "Stampa Anno " + anniScolastici[i].nome;
+
+            let formActionModaleGestione = "/admin/gestioneAnni/modificaAnnoScolastico/" + anniScolastici[i].nome ;
+            let titleModaleGestione = "Gestione Anno " + anniScolastici[i].nome;
+
+            if( (i+2)%2 === 0 ){
+                ret+= '<div class="col-sm-12 col-md-5 gray">';
             }
             else{
-                ret +='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">'
+                ret +='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">';
             }
-            ret+= '<a href="/admin/gestioneAnni/'+anni[i].nome+'"><h3>'+anni[i].nome+'</h3></a>'
-            ret+= '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModalAnno(this,\''+anni[i].nome+'\')" ><span class="glyphicon glyphicon-cog blue"></span></button>'
-            ret+= '<button class="btn btn-md btn-right5 btn-blue" onclick="openModalPDF(this,\''+anni[i].nome+'\')"><span class="glyphicon glyphicon-print blue"></span></button>'
-            ret+= '</div> '
-            if( (i+1)%3==0){
-                ret+= '</div><div class="row">'
+            ret += '<a href="/admin/gestioneAnni/'+anniScolastici[i].nome+'"><h3>'+anniScolastici[i].nome+'</h3></a>';
+            ret += '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModaleGestioneAnnoScolastico(\''+anniScolastici[i].nome+'\',\''+formActionModaleGestione+'\',\''+titleModaleGestione+'\')" ><span class="glyphicon glyphicon-cog blue"></span></button>';
+            ret += '<button class="btn btn-md btn-right5 btn-blue" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"><span class="glyphicon glyphicon-print blue"></span></button>';
+            ret += '</div>';
+            if( (i+1)%3===0){
+                ret+= '</div><div class="row">';
             }
 
         }
-
-        if(anni.length == 0 || anni.length % 2 == 0){
-            ret +='<div class="col-sm-12 col-md-5 gray">'
+        if(anniScolastici.length === 0 || (anniScolastici.length +1) % 2 === 0){
+            ret +='<div class="col-sm-12 col-md-5 gray">';
         }
         else{
 
-            ret+='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">'
+            ret+='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">';
         }
-        ret+='<a href="/admin/gestioneAnni/nuovoAnno"><h3>Nuovo Anno</h3></a></div>'
-        ret+='</div>'
+        ret+='<a id="btnNuovoAnnoScolastico" onclick="openModaleNuovoAnnoScolastico(\''+ reqUrlCreazioneNuovoAnnoScolastico +'\',\''+ titleModaleNuovoAnnoScolastico +'\')"><h3>Nuovo Anno</h3></a></div>';
+        ret+='</div>';
         return ret;
-    }
-};
+    },
+    printClassiGestione:function (annoScolastico,classi) {
+        let ret= '';
+        let reqUrlCreazioneNuovaClasse = "/admin/gestioneAnni/creaNuovaClasse/" + annoScolastico;
+        let titleModaleNuovaClasse = "Crea Nuova Classe";
 
+        ret += '<div class="row">';
+        for(let i = 0; i < classi.length; i++){
+          let formActionModaleGestione = "/admin/gestioneAnni/modificaClasse/" + annoScolastico + "/" + classi[i];
+          let titleModaleGestione = "Gestione Classe " + classi[i];
+          let formActionModaleStampa = "/admin/stampaPDF/stampaClasse/"  + annoScolastico + "/" + classi[i];
+          let titleModaleStampa = "Stampa Classe " + classi[i];
+          if( (i+3)%3 === 0 ){
+              ret+= '<div class="col-sm-12 col-md-3 gray">';
+          }
+          else{
+              ret +='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+          }
+          ret+= '<a href="/admin/gestioneAnni/'+annoScolastico+'/' + classi[i]+'"><h3>Classe '+classi[i]+'</h3></a>';
+          ret+= '<button class="btn btn-md btn-right3" onclick="openModaleGestioneClasse(\''+annoScolastico +'\',\''+classi[i]+'\',\'' +formActionModaleGestione+'\',\''+titleModaleGestione+'\')"><span class="glyphicon glyphicon-cog blue"></span></button>';
+          ret+= '<button title="Print" class="btn btn-md btn-right2" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"> <span class="glyphicon glyphicon-print blue"></span></button>';
+          ret+= '</div>';
+          if( (i+1)%3 === 0){
+              ret+= '</div><div class="row">';
+          }
+        }
+        if( (classi.length)%3 === 0){
+            ret+='<div class="col-sm-12 col-md-3 gray">';
+        }
+        else{
+            if( (classi.length)%2 === 2){
+                ret+='<div class="col-sm-12 col-md-3 col-md-offset-2 gray">';
+            }
+            else{
+                ret+='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+            }
+        }
+        ret+='<a id="btnNuovaClasse" onclick="openModaleNuovaClasse(\''+reqUrlCreazioneNuovaClasse+'\',\''+titleModaleNuovaClasse+'\')"><h3>Aggiungi Classe</h3></a></div>';
+        ret+='</div>';
+
+        return ret;
+    },
+    printSezioniGestione:function (annoScolastico,classe,sezioni){
+      let ret = '';
+      let reqUrlCreazioneNuovaSezione = "/admin/gestioneAnni/creaNuovaSezione/" + annoScolastico + "/" + classe;
+      let titleModaleNuovaSezione = "Crea Nuova Sezione";
+
+      for(let i = 0; i < sezioni.length; i++){
+        let formActionModaleStampa = "/admin/stampaPDF/stampaSezione/" + annoScolastico + "/" + classe + "/" + sezioni[i];
+        let formActionModaleGestione = "/admin/gestioneAnni/modificaSezione" + annoScolastico + "/" + classe + "/" + sezioni[i];
+
+        let titleModaleStampa = "Stampa Sezione " + sezioni[i];
+        let titleModaleGestione = "Gestione Sezione" + sezioni[i];
+        if( (i+3)%3 === 0 ){
+            ret+= '<div class="col-sm-12 col-md-3 gray">';
+        }
+        else{
+            ret +='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+        }
+        ret+= '<a href="/admin/gestioneAnni/' + annoScolastico + '/' + classe + '/'+ sezioni[i] '"><h3>Sezione '+sezioni[i]+'</h3></a>';
+        ret+= '<button class="btn btn-md btn-right3" onclick="openModaleGestioneSezione(\''+annoScolastico +'\',\''+classe+'\',\''+sezioni[i]+'\', \'' +formActionModaleGestione+'\',\''+titleModaleGestione+'\')"><span class="glyphicon glyphicon-cog blue"></span></button>';
+        ret+= '<button title="Print" class="btn btn-md btn-right2" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"> <span class="glyphicon glyphicon-print blue"></span></button>';
+        ret+= '</div>';
+        if( (i+1)%3 === 0){
+            ret+= '</div><div class="row">';
+        }
+      }
+      if( (sezioni.length)%3 === 0){
+          ret+='<div class="col-sm-12 col-md-3 gray">';
+      }
+      else{
+          if( (sezioni.length)%2 === 2){
+              ret+='<div class="col-sm-12 col-md-3 col-md-offset-2 gray">';
+          }
+          else{
+              ret+='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+          }
+      }
+      ret+='<a id="btnNuovaClasse" onclick="openModaleNuovaSezione(\''+reqUrlCreazioneNuovaSezione+'\',\''+titleModaleNuovaSezione+'\')"><h3>Aggiungi Sezione</h3></a></div>';
+      ret+='</div>';
+
+      return ret;
+    },
+    printStudentiGestione:function (annoScolastico,classe,sezione,studenti){
+      let ret = '';
+      let reqUrlCreazioneNuovoStudente = "/admin/gestioneAnni/creaNuovoStudente/" + annoScolastico + "/" + classe + "/" + sezione;
+      let titleModaleNuovoStudente = "Crea Nuova Studente";
+
+      for(let i = 0; i < studenti.length; i++){
+        let formActionModaleStampa = "/admin/stampaPDF/stampaStudente/" + annoScolastico + "/" + classe + "/" + sezione + "/" + studenti[i].id;
+        let formActionModaleGestione = "/admin/gestioneAnni/modificaStudente" + annoScolastico + "/" + classe + "/" + sezione + "/" + studenti[i].id;
+
+        let titleModaleStampa = "Stampa Studente " + studenti[i].nome + " " + studenti[i].cognome + " " + studenti[i].id;
+        let titleModaleGestione = "Gestione Studente " + studenti[i].nome + " " + studenti[i].cognome + " " + studenti[i].id;
+        if( (i+3)%3 === 0 ){
+            ret+= '<div class="col-sm-12 col-md-3 gray">';
+        }
+        else{
+            ret +='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+        }
+        ret+= '<a href="#"><h3>'+studenti[i].nome +" " +studenti[i].cognome + " " +studenti[i].id+'</h3></a>';
+        ret+= '<button class="btn btn-md btn-right3" onclick="openModaleGestioneStudente( \''+annoScolastico +'\' , \''+classe+'\' , \''+sezione+'\' , \''+studenti[i].nome+'\' , \''+studenti[i].cognome+'\' , \''+studenti[i].id+'\' , \''+formActionModaleGestione+'\' , \''+titleModaleGestione+'\' )"><span class="glyphicon glyphicon-cog blue"></span></button>';
+        ret+= '<button title="Print" class="btn btn-md btn-right2" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"> <span class="glyphicon glyphicon-print blue"></span></button>';
+        ret+= '</div>';
+        if( (i+1)%3 === 0){
+            ret+= '</div><div class="row">';
+        }
+      }
+      if( (studenti.length)%3 === 0){
+          ret+='<div class="col-sm-12 col-md-3 gray">';
+      }
+      else{
+          if( (studenti.length)%2 === 2){
+              ret+='<div class="col-sm-12 col-md-3 col-md-offset-2 gray">';
+          }
+          else{
+              ret+='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
+          }
+      }
+      ret+='<a id="btnNuovaClasse" onclick="openModaleNuovoStudente(\''+reqUrlCreazioneNuovoStudente+'\',\''+titleModaleNuovoStudente+'\')"><h3>Aggiungi Studente</h3></a></div>';
+      ret+='</div>';
+
+      return ret;
+    }
+    //--------------------------------- END ------------------------------------
+
+};
+//----------------------------------- END --------------------------------------
+
+
+
+
+//---------------------------- EXPORT DEL MODULO -------------------------------
 module.exports = handlebarsHelpers;
+//----------------------------------- END --------------------------------------

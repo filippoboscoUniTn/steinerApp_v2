@@ -1,0 +1,46 @@
+<!-- >Modale per la STAMPA delle PAGELLE <!-->
+<div class="modalContentStampaPDF">
+
+    <div class="modalHeaderStampaPDF">
+        <h3 id="modalTitleStampaPDF"></h3>
+        <button class="btn btn-md " onclick="closeModaleStampa()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+
+    <div class="modalBodyStampaPDF" id="modalBodyStampaPDF">
+        <form method="POST" id="formStampaPDF" action="/">
+            <div class="form-group centered">
+                <div class="col-sm-4">
+                    <label for="semestre">Semestre</label>
+                    <select class="form-control" name="semestre" id='semestre'>
+                        <option value=1>1 Semestre</option>
+                        <option value=2>2 Semestre</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="fontSize">Font Size</label>
+                    <select class="form-control" name="fontSize" id='font'>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option selected="true">10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <br>
+                    <button id="btnStampaPDF" class="btn btn-sm btn-blue">Stampa PDF</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

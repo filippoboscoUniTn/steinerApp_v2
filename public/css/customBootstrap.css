@@ -739,49 +739,7 @@ html,body{
     padding-left: 0px;
     padding-bottom: 10px;
 }
-.newClassModal{
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-.newClassModalContent{
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 0;
-    border: 1px solid #888;
-    top:100px;
-    width: 50%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-.newClassModalHeader{
-    padding: 2px 16px;
-    background-color: #337AB7;
-    color: white;
-    text-align: center;
-}
-.newClassModalBody{
-    padding: 2px 16px;
-}
-.newClassModalFooter{
-    display: none;
-    text-align: center;
-    padding: 2px 16px;
-    background-color: #337AB7;
-    color: white;
 
-}
 @-webkit-keyframes animatetop {
     from {top: -300px; opacity: 0}
     to {top: 100; opacity: 1}

@@ -48,6 +48,7 @@ module.exports.getMaterieFromAnnoScolastico = function (annoScolastico,callback)
         }
     })
 };
+
 module.exports.getClassiFromAnnoScolasticoMateria = function (annoScolastico,materia,callback){
     Classi.find({annoScolastico:annoScolastico,materie:materia},{classe:1,_id:0},function (err,results){
         if(err){
@@ -64,6 +65,7 @@ module.exports.getClassiFromAnnoScolasticoMateria = function (annoScolastico,mat
         }
     })
 };
+
 module.exports.getSezioniFromAnnoScolasticoMateriaClasse = function (annoScolastico,materia,classe,callback){
     Classi.find({annoScolastico:annoScolastico,classe:classe,materie:materia},{sezione:1,_id:0},function (err,results){
         if(err){
@@ -80,6 +82,7 @@ module.exports.getSezioniFromAnnoScolasticoMateriaClasse = function (annoScolast
         }
     })
 };
+
 module.exports.getStudentiFromAnnoScolasticoClasseSezione = function (annoScolastico,classe,sezione,callback){
     Classi.find({annoScolastico:annoScolastico,classe:classe,sezione:sezione},{studenti:1,_id:0},function (err,results){
         if(err){
@@ -91,3 +94,56 @@ module.exports.getStudentiFromAnnoScolasticoClasseSezione = function (annoScolas
         }
     })
 };
+
+module.exports.getClassiFromAnnoScolastico = function (annoScolastico,callback){
+    Classi.find({annoScolastico:annoScolastico},{classe:1,_id:0},function (err,results){
+        if(err){
+            callback(err,null);
+        }
+        else{
+            let classi = [];
+            for(let i=0;i<results.length;i++){
+                if(classi.indexOf(results[i].classe) === -1){
+                    classi.push(results[i].classe);
+                }
+            }
+            callback(null,classi)
+        }
+    })
+};
+
+module.exports.getSezioniFromAnnoScolasticoAndClasse = function (annoScolastico,classe,callback){
+  Classi.find({annoScolastico:annoScolastico,classe:classe},{sezione:1,_id:0},function (err,results){
+    if(err){
+      callback(err)
+    }
+    else{
+      console.log("sezioni = " + results);
+      callback(null,results)
+    }
+  })
+}
+
+module.exports.getStudentiFromAnnoScolasticoAndClasseAndSezione = function (annoScolastico,classe,sezione,callback) {
+    Classi.find({annoScolastico:annoScolastico,classe:classe,sezione:sezione},{studenti:1,_id:0},function (err,results) {
+      if(err){
+        callback(err,null);
+      }
+      else{
+        console.log("studenti = " + results)
+        callback(null,results);
+      }
+    })
+}
+
+module.exports.getMaterieFromClasseAndAnnoScolastico = function (annoScolastico,classe,callback){
+  Classi.find({annoScolastico:annoScolastico,classe:classe},{materie:1,_id:0},function(err,results){
+    if(err){
+      callback(err,null)
+    }
+    else{
+      console.log("materie = " + results);
+      callback(null,results)
+    }
+  })
+}
