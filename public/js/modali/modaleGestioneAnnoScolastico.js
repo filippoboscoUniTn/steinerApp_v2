@@ -1,12 +1,11 @@
 function closeModalGestioneAnnoScolastico(){
     $("#inizioAnno").empty();
     $("#fineAnno").empty();
-    $(".modalContentModificaAnnoScolastico").css("display","none");
+    $(".modalContentGestioneAnnoScolastico").css("display","none");
     $(".modal").css("display","none");
 }
 
 function openModaleGestioneAnnoScolastico(anno,formAction,title){
-    console.log("formAction = " + formAction);
     $("#modalTitleGestioneAnnoScolastico").html(title);
     let inizioAnno = anno.split("/")[0];
     let fineAnno = String.prototype.concat("20",anno.split("/")[1]);
@@ -37,8 +36,7 @@ function openModaleGestioneAnnoScolastico(anno,formAction,title){
 }
 
 function eliminaAnnoScolastico(anno){
-    console.log("eliminaAnnoScolastico\t anno = " + anno);
-    let reqUrl = "/admin/gestioneAnni/eliminaAnno/" + anno;
+    let reqUrl = "/admin/gestioneAnni/eliminaAnnoScolastico/" + anno;
     $.ajax({
         url:reqUrl,
         method:"POST",

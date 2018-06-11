@@ -10,7 +10,7 @@
 
 
 
-/* Modale stampa StampaPDF per Anno Scolastico*/
+/* Modale stampa StampaPDF */
 .modalContentStampaPDF{
     z-index: 1;
     display: none;
@@ -54,49 +54,110 @@
 }
 
 
+/* Modale Creazione Anno Scolastico */
+.modalContentCreazioneAnnoScolastico{
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  top:100px;
+  width: 50%;
+  height: auto;
+  max-height: 80%;
+  display:none;
 
-/* Modale modifica Anno Scolastico*/
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+.modalHeaderCreazioneAnnoScolastico{
+  position: relative;
+  width: 100%;
+  height: 10%;
+  background-color: #337AB7;
+}
+.modalHeaderCreazioneAnnoScolastico > h3{
+  color: #eee;
+  margin-right: 25px;
+  margin-left: 70px;
+  display: inline-block;
+}
+.modalHeaderCreazioneAnnoScolastico > button{
+  margin : 10px;
+  background-color: #eee;
+  position: absolute;
+  right: 0;
+}
+.modalHeaderCreazioneAnnoScolastico > button > span{
+  color:#337AB7;
+}
+.modalBodyCreazioneAnnoScolastico{
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  max-height: 700px;
+  padding: 5px;
+
+}
+.btn-center{
+  position: relative;
+  margin-top: 10px;
+  left: 47.5%;
+}
+
+
+/* Modale Gestione Anno Scolastico*/
 .modalContentGestioneAnnoScolastico{
-    z-index: 1;
-    display: none;
-    position: fixed;
-    top: 10%;
-    left: 30%;
-    height: 500px;
-    width: 500px;
-    background-color: #eee;
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  top:100px;
+  width: 50%;
+  height: auto;
+  max-height: 80%;
+  display:none;
+
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
 }
 .modalHeaderGestioneAnnoScolastico{
-    position: absolute;
-    top: 0px;
-    height:10%;
-    width: 100%;
-    background-color: #337AB7;
+  position: relative;
+  width: 100%;
+  height: 10%;
+  background-color: #337AB7;
 }
 .modalHeaderGestioneAnnoScolastico > h3 {
-    color: #eee;
-    margin-right: 25px;
-    margin-left: 70px;
-    display: inline-block;
+  color: #eee;
+  margin-right: 25px;
+  margin-left: 70px;
+  display: inline-block;
 
 }
 .modalHeaderGestioneAnnoScolastico > button {
-    background-color: #eee;
-    position: absolute;
-    top:15%;
-    left:90%;
-
+  margin : 10px;
+  background-color: #eee;
+  position: absolute;
+  right: 0;
 }
 .modalHeaderGestioneAnnoScolastico > button > span {
     color:#337AB7;
 }
 .modalBodyGestioneAnnoScolastico {
-    position: absolute;
-    top:10%;
-    height: 80%;
-    width: 100%;
-    padding: 10px;
-    overflow-y: auto;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  max-height: 700px;
+  padding: 5px;
 }
 .modalBodyGestioneAnnoScolastico > h5 {
     margin-left: 15px;
@@ -111,6 +172,7 @@
 
 /* Modale Creazione Nuova classe */
 .modalContentNuovaClasse{
+    display: none;
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -148,7 +210,7 @@
     color:#337AB7;
 }
 .modalBodyNuovaClasse{
-    padding: 2px 16px;
+    padding: 15px 16px;
 }
 .modalFooterNuovaClasse{
     display: none;
@@ -162,6 +224,7 @@
 
 /* Modale Gestione Classe */
 .modalContentGestioneClasse{
+    display: none;
     position: relative;
     background-color: #fefefe;
     margin: auto;

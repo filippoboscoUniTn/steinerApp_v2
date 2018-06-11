@@ -1,0 +1,36 @@
+<div class="modalContentCreazioneAnnoScolastico">
+
+  <!--...........................HEADER....................................-->
+  <div class="modalHeaderCreazioneAnnoScolastico">
+      <h3 id="modalTitleCreazioneAnnoScolastico"></h3>
+      <button class="btn btn-md " onclick="closeModaleNuovoAnnoScolastico()">
+          <span class="glyphicon glyphicon-remove"></span>
+      </button>
+  </div>
+  <!--........................../ HEADER...................................-->
+
+  <div class="modalBodyCreazioneAnnoScolastico" >
+
+    <form method="POST" id="formCreazioneAnnoScolastico" action="/">
+        <div class="form-group centered">
+
+            <div class="col-sm-6">
+                <label for="inizioNuovoAnno">Data Inizio</label>
+                <select class="form-control" name="inizioNuovoAnno" id='inizioNuovoAnno'>
+                </select>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="fineNuovoAnno">Data Fine</label>
+                <select class="form-control" name="fineNuovoAnno" id='fineNuovoAnno'>
+                </select>
+            </div>
+
+        </div>
+        <button class="btn btn-sm btn-blue btn-center" id="saveNuovoAnno">Save</button>
+    </form>
+    </br>
+
+  </div>
+
+</div>

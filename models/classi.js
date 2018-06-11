@@ -147,3 +147,36 @@ module.exports.getMaterieFromClasseAndAnnoScolastico = function (annoScolastico,
     }
   })
 }
+
+module.exports.getStudentiFromAnnoScolastico = function (annoScolastico,callback){
+  Classi.find({annoScolastico:annoScolastico},{studenti:1,_id:0},function (err,results){
+    if(err){
+      callback(err,null);
+    }
+    else{
+      let studenti = [];
+      for(let i=0;i<results.length;i++){
+        for(let j=0;j<results[i].studenti.length;j++){
+          if(studenti.indexOf(results[i].studenti[j]) === -1){
+              studenti.push(results[i].studenti[j]);
+          }
+        }
+      }
+      callback(null,studenti)
+    }
+  })
+}
+
+module.exports.classeGiaEsistente = function (anno,classe,callback){
+  Classi.find({anno:anno,classe:classe},function (err,results){
+    if(err){
+      callback(err,null);
+    }
+    else if(results.length !== 0){
+      callback(null,true);
+    }
+    else{
+      callback(null,false);
+    }
+  })
+}

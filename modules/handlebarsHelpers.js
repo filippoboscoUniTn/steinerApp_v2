@@ -134,12 +134,9 @@ let handlebarsHelpers = {
             ret += '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModaleGestioneAnnoScolastico(\''+anniScolastici[i].nome+'\',\''+formActionModaleGestione+'\',\''+titleModaleGestione+'\')" ><span class="glyphicon glyphicon-cog blue"></span></button>';
             ret += '<button class="btn btn-md btn-right5 btn-blue" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"><span class="glyphicon glyphicon-print blue"></span></button>';
             ret += '</div>';
-            if( (i+1)%3===0){
-                ret+= '</div><div class="row">';
-            }
 
         }
-        if(anniScolastici.length === 0 || (anniScolastici.length +1) % 2 === 0){
+        if(anniScolastici.length === 0 || (anniScolastici.length) % 2 === 0){
             ret +='<div class="col-sm-12 col-md-5 gray">';
         }
         else{
@@ -147,7 +144,7 @@ let handlebarsHelpers = {
             ret+='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">';
         }
         ret+='<a id="btnNuovoAnnoScolastico" onclick="openModaleNuovoAnnoScolastico(\''+ reqUrlCreazioneNuovoAnnoScolastico +'\',\''+ titleModaleNuovoAnnoScolastico +'\')"><h3>Nuovo Anno</h3></a></div>';
-        ret+='</div>';
+        ret+='</div></div>';
         return ret;
     },
     printClassiGestione:function (annoScolastico,classi) {
@@ -208,7 +205,7 @@ let handlebarsHelpers = {
         else{
             ret +='<div class="col-sm-12 col-md-3 col-md-offset-1 gray">';
         }
-        ret+= '<a href="/admin/gestioneAnni/' + annoScolastico + '/' + classe + '/'+ sezioni[i] '"><h3>Sezione '+sezioni[i]+'</h3></a>';
+        ret+= '<a href="/admin/gestioneAnni/' + annoScolastico + '/' + classe + '/'+ sezioni[i] + '"><h3>Sezione '+sezioni[i]+'</h3></a>';
         ret+= '<button class="btn btn-md btn-right3" onclick="openModaleGestioneSezione(\''+annoScolastico +'\',\''+classe+'\',\''+sezioni[i]+'\', \'' +formActionModaleGestione+'\',\''+titleModaleGestione+'\')"><span class="glyphicon glyphicon-cog blue"></span></button>';
         ret+= '<button title="Print" class="btn btn-md btn-right2" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"> <span class="glyphicon glyphicon-print blue"></span></button>';
         ret+= '</div>';

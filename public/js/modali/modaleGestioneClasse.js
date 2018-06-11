@@ -8,6 +8,10 @@ function openModaleGestioneClasse(annoScolastico,classe,formAction,title){
 }
 
 function closeModaleGestioneClasse(){
+  for(let i=0;i<8;i++){
+    let opt_id =  "optionGestioneClasse_" + i;
+    $("#" + opt_id).attr("selected",false);
+  }
     $(".modalContentGestioneClasse").css("display","none");
     $(".modal").css("display","none");
 }

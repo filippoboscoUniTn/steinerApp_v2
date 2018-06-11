@@ -1,0 +1,131 @@
+<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
+<div class="newClassModal" id="addNewClassModal">
+    <div class="newClassModalContent" id="newClassModalContent">
+
+        <div class="newClassModalHeader">
+            <span class="close white" id="closeNewClassModal">&times;</span>
+            <h3 id="h3ModalHeader">Aggiungi Nuova Classe</h3>
+        </div>
+
+        <div class="newClassModalBody">
+            <form method="POST" id="nuovaClasseForm">
+
+                <div class="form-group">
+                    <div class="row">
+
+                        <div class="col-sm-6">
+                            <label for="classSelect">Classe : </label>
+                            <select class="form-control" id="classSelect">
+                                <option value="1" selected>1 </option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="sezioneSelect">Sezione : </label>
+                            <select class="form-control" id="sezioneSelect">
+                                <option value="A" selected>A</option>
+                                <option value="B" >B</option>
+                                <option value="C" >C</option>
+                                <option value="D" >D</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6">
+                            <label for="nomeMaestroClasse">Nome Maestro</label>
+                            <input type="text" id="nomeMaestroClasse" class="form-control" >
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="cognomeMaestroClasse">Cognome Maestro</label>
+                            <input type="text" id="cognomeMaestroClasse" class="form-control" >
+                        </div>
+
+                    </div>
+
+                    <h4>Materie</h4>
+                    <div class="row">
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                    </div>
+                    <br>
+                    <div class="row">
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" name="newClasseMaterie[]" id="newClasseMaterie" class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+                <button type="button" class="btn btn-md btn-blue" id="saveNuovaClasse">Save</button>
+                <br>
+
+            </form>
+        </div>
+        <div class="newClassModalFooter" id="newClassModalFooter">
+            <h4 id="newClassH4Footer"></h4>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+.modalNuovaClasse{
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 1; /* Sit on top */
+left: 0;
+top: 0;
+width: 100%; /* Full width */
+height: 100%; /* Full height */
+overflow: auto; /* Enable scroll if needed */
+background-color: rgb(0,0,0); /* Fallback color */
+background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+{{> modaleGestioneClasse }}
+{{> modaleStampaPDF }}
+{{> modaleCreazioneClasse }}

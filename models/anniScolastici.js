@@ -23,3 +23,19 @@ module.exports.getAnniScolastici = function (callback){
         }
     })
 };
+module.exports.annoGiaEsistente = function (anno,callback){
+  AnniScolastici.find({nome:anno},function(err,results){
+    if(err){
+      callback(err,null);
+    }
+    else{
+      console.log("results = " + results)
+      if(results.length !== 0){
+        callback(null,true);
+      }
+      else{
+        callback(null,false);
+      }
+    }
+  })
+};

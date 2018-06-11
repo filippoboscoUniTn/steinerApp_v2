@@ -8,6 +8,9 @@ const express =  require('express');
 //--------------------------------- MODELLI ------------------------------------
 const AnniScolastici = require('../../models/anniScolastici');
 const Classi = require('../../models/classi');
+const PermessiUtente = require('../../models/permessiUtente');
+const Studenti = require('../../models/studenti');
+const Pagelle = require('../../models/pagelle');
 //----------------------------------- END --------------------------------------
 
 
@@ -18,6 +21,22 @@ const util = require('util');
 
 //---------------------- DICHIARAZIONI VARIABILI -------------------------------
 let router = express.Router();
+//----------------------------------- END --------------------------------------
+
+
+
+//----------------------- MIDDLEWARE PER MESSAGGI FLASH ------------------------
+router.use(function(req,res,next){
+  if(req.session.successMsg != null){
+    res.locals.successMsg = req.session.successMsg;
+    delete req.session.successMsg;
+  }
+  if(req.session.errorMsg != null){
+    res.locals.errorMsg = req.session.errorMsg;
+    delete req.session.errorMsg;
+  }
+  next();
+});
 //----------------------------------- END --------------------------------------
 
 
@@ -75,8 +94,36 @@ router.post('/eliminaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezion
 
 //-------------------------- HANDLERS MODIFICHE CLASSE -------------------------
 router.post('/creaNuovaClasse/:as(20[0-9][0-9]/[0-9][0-9])',function (req,res,next){
-    console.log(req.url);
-    res.send("hello from " + req.url);
+
+    let annoScolastico = req.params.as;
+    let classe = req.params.classe;
+
+    Classi.classeGiaEsistente(annoScolastico,classe,function (err,esistente){
+      if(err){
+        req.session.errorMsg = "Errore nella creazione della classe : " + err;
+        res.redirect("/admin/gestioneAnni/"+annoScolastico);
+      }
+      else if(esistente){
+        req.session.errorMsg = "Errore nella creazione della classe : classe " + classe + " già esistente";
+        res.redirect("/admin/gestioneAnni/"+annoScolastico);
+      }
+      else{
+        let newClasse = new Classi({
+          annoScolastico: annoScolastico,
+          classe: classe
+        });
+        newClasse.save( (err,classeCreata,numAffected) => {
+          if(err){
+            req.session.errorMsg = "Errore nel salvataggio della classe nel database : " + err;
+            res.redirect("/admin/gestioneAnni/"+annoScolastico);
+          }
+          else{
+            req.session.successMsg = "Classe " + classe + " salvata con successo!";
+            res.redirect("/admin/gestioneAnni/"+annoScolastico);
+          }
+        });
+      }
+    });
 });
 router.post('/modificaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
   console.log(req.url);
@@ -91,18 +138,225 @@ router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',functio
 
 
 //---------------------- HANDLERS MODIFICHE ANNO SCOLASTICO --------------------
-router.post('/creaNuovoAnnoScolastico',function (req,res,next){
-  console.log(req.url);
-  res.send("Hello from " + req.url);
-})
-router.post('/modificaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function(req,res,next){
-    console.log(req.url);
-    res.send("Hello from " + req.url);
-});
-router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function (req,res,next){
-    console.log(req.url);
-    res.send("Hello from " + req.url);
-});
+
+
+  //----------------------- CREAZIONE NUOVO ANNO SCOLASTICO --------------------
+  router.post('/creaNuovoAnnoScolastico',function (req,res,next){
+
+    let inizioAnno = req.body.inizioNuovoAnno;
+    let fineAnno = req.body.fineNuovoAnno;
+    let anno = String.prototype.concat(inizioAnno,"/",fineAnno.split("")[2],fineAnno.split("")[3])
+
+    AnniScolastici.annoGiaEsistente(anno,function (err,esistente){
+      if(err){
+        req.session.errorMsg = "Errore nella creazione dell'anno : " + err;
+        res.redirect('/admin/gestioneAnni');
+      }
+      else if(esistente){
+        req.session.errorMsg = "Impossibile creare il nuovo anno : anno già esistente!"
+        res.redirect('/admin/gestioneAnni');
+      }
+      else{
+        let newAnno = new AnniScolastici({
+          nome:anno
+        })
+        newAnno.save( (err,annoCreato,numAffected) =>{
+          if(err){
+            req.session.errorMsg = "Errore nella creazione dell'anno : " + err;
+            res.redirect('/admin/gestioneAnni');
+          }
+          else{
+            req.session.successMsg = "Anno " + annoCreato.nome + " creato con successo!";
+            res.redirect('/admin/gestioneAnni');
+          }
+        });
+      }
+    })
+  })
+  //------------------------------------ END -----------------------------------
+
+
+  //----------------------- MODIFICA ANNO SCOLASTICO ---------------------------
+  router.post('/modificaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function(req,res,next){
+
+    let nuovoInizioAnnoScolastico = req.body.inizioAnno;
+    let nuovaFineAnnoScolastico = req.body.fineAnno;
+
+    let oldAnnoScolastico = req.params.as;
+    let nuovoAnnoScolastico = String.prototype.concat(nuovoInizioAnnoScolastico,"/",nuovaFineAnnoScolastico.split("")[2],nuovaFineAnnoScolastico.split("")[3]);
+
+    let updatePromiseChain = [];
+
+    //-------------------------- UPDATE DELLE CLASSI ---------------------------
+    let updateClassi = new Promise(function(resolve, reject) {
+      Classi.update({annoScolastico:oldAnnoScolastico},{$set:{annoScolastico:nuovoAnnoScolastico}},function (err,numAffected){
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve();
+        }
+      })
+    });
+    updatePromiseChain.push(updateClassi)
+    //---------------------------------- END -----------------------------------
+
+    //------------------------ UPDATE PERMESSI UTENTE --------------------------
+    let updatePermessi = new Promise(function(resolve, reject){
+      PermessiUtente.update({annoScolastico:oldAnnoScolastico},{$set:{annoScolastico:nuovoAnnoScolastico}},function (err,numAffected){
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve();
+        }
+      })
+    });
+    updatePromiseChain.push(updatePermessi)
+    //---------------------------------- END -----------------------------------
+
+    //-------------------------- UPDATE DELLE PAGELLE --------------------------
+    let updatePagelle = new Promise(function(resolve, reject) {
+      Pagelle.update({annoScolastico:oldAnnoScolastico},{$set:{annoScolastico:nuovoAnnoScolastico}},function (err,numAffected){
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve();
+        }
+      })
+    });
+    updatePromiseChain.push(updatePagelle)
+    //---------------------------------- END -----------------------------------
+
+    //---------------------- UPDATE DELL'ANNO SCOLASTICO -----------------------
+    let updateAnnoScolastico = new Promise(function(resolve, reject) {
+      AnniScolastici.update({nome:oldAnnoScolastico},{$set:{nome:nuovoAnnoScolastico}},function (err,numAffected){
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve();
+        }
+      })
+    });
+    updatePromiseChain.push(updateAnnoScolastico)
+    //---------------------------------- END -----------------------------------
+
+    //------------------------ UPDATE SUCCESSFULL ------------------------------
+    Promise.all(updatePromiseChain).then( () => {
+      req.session.successMsg = "Anno Scolastico Modificato con successo!";
+      res.redirect("/admin/gestioneAnni");
+    //---------------------------------- END -----------------------------------
+
+    //------------------------ ERROR DURING UPDATE -----------------------------
+    }, err => {
+      req.session.errorMsg = "Impossibile modificare l'anno. Errore : " + err;
+      res.redirect("/admin/gestioneAnni");
+    });
+    //---------------------------------- END -----------------------------------
+
+  });
+  //------------------------------------ END -----------------------------------
+
+
+  //----------------------- ELIMINA ANNO SCOLASTICO ----------------------------
+  router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function (req,res,next){
+      let annoScolastico = req.params.as;
+      Classi.getStudentiFromAnnoScolastico(annoScolastico,function (err,studenti){
+
+        let cleanUpPromiseChain = [];
+
+        //------------- PROMESSA RIMOZIONE STUDENTE E PAGELLE ------------------
+        for(let i=0;i<studenti.length;i++){
+          let deletePagellePromise = new Promise(function(resolve, reject) {
+            Pagelle.deleteMany({idStudente:studenti[i]},function (err){
+              if(err){
+                reject(err);
+              }
+              else{
+                resolve();
+              }
+            })
+          });
+          let newPromise = new Promise(function(resolve, reject) {
+            Studenti.deleteOne({id:studenti[i]},function (err){
+              if(err){
+                reject(err);
+              }
+              else{
+                resolve();
+              }
+            })
+          });
+          cleanUpPromiseChain.push(deletePagellePromise);
+          cleanUpPromiseChain.push(newPromise);
+        }
+        //-------------------------------- END ---------------------------------
+
+
+        //--------------------- PROMESSA RIMOZIONE CLASSI ----------------------
+        let removeClassiPromise = new Promise(function(resolve, reject) {
+          Classi.deleteMany({annoScolastico:annoScolastico},function (err){
+            if(err){
+              reject(err);
+            }
+            else{
+              resolve();
+            }
+          })
+        });
+        cleanUpPromiseChain.push(removeClassiPromise);
+        //-------------------------------- END ---------------------------------
+
+
+        //------------------- PROMESSA RIMOZIONE PERMESSI ----------------------
+        let removePermessiPromise = new Promise(function(resolve, reject) {
+          PermessiUtente.deleteMany({annoScolastico:annoScolastico},function (err){
+            if(err){
+              reject(err);
+            }
+            else{
+              resolve();
+            }
+          })
+        });
+        cleanUpPromiseChain.push(removePermessiPromise);
+        //-------------------------------- END ---------------------------------
+
+
+        //---------------- PROMESSA RIMOZIONE ANNO SCOLASTICO ------------------
+        let removeAnnoScolasticoPromise = new Promise(function(resolve, reject) {
+          AnniScolastici.deleteOne({nome:annoScolastico},function (err){
+            if(err){
+              reject(err);
+            }
+            else{
+              resolve();
+            }
+          })
+        });
+        cleanUpPromiseChain.push(removeAnnoScolasticoPromise);
+        //-------------------------------- END ---------------------------------
+
+
+        //------------------- SUCCESSFULL CHAIN RESOLUTION ---------------------
+        Promise.all(cleanUpPromiseChain).then(()=>{
+          res.send("Anno Scolastico Eliminato con successo!");
+        //-------------------------------- END ---------------------------------
+
+
+        //--------------------- ERROR IN CHAIN RESOLUTION ----------------------
+        },err=>{
+          let errore = "Impossibile Rimuovere l'Anno Scolastico\nErrore : " + err;
+          res.send(errore);
+        })
+        //-------------------------------- END ---------------------------------
+      })
+  });
+  //------------------------------------ END -----------------------------------
+
+
 //----------------------------------- END --------------------------------------
 
 
@@ -153,7 +407,7 @@ router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function (req
               next(err);
           }
           else{
-              res.render('./areaAmministratore/gestioneDB/gestioneClassi',{layout:'authLayout',title:'Gestione Classi',subTitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
+              res.render('./areaAmministratore/gestioneDB/gestioneClassi',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Classi',subTitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
           }
       })
   });
@@ -167,7 +421,7 @@ router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function (req
               next(err)
           }
           else{
-              res.render('./areaAmministratore/gestioneDB/gestioneAnni',{layout:'authLayout',title:'Gestione Anni Scolastici',subTitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
+              res.render('./areaAmministratore/gestioneDB/gestioneAnni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Anni Scolastici',subTitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
           }
       })
   });
