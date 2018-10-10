@@ -168,7 +168,7 @@ module.exports.getStudentiFromAnnoScolastico = function (annoScolastico,callback
 }
 
 module.exports.classeGiaEsistente = function (anno,classe,callback){
-  Classi.find({anno:anno,classe:classe},function (err,results){
+  Classi.find({annoScolastico:anno,classe:classe},function (err,results){
     if(err){
       callback(err,null);
     }
@@ -179,4 +179,44 @@ module.exports.classeGiaEsistente = function (anno,classe,callback){
       callback(null,false);
     }
   })
+}
+
+module.exports.getStudentiFromAnnoScolasticoAndClasse = function (anno,classe,callback){
+  Classi.find({annoScolastico:anno,classe:classe},{studenti:1,_id:0},function (err,results){
+    if(err){
+      callback(err,null);
+    }
+    else{
+      let studenti = [];
+      for(let i=0;i<results.length;i++){
+        for(let j=0;j<results[i].studenti.length;j++){
+          studenti.push(results[i].studenti[j]);
+        }
+      }
+      callback(null,studenti);
+    }
+  })
+}
+
+module.exports.updateClassi = function(annoScolastico,oldClasse,newClasse){
+
+  let updatePromise = new Promise(function(resolve,reject){
+
+    let condition = {annoScolastico:annoScolastico,classe:oldClasse};
+    let update = {classe:newClasse};
+    let opts = {multi:true};
+
+    Classi.update(condition,update,opts,function (err,numAffected){
+      if(err){
+        reject(err);
+      }
+      else{
+        console.log("updateClassi resolving, numAffected = " + numAffected);
+        resolve();
+      }
+    })
+  })
+
+return updatePromise
+
 }

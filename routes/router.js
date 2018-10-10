@@ -33,6 +33,7 @@ router.use(function(req,res,next){
     err.status = 404;
     next(err);
 });
+
 router.use(function(err,req,res){
     res.status = (err.status || 500);
     if(req.isAuthenticated()){

@@ -86,53 +86,214 @@ router.post('/modificaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezio
 })
 router.post('/eliminaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function(req,res){
   console.log(req.url);
-  res.send("hello from " + req.url)
+
+  let annoScolastico = req.params.as;
+  let classe = req.params.classe;
+  let sezione = req.params.sezione;
+  console.log(annoScolastico + "\n" + classe + "\n" + sezione)
+  Studenti.getStudentiFromAnnoScolasticoAndClasseAndSezione(annoScolastico,classe,sezione,function(err,studenti){
+    if(err){
+      res.send(err);
+    }
+    else{
+        let cleanUpPromiseChain = [];
+        for(let k=0;k<studenti.length;k++){
+          let cleanPagelleStudente = new Pormise(function (resolve,reject){
+            Pagelle.deleteMany({idStudente:studenti[k]},function(err){
+              if(err){
+                reject(err)
+              }
+              else{
+                resolve()
+              }
+            })
+          })
+          let cleanStudente = new Pomise(function(resolve,reject){
+            Studenti.deleteMany({id:studenti[k]},function(err){
+              if(err){
+                reject(err);
+              }
+              else{
+                resolve()
+              }
+            })
+          })
+          cleanUpPromiseChain.push(cleanPagelleStudente);
+          cleanUpPromiseChain.push(cleanStudente);
+        }
+
+
+    }
+  })
+
 })
 //----------------------------------- END --------------------------------------
 
 
 
 //-------------------------- HANDLERS MODIFICHE CLASSE -------------------------
-router.post('/creaNuovaClasse/:as(20[0-9][0-9]/[0-9][0-9])',function (req,res,next){
+
+
+  //------------------------ CREAZIONE NUOVA CLASSE ----------------------------
+  router.post('/creaNuovaClasse/:as(20[0-9][0-9]/[0-9][0-9])',function (req,res,next){
+      let annoScolastico = req.params.as;
+      let classe = req.params.classe;
+
+      Classi.classeGiaEsistente(annoScolastico,classe,function (err,esistente){
+        if(err){
+          throw err
+          req.session.errorMsg = "Errore nella creazione della classe : " + err;
+          res.redirect("/admin/gestioneAnni/"+annoScolastico);
+        }
+        else if(esistente){
+          console.log("esistente")
+          //req.session.errorMsg = "Errore nella creazione della classe : classe " + classe + " già esistente";
+          //res.redirect("/admin/gestioneAnni/"+annoScolastico);
+          res.send("esistente")
+        }
+        else{
+          console.log("else")
+
+          let newClasse = new Classi({
+            annoScolastico: annoScolastico,
+            classe: classe
+          });
+          console.log("newClasse.classe = " + newClasse.classe)
+          newClasse.save( (err,classeCreata,numAffected) => {
+            if(err){
+              req.session.errorMsg = "Errore nel salvataggio della classe nel database : " + err;
+              res.redirect("/admin/gestioneAnni/"+annoScolastico);
+            }
+            else{
+              req.session.successMsg = "Classe " + classe + " salvata con successo!";
+              res.redirect("/admin/gestioneAnni/"+annoScolastico);
+            }
+          });
+        }
+      });
+  });
+  //-------------------------------- END ---------------------------------------
+
+
+  //--------------------------- MODIFICA CLASSE --------------------------------
+  router.post('/modificaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
+    let annoScolastico = req.params.as;
+    let oldClasse = req.params.classe;
+    let newClasse = req.body.nuovaClasse;
+    //------------------ CLASSI UGUALI, NESSUNA MODIFICA -----------------------
+    if(newClasse === oldClasse){
+      console.log("classi uguali, nessuna modifica");
+      res.send("Nessuna modifica, le due classi coincidono!");
+    }
+    //-------------------------------- END -------------------------------------
+    else{
+      console.log("classi diverse, controllo unicità nuova classe");
+      Classi.classeGiaEsistente(annoScolastico,newClasse,function (err,esistente){
+        //----------------------------- ERRORE ---------------------------------
+        if(err){
+          res.send("Impossibile modificare la classe: " + err);
+        }
+        //--------------------------------- END --------------------------------
+                                            //
+        //----------------------- CLASSE GIÀ ESISTENTE -------------------------
+        else if(esistente){
+          res.send("Impossibile modificare la classe: classe già esistente!");
+        }
+        //--------------------------------- END --------------------------------
+        else{
+          let cleanUpPromiseChain = [];
+
+          let updateClassiPromise = Classi.updateClassi(annoScolastico,oldClasse,newClasse);
+          let updatePagellePromise = Pagelle.updateClasse(annoScolastico,oldClasse,newClasse);
+
+          cleanUpPromiseChain.push(updateClassiPromise);
+          cleanUpPromiseChain.push(updatePagellePromise);
+
+          Promise.all(cleanUpPromiseChain).then(()=>{
+            res.send("Classe modificata con successo!");
+          },err=>{
+            res.send("Errore : " + err);
+          })
+
+        }
+      })
+    }
+  })
+  //---------------------------------- END -------------------------------------
+
+
+  //------------------------------- ELIMINA CLASSE -----------------------------
+  router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
 
     let annoScolastico = req.params.as;
     let classe = req.params.classe;
-
-    Classi.classeGiaEsistente(annoScolastico,classe,function (err,esistente){
-      if(err){
-        req.session.errorMsg = "Errore nella creazione della classe : " + err;
-        res.redirect("/admin/gestioneAnni/"+annoScolastico);
-      }
-      else if(esistente){
-        req.session.errorMsg = "Errore nella creazione della classe : classe " + classe + " già esistente";
-        res.redirect("/admin/gestioneAnni/"+annoScolastico);
-      }
-      else{
-        let newClasse = new Classi({
-          annoScolastico: annoScolastico,
-          classe: classe
+    console.log("annoScolastico = " + annoScolastico + "\nclasse = " + classe);
+    Classi.getStudentiFromAnnoScolasticoAndClasse(annoScolastico,classe,function (err,studenti){
+      console.log("studenti = " + studenti);
+      let cleanUpPromiseChain = [];
+      //--------------------- PROMESSA RIMOZIONE STUDENTI E PAGELLE ------------
+      for(let i=0;i<studenti.length;i++){
+        console.log("idStudente = " + studenti[i]);
+        let deletePagellePromise = new Promise(function(resolve, reject) {
+          Pagelle.deleteMany({idStudente:studenti[i]},function (err){
+            if(err){
+              reject(err);
+            }
+            else{
+              resolve();
+            }
+          })
         });
-        newClasse.save( (err,classeCreata,numAffected) => {
+        let deleteStudentePromise = new Promise(function(resolve, reject) {
+          Studenti.deleteOne({id:studenti[i]},function (err){
+            if(err){
+              reject(err);
+            }
+            else{
+              resolve();
+            }
+          })
+        });
+        cleanUpPromiseChain.push(deletePagellePromise);
+        cleanUpPromiseChain.push(deleteStudentePromise);
+      }
+      //---------------------------------- END ---------------------------------
+
+      //----------------------- PROMESSA RIMOZIONE PERMESSI --------------------
+      //---------------------------------- END ---------------------------------
+
+      //------------------------- PROMESSA RIMOZIONE CLASSE --------------------
+      let removeClassePromise = new Promise(function (resolve,reject) {
+        Classi.deleteMany({annoScolastico:annoScolastico,classe:classe},function (err){
           if(err){
-            req.session.errorMsg = "Errore nel salvataggio della classe nel database : " + err;
-            res.redirect("/admin/gestioneAnni/"+annoScolastico);
+            reject(err);
           }
           else{
-            req.session.successMsg = "Classe " + classe + " salvata con successo!";
-            res.redirect("/admin/gestioneAnni/"+annoScolastico);
+            resolve();
           }
-        });
-      }
+        })
+      });
+      cleanUpPromiseChain.push(removeClassePromise);
+      //---------------------------------- END ---------------------------------
+
+      //------------------- SUCCESSFULL CHAIN RESOLUTION -----------------------
+      Promise.all(cleanUpPromiseChain).then(()=>{
+        res.send("Classe Eliminata con successo!");
+      //-------------------------------- END -----------------------------------
+
+      //--------------------- ERROR IN CHAIN RESOLUTION ------------------------
+      },err=>{
+        let errore = "Impossibile Rimuovere la Classe\nErrore : " + err;
+        res.send(errore);
+      })
+      //-------------------------------- END -----------------------------------
+
     });
-});
-router.post('/modificaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
-  console.log(req.url);
-  res.send("hello from " + req.url);
-})
-router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
-  console.log(req.url);
-  res.send("hello from " + req.url)
-})
+
+  });
+  //---------------------------------- END -------------------------------------
+
+
 //----------------------------------- END --------------------------------------
 
 
@@ -267,7 +428,7 @@ router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',functio
 
         let cleanUpPromiseChain = [];
 
-        //------------- PROMESSA RIMOZIONE STUDENTE E PAGELLE ------------------
+        //------------- PROMESSA RIMOZIONE STUDENTI E PAGELLE ------------------
         for(let i=0;i<studenti.length;i++){
           let deletePagellePromise = new Promise(function(resolve, reject) {
             Pagelle.deleteMany({idStudente:studenti[i]},function (err){
@@ -279,7 +440,7 @@ router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',functio
               }
             })
           });
-          let newPromise = new Promise(function(resolve, reject) {
+          let deleteStudentePromise = new Promise(function(resolve, reject) {
             Studenti.deleteOne({id:studenti[i]},function (err){
               if(err){
                 reject(err);
@@ -290,7 +451,7 @@ router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',functio
             })
           });
           cleanUpPromiseChain.push(deletePagellePromise);
-          cleanUpPromiseChain.push(newPromise);
+          cleanUpPromiseChain.push(deleteStudentePromise);
         }
         //-------------------------------- END ---------------------------------
 

@@ -91,3 +91,26 @@ module.exports.updatePagellaFromSemestre = function (annoScolastico,materia,clas
         callback(err,null);
     }
 };
+
+module.exports.updateClasse = function (annoScolastico,oldClasse,newClasse){
+
+    let updatePromise = new Promise(function(resolve,reject){
+
+      let condition = {annoScolastico:annoScolastico,classe:oldClasse};
+      let update = {classe:newClasse};
+      let opts = {multi:true};
+
+      Pagelle.update(condition,update,opts,function (err,numAffected){
+        if(err){
+          reject(err);
+        }
+        else{
+          console.log("updatePagelle resolving, numAffected = " + numAffected);
+          resolve();
+        }
+      })
+    })
+
+  return updatePromise
+
+};

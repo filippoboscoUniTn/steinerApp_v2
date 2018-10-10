@@ -112,7 +112,7 @@ router.get('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8]$
             res.redirect('/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[0]) //TBI
         }
         else{
-            res.render('./areaUtente/sezioni',{layout:'authLayout',title:'Sezioni',subTitle:"<a href='\\index '>"+'Anni Scolastici'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"'>"+'Materie'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"'>"+'Classi'+"</a>",h4_1:'Sezioni :',as:annoScolastico,materia:materia,classe:classe,sezioni:sezioni})
+            res.render('./areaUtente/sezioni',{layout:'authLayout',title:'Sezioni',subTitle:"<a href='\\index '>"+'Anni Scolastici'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"'>"+'Materie'+"</a>"+" &gt "+"<a href='/pagelle/annoScolastico/"+annoScolastico+"/"+materia+"'>"+'Classi'+"</a>",h4_1:'Sezioni :',annoScolastico:annoScolastico,materia:materia,classe:classe,sezioni:sezioni})
         }
     })
 });
