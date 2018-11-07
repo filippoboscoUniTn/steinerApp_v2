@@ -1,429 +1,308 @@
-const Utenti = require('../models/utenti');
+"use strict";
+const util = require("util")
+//--------------------------------- MODULI -------------------------------------
+const app = require('../app')
+const dbConnection = require('./databaseConnection')
+const dbClean = require('./databaseCleanup')
+//const collection = dbConnection.connection.collection("Studenti");
+//-------------------------------- MODELLI -------------------------------------
+const AutoIncrement = require('../models/autoIncrement');
 const AnniScolastici = require('../models/anniScolastici');
 const Classi = require('../models/classi');
 const Pagelle = require('../models/pagelle');
-const Studenti = require('../models/studenti');
-const AutoIncrement = require('../models/autoIncrement');
 const PermessiUtente = require('../models/permessiUtente');
+const Studenti = require('../models/studenti');
+const Utenti = require('../models/utenti');
 
-const bCrypt = require("bcryptjs");
-
-//POPOLAZIONE UTENTI
-module.exports.popUtenti = function(){
-    let utenti = [];
-
-    let admin = new Utenti({
-        nome:'admin',
-        cognome:'admin',
-        email:'admin@gmail.com',
-        username:'admin',
-        password:'admin',
-        authorization:'ADMIN',
-        status:'ACCEPTED'
-
-    });
-    let utente_1 = new Utenti({
-        nome:'utente_1',
-        cognome:'utente_1',
-        email:'utente_1@gmail.com',
-        username:'utente_1',
-        password:'utente_1',
-        authorization:'TEACHER',
-        status:'ACCEPTED'
-
-    });
-    let utente_2 = new Utenti({
-        nome:'utente_2',
-        cognome:'utente_2',
-        email:'utente_2@gmail.com',
-        username:'utente_2',
-        password:'utente_2',
-        authorization:'TEACHER',
-        status:'ACCEPTED'
-
-    });
-    let utente_3 = new Utenti({
-        nome:'utente_3',
-        cognome:'utente_3',
-        email:'utente_3@gmail.com',
-        username:'utente_3',
-        password:'utente_3',
-        authorization:'TEACHER',
-        status:'ACCEPTED'
-
-    });
-
-    utenti.push(admin);
-    utenti.push(utente_1);
-    utenti.push(utente_2);
-    utenti.push(utente_3);
-
-    for(let i=0;i<utenti.length;i++){
-      utenti[i].insertUser(utenti[i],function (user,num) {
-
-      })
+function populateCunters(counters){
+  let promises = counters.map(v => new AutoIncrement(v).save())
+  return Promise.all(promises)
+}
+function populateAnniScolastici(anni){
+  let promises = anni.map(v => new AnniScolastici(v).save())
+  return Promise.all(promises)
+}
+function populateClassi(classi){
+  let promises = classi.map(v => new Classi(v).save())
+  return Promise.all(promises)
+}
+function populatePagelle(pagelle){
+  let promises = pagelle.map(v => new Pagelle(v).save())
+  return Promise.all(promises)
+}
+function populatePermessiUtente(permessi){
+  let promises = users.map(v => new PermessiUtente(v).save())
+  return Promise.all(promises)
+}
+function populateStudenti(students){
+  let promises = students.map(v => new Studenti(v).save())
+  return Promise.all(promises)
+}
+function inserStudenti(students){
+  let promises = students.map(v=>{ Studenti.insertMany(v)})
+  return Promise.all(promises)
+}
+function populateUtenti(users){
+  let promises = users.map(v => new Utenti(v).insertUser())
+  return Promise.all(promises)
+}
+function insertPagelle(pagelle){
+  let promises = pagelle.map(v=> new Pagelle(v).save())
+  return Promise.all(promises)
+}
+function randomElementFrom(nElementi,pool){
+  let res = [];
+  for(let i=0;(i<nElementi || i > pool.length);i++){
+    let random_index = Math.floor(Math.random() * pool.length)
+    if(res.indexOf(pool[random_index]) === -1){
+      res.push(pool[random_index])
     }
+    else{
+      i--;
+    }
+  }
 
-};
+  if(res.length === 1){
+    return res[0]
+  }
+  else{
+    return res;
+  }
+}
 
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+function generateStudente(config){
+  let newStudente = {
+    id:config.seq,
+    nome : randomElementFrom(1,config.pool_nomi),
+    cognome : randomElementFrom(1,config.pool_cognomi),
+    luogoNascita : randomElementFrom(1,config.pool_citta),
+    dataNascita : randomDate(config.min_data,config.max_data),
+    residenza:{
+      comune : randomElementFrom(1,config.pool_citta),
+      cap : Math.floor(config.max_cap + Math.random()*(config.max_cap - config.min_cap)),
+      indirizzo:{
+        via : randomElementFrom(1,config.pool_strade),
+        numeroCivico : Math.floor(config.max_civ + Math.random()*(config.max_civ - config.min_civ))
+      }
+    }
+  }
+  config.seq ++;
+  return newStudente
+}
+function generateClass(anno,classe,sezione,config){
+  let newClasse = {
+    annoScolastico:anno,
+    classe:classe,
+    sezione:sezione,
+    materie:randomElementFrom(6,config.pool_materie),
+    maestroClasse:{
+      nome:randomElementFrom(1,config.pool_nomi),
+      cognome:randomElementFrom(1,config.pool_cognomi)
+    },
+    studenti:[]
+  }
+  return newClasse
+}
+function generatePagella(anno,classe,sezione,idStudente,materia){
+  let newPagella = {
+    idStudente:idStudente,
+    materia:materia,
+    classe:classe,
+    sezione:sezione,
+    annoScolastico:anno,
+    primoSemestre:"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    secondoSemestre:"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  }
+  return newPagella
+}
+  /*
+    1) Popolazione contatori
+    2) Popolazione Utenti
+    3) Popolazione Studenti
+    4) Popolazione Anni Scolastici
+    5) Popolazione Classi
 
-//POPOLAZIONE ANNI SCOLASTICI
-module.exports.popAnniSc = function(){
-    let annoScolastico_1 = new AnniScolastici({
-        nome:'2017/18'
-    });
-    annoScolastico_1.save();
+    6) Popolazione Permessi
+    7) Popolazione Pagelle
+  */
+function generateSampleDb(){
 
-    let annoScolastico_2 = new AnniScolastici({
-        nome:'2018/19'
-    });
-    annoScolastico_2.save();
+  let sampleConfig = {
+     seq: 0,
+     pool_ids : 0,
+     pool_anni:["2017/18","2018/19","2019/20"],
+     pool_sezioni:["A","B"],
+     pool_materie:["Tedesco","Italiano","Geografia","Storia","Epoca","Euritmia","Attività Fisica","Arte","Lavoro manuale","Inglese","Musica","Matematica","Scienze","Chimica","Fisica"],
+     pool_nomi:["Agnese","Agostino","Aimeè","Alan","Belinda","Bella","Ben","Benedetto","Clotilde","Concetta","Consolata","Contessa","Cora","Donald","Donar","Donata","Eleonora","Eletta","Elettra","Fiammetta","Filiberto","Kamar","Keith","Ken","Reed","Regina","Remigio","Remo","Spartaco","Speranza","Stanislao","Stefania"],
+     pool_cognomi:["Russo","Ferrari","Esposito","Bianchi","Romano","Colombo","Ricci","Marino","Greco","Bruno","Gallo","Conti","De Luca","Mancini","Costa","Giordano","Rizzo","Lombardi","Moretti","Barbieri","Fontana","Santoro","Mariani","Rinaldi","Caruso","Ferrara","Galli","Martini","Leone","Longo","Gentile","Martinelli","Vitale","Lombardo","Serra","Coppola","De Santis","D'angelo","Marchetti","Parisi","Villa","Conte","Ferraro","Ferri","Fabbri","Bianco","Marini","Grasso","Valentini","Messina","Sala","De Angelis","Gatti","Pellegrini","Palumbo","Sanna","Farina","Rizzi","Monti","Cattaneo","Morelli","Amato","Silvestri","Mazza","Testa","Grassi","Pellegrino","Carbone","Giuliani"],
+     pool_strade:["Roma","Milano","Guglielmo Marconi","Massimo Dalema","Garibaldi","Diaz","Venezia","3 Novembre","XX Febbraio","Trieste","Gramsci","Giuseppe Verdi"],
+     pool_citta:["Trento","Rovereto","Borgo","Levico","Brenta","Calceranica","Vipiteno","Bassano del grappa"],
+     max_cap:38299,
+     min_cap:38122,
+     max_civ:100,
+     min_civ:1,
+     max_data:new Date(2012, 0, 1),
+     min_data:new Date(2000, 0, 1),
+  }
+  let samples = []
 
-    let annoScolastico_3 = new AnniScolastici({
-        nome:'2019/20'
-    });
-    annoScolastico_3.save();
-};
+    //----------------------- CREAZIONE ANNO SCOLASTICO ------------------------
+    sampleConfig.pool_anni.forEach((v_anno,i_anno,a_anno)=>{
 
+      let newSample = {
+        annoScolastico : {nome:v_anno},
+        classi : [],
+        pagelle : [],
+        studenti:[]
+      }
+      for(let classe_i=1;classe_i<=8;classe_i++){
 
-//POPOLAZIONE AUTOiNCREMENT
-module.exports.popAutoInc = function(){
-    let newCounter = new AutoIncrement({
-        _id:'studentCounter',
-        seq:0
-    });
-    newCounter.save();
-};
+        sampleConfig.pool_sezioni.forEach((v_sezione,i_sezione,a_sezione)=>{
 
-
-//POPOLAZIONE STUDENTI
-module.exports.popStudente = function() {
-
-    for(let i = 0; i< 450 ; i++){
-      let studente = new Studenti({
-        nome: 'studente_' + String(i),
-        cognome: 'studente_' + String(i),
-        ammesso:true,
-        luogoNascita:'Rovigo',
-        dataNascita:new Date(1993,4,i%28),
-        residenza:{
-            comune:'Padova',
-            cap:385422,
-            indirizzo:{
-                via:'Via ' + (i%6) + ' Febbraio',
-                numeroCivico:(i%20),
+          let newClasse = generateClass(v_anno,classe_i,v_sezione,sampleConfig)
+          for(let studente_i=0;studente_i<15;studente_i++){
+            let newStudente = generateStudente(sampleConfig)
+            for(let materia_i=0;materia_i<newClasse.materie.length;materia_i++){
+              let newPagella = generatePagella(v_anno,classe_i,v_sezione,newStudente.id,newClasse.materie[materia_i]);
+              newSample.pagelle.push(newPagella);
             }
-        }
-      })
-      studente.save()
-    }
-
-    // let std_1 = new Studenti({
-    //     nome:'Davide',
-    //     cognome:'Bazzanella',
-    //     ammesso:true,
-    //     luogoNascita:'Rovigo',
-    //     dataNascita:new Date(1993,4,25),
-    //     residenza:{
-    //         comune:'Padova',
-    //         cap:385422,
-    //         indirizzo:{
-    //             via:'Via G. Diaz',
-    //             numeroCivico:16,
-    //         }
-    //     }
-    // });
-    // std_1.save();
-
-};
-
-
-//POPOLAZIONE CLASSI
-module.exports.popClasse = function(){
-  let anniScolastici = ['2017/18','2018/19','2019/20']
-  let materie = ['Storia','Tedesco','Inglse','Geografia','Fisica','Euritmia','Scienze','Matematica','Educazione Fisica','Arte','Lavoro Manuale']
-  let nClassi = 8;
-  let nSezioni = 1;
-  let classeSize = 10;
-  Studenti.find({},{_id:0, id:1},function (err,results){
-    if(err){
-      throw err;
-    }
-    let idStudenti = []
-    for(let t1=0;t1<results.length;t1++){
-      if(idStudenti.indexOf(results[t1].id) === -1 ){
-        idStudenti.push(results[t1].id)
-      }
-      else{
-        console.log("Error, duplicate studente");
-      }
-    }
-
-    //Creazione Anni
-    for(let t2=0;t2<anniScolastici.length;t2++){
-      let annoScolastico = anniScolastici[t2];
-      console.log("anno = " + annoScolastico)
-      //Creazione Classi
-      for(let t3=0;t3<nClassi;t3++){
-        let classe = (t3%8) +1;
-        if(classe === 1 || classe === 8){
-          nSezioni = 2;
-        }
-        //Creazione Sezioni
-        for(let t4=0;t4<nSezioni;t4++){
-          let sezione = String.fromCharCode(65 + t4)
-          console.log(sezione);
-          let randomMaterie = []
-          //Creazione Materie
-          for(let t5=0;t5<5;t5++){
-              let min = 0
-              let max = materie.length
-              let randomIndex = Math.floor(Math.random() * (+max - +min)) + +min
-              if(randomMaterie.indexOf(materie[randomIndex]) === -1){
-                randomMaterie.push(materie[randomIndex]);
-              }
-              else{
-                t5--;
-              }
+            newClasse.studenti.push(newStudente.id)
+            newSample.studenti.push(newStudente);
           }
-          console.log(randomMaterie)
-          //Estrazione Studenti
-          let randomStudenti = []
-          for(let t6=0;t6<classeSize;t6++){
-            randomIndex = Math.floor(Math.random()*(+idStudenti.length - +0)) + +0
-            randomStudenti.push(idStudenti[randomIndex]);
-            idStudenti.splice(randomIndex,1);
-          }
-          console.log(randomStudenti)
-          //Creazione Documento
-          // let newClasse = new Classi({
-          //   annoScolastico:annoScolastico,
-          //   classe:classe,
-          //   sezione:sezione,
-          //   studenti:
-          //   materie:
-          //   maestroClasse:{
-          //       nome:'Lucia',
-          //       cognome:'Vergot'
-          //   }
-          // })
-        }
-        nSezioni = 1;
-      }
-    }
-  })
-
-
-
-
-
-
-
-
-
-
-      //
-      //
-      //
-      //
-      // let annoScolastico;
-      // let classe = (i%8)+1;
-      // let sezione = '';
-      // let randomStudenti = []
-      // let randomMaterie = [];
-      //
-      // if(i<10){
-      //   console.log("i <10")
-      //   annoScolastico='2017/18';
-      //
-      // }
-      // else if(i<20){
-      //   console.log("i <20")
-      //
-      //   annoScolastico='2018/19';
-      // }
-      // else{
-      //   console.log("i <30")
-      //
-      //   annoScolastico='2019/20';
-      // }
-      //
-      // if( (i%10)==0 || (i%10)== 1 ){
-      //   sezione = 'B'
-      // }
-      // else{
-      //   sezione = 'A'
-      // }
-      //
-      // for(let j=0;j<5;j++){
-      //     let min = 0
-      //     let max = materie.length
-      //     let randomIndex = Math.floor(Math.random() * (+max - +min)) + +min
-      //     if(randomMaterie.indexOf(materie[randomIndex]) === -1){
-      //       randomMaterie.push(materie[randomIndex]);
-      //     }
-      //     else{
-      //       i--;
-      //     }
-      //
-      // }
-      //
-      // for (var a=[],iq=0;iq<450;++iq) a[iq]=iq;
-      // function shuffle(array) {
-      //   var tmp, current, top = array.length;
-      //   if(top) while(--top) {
-      //     current = Math.floor(Math.random() * (top + 1));
-      //     tmp = array[current];
-      //     array[current] = array[top];
-      //     array[top] = tmp;
-      //   }
-      //   return array;
-      // }
-      // a = shuffle(a);
-      // for(let k=0;k<15;k++){
-      //   randomStudenti.push(a.pop())
-      // }
-      //
-      // let newClasse = new Classi({
-      //
-      //     annoScolastico:annoScolastico,
-      //     classe: classe,
-      //     sezione:sezione,
-      //     materie:randomMaterie,
-      //     maestroClasse:{
-      //         nome:'Lucia',
-      //         cognome:'Vergot'
-      //     },
-      //     studenti:randomStudenti
-      // });
-      // newClasse.save()
-      //
-};
-
-module.exports.popPermessiUtente = function () {
-    let permesso_1 = new PermessiUtente({
-        nome:'utente_1',
-        cognome:'utente_1',
-        annoScolastico:'2017/18',
-        permessi:[{
-            classi:[1,2,3],
-            materia:'Tedesco'
-        },{
-            classi:[1,2,3],
-            materia:'Inglese'
-        }]
-    });
-    permesso_1.save()
-};
-
-
-module.exports.popPagelle = function (){
-
-  let anniScolastici = ['2017/18','2018/19','2019/20']
-  //itera anni scolastici
-    //itera classi
-    for(let j=0;j<30;j++){
-      let as = ''
-      if(j<10){
-        as='2017/18';
-      }
-      else if(j<20){
-        as='2018/19';
-      }
-      else{
-        as='2019/20';
-      }
-      let classe = (j%8) +1
-      let sezione
-      if( (j%10)==0 || (j%10)==1 ) {
-        sezione = 'B'
+          newSample.classi.push(newClasse);
+        })
 
       }
-      else{
-        sezione = 'A'
-      }
-      Classi.find({annoScolastico:as,classe:classe,sezione:sezione},{annoScolastico:1,classe:1,sezione:1,studenti:1,materie:1},function (err,results){
-        console.log("res = " + results[0])
-        for(let y=0;y<results[0].studenti.length;y++){
-          for(let g=0;g<results[0].materie.length;g++){
-            let newPagella = new Pagelle({
-              idStudente:results[0].studenti[y],
-              materia:results[0].materie[g],
-              classe:results[0].classe,
-              sezione:results[0].sezione,
-              annoScolastico:results[0].annoScolastico
-            })
-            newPagella.save()
-          }
-        }
-      })
-    }
 
+      samples.push(newSample);
+    })
+    //----------------------------- END ----------------------------------------
+    samples.push([{_id:"studentCounter",seq:sampleConfig.seq}])
+    return samples;
 }
 
 
+function popDb(){
+  let counters = [{_id:"studentCounter",seq:10}];
+  let users = [{
+      nome : "admin",
+      cognome : "admin",
+      email : "admin@server.com",
+      username : "admin",
+      password : "admin",
+      authorization:'ADMIN',
+      status :'ACCEPTED'
+  },
+  {
+    nome : "alessio",
+    cognome : "zanella",
+    email : "alessio.zll@server.com",
+    username : "alessio",
+    password : "alessio",
+    authorization:'TEACHER',
+    status :'ACCEPTED'
+  }]
+
+  let samples = generateSampleDb();
+
+  let classiChain = [];
+  let studentChain = [];
+  let pagelleChain = [];
+
+  for(let i=0;i<samples.length-1;i++){
+    classiChain.push(populateClassi(samples[i].classi))
+    studentChain.push(inserStudenti(samples[i].studenti))
+    pagelleChain.push(insertPagelle(samples[i].pagelle))
+
+  }
+
+  return populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico])
+    .then(populateCunters(samples[samples.length-1]))
+    .then(populateUtenti(users))
+    .then(Promise.all(classiChain))
+    .then(Promise.all(studentChain))
+    .then(Promise.all(pagelleChain))
+}
+
+module.exports = {popDb}
 
 
-module.exports.popPagelle2 = function () {
-    let pagella_1 = new Pagelle({
-        idStudente:0,
-        materia:'Tedesco',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    let pagella_2 = new Pagelle({
-        idStudente:0,
-        materia:'Geografia',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    let pagella_3 = new Pagelle({
-        idStudente:0,
-        materia:'Inglese',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    let pagella_4 = new Pagelle({
-        idStudente:1,
-        materia:'Tedesco',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    let pagella_5 = new Pagelle({
-        idStudente:1,
-        materia:'Geografia',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    let pagella_6 = new Pagelle({
-        idStudente:1,
-        materia:'Inglese',
-        classe:1,
-        sezione:'A',
-        annoScolastico:'2017/18',
-        primoSemestre:'Lo studente è bravo ma non si applica molto!',
-        secondoSemestre:'Lo studente ha cominciato ad applicarsi ma è un po\' tardi...'
-    })
-    pagella_1.save();
-    pagella_2.save();
-    pagella_3.save();
-    pagella_4.save();
-    pagella_5.save();
-    pagella_6.save();
 
-};
+
+
+
+
+/*----------------------------------- RITAGLI ----------------------------------
+let samples = generateSampleDb();
+let chain = []
+samples.forEach((sample)=>{
+  sample.classi.forEach((classe)=>{
+    chain.push(populateStudenti(classe.studenti,classe))
+  })
+})
+  console.log("chain completed, = " + util.inspect(samples[0].classi[0].studenti[0]) );
+  return populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico]).then( //ANNI SCOLASTICI WILL BE REMOVED
+  populateCunters(counters).then(populateUtenti(users))
+                           .then(Promise.all(chain))
+                           .then(()=>{
+                             samples.forEach(sample=>{
+                               console.log("sample.classe.studenti = " + sample.classi[0].studenti[0])
+                               populateClassi(sample.classi)
+                             })
+                           })
+                           //.catch(err=>{console.log(err)})
+                         )
+
+
+  //.catch(err=>{console.log(err)})
+
+
+
+
+
+
+
+
+
+
+
+populateStudenti(classe.studenti,classe).then((students)=>{
+                                   classe.studenti = students.map((student)=>{return student.id});
+                                   console.log("classe.studenti = \n\n" + classe.studenti)
+                                 })
+                                 .catch((err)=>{console.log(err)})
+
+
+let promiseChain = []
+for(let n=0;n<objs.length;n++){
+  let populateCunterPromise = new Promise(function(resolve, reject) {
+    let newCounter = new AutoIncrement(objs[n]);
+    newCounter.save(function(err){
+      if(err) reject(err);
+      resove()
+    });
+  });
+  promiseChain.push(populateCunterPromise)
+}
+return promiseChain
+
+
+let promiseChain = [];
+objs.forEach(function(val,index,array){
+  let populateUtentePromise = new Promise(function(resolve, reject) {
+    let newUtente = new Utenti(val);
+    newUtente.save(function(err){
+      if(err) reject(err)
+      resove()
+    })
+  });
+  promiseChain.push(populateUtentePromise)
+});
+return promiseChain
+
+
+
+//------------------------------------ END -----------------------------------*/

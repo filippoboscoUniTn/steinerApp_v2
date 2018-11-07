@@ -23,19 +23,38 @@ module.exports.getAnniScolastici = function (callback){
         }
     })
 };
-module.exports.annoGiaEsistente = function (anno,callback){
-  AnniScolastici.find({nome:anno},function(err,results){
-    if(err){
-      callback(err,null);
-    }
-    else{
-      console.log("results = " + results)
-      if(results.length !== 0){
-        callback(null,true);
+
+module.exports.annoGiaEsistente = function(anno){
+  let prom = new Promise(function(resolve, reject) {
+    AnniScolastici.find({nome:anno},function(err,res){
+      if(err){
+        reject(err)
       }
       else{
-        callback(null,false);
+        if(!res.length){
+          resolve(false)
+        }
+        else{
+          resolve(true)
+        }
       }
-    }
-  })
-};
+    })
+  });
+  return prom
+}
+module.exports.updateAnnoScolastico = function(condition,update,options){
+  let prom = new Promise(function(resolve, reject) {
+    AnniScolastici.update(condition,update,options,function(err,numAffected){
+      if(err)
+      {reject(err)
+      }
+      else{
+        resolve(numAffected)
+        // let err = new Error("Errore nell'update, chiave manca..")
+        // reject(err)
+      }
+    })
+  });
+
+  return prom
+}

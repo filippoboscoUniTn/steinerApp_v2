@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const bCrypt = require('bcryptjs');
 
 const dbConnection = require('../modules/databaseConnection');
-const salt = 10;
+const rounds = 10;
 
 
 let userSchema = new Schema({
@@ -25,31 +25,39 @@ let userSchema = new Schema({
     }
 },{collection:'Utenti'});
 
-userSchema.methods.insertUser = function(user,callback){
-    //Generate hash's salt
-    bCrypt.genSalt(salt,function(err,salt){
-        //error generating salt
-        if(err){
-            callback(err,null,null)
-        }
-        //hash user's password with generated salt
-        bCrypt.hash(user.password,salt,function(err,hash){
-            //error generating salt
-            if(err){
-                callback(err,null,null)
-            }
-            user.password = hash;
-            //save user to database
-            user.save(function(err,user,numAffected){
-                //error saving user to database
-                if(err){
-                    callback(err,null,null);
-                }
-                callback(null,user,numAffected);
-            })
-        })
-    })
-};
+// userSchema.methods.insertUser = function(user,callback){
+//     //Generate hash's salt
+//     bCrypt.genSalt(rounds,function(err,salt){
+//         //error generating salt
+//         if(err){
+//             callback(err,null,null)
+//         }
+//         //hash user's password with generated salt
+//         bCrypt.hash(user.password,salt,function(err,hash){
+//             //error generating salt
+//             if(err){
+//                 callback(err,null,null)
+//             }
+//             user.password = hash;
+//             //save user to database
+//             user.save(function(err,user,numAffected){
+//                 //error saving user to database
+//                 if(err){
+//                     callback(err,null,null);
+//                 }
+//                 callback(null,user,numAffected);
+//             })
+//         })
+//     })
+// };
+userSchema.methods.insertUser = function(){
+  bCrypt.genSalt(rounds).then(salt=>
+                              bCrypt.hash(this.password,salt))
+                        .then((hash)=>{
+                              this.password = hash;
+                              return this.save()})
+}
+
 
 let Users = mongoose.model('User',userSchema);
 module.exports = Users;

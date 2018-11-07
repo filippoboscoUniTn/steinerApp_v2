@@ -10,20 +10,26 @@
 
     <div class="modalBodyGestioneAnnoScolastico" id="modalBody">
 
-        <form method="POST" id="formGestioneAnnoScolastico" action="/">
-            <div class="form-group centered">
-                <div class="col-sm-4">
-                    <select class="form-control" name="inizioAnno" id='inizioAnno'></select>
-                </div>
-                <div class="col-sm-4">
-                    <select class="form-control" name="fineAnno" id='fineAnno'></select>
-                </div>
-                <div class="col-sm-4">
-                    <button class="btn btn-sm btn-blue">Save</button>
-                    <button type="button" id="deleteAnnoBtn" class="btn btn-sm btn-blue">Delete</button>
-                </div>
-            </div>
-        </form>
+      <form method="POST" id="formGestioneAnno">
+
+        <div class="form-row">
+
+          <div class="form-group col-md-6">
+            <label for="annoScolasticoGestioneAnno">Anno Scolastico : </label>
+            <select class="form-control" id="annoScolasticoGestioneAnno" name="annoScolasticoGestioneAnno">
+            </select>
+          </div>
+
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <button type="submit" class="btn btn-primary">Modifica</button>
+            <button type="button" class="btn btn-primary" id="deleteAnnoBtn">Elimina</button>
+            <button type="button" class="btn btn-primary" id="avanzaAnnoBtn">Avanza</button>
+          </div>
+        </div>
+
+      </form>
 
     </div>
 

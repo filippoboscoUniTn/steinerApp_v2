@@ -1,36 +1,34 @@
-<div class="modalContentCreazioneAnnoScolastico">
+<!-- modale per la GESTIONE di un ANNO SCOLASTICO -->
+<div class="modalContentGestioneClasse" id="modalContentCreaAnnoScolastico">
 
-  <!--...........................HEADER....................................-->
-  <div class="modalHeaderCreazioneAnnoScolastico">
-      <h3 id="modalTitleCreazioneAnnoScolastico"></h3>
-      <button class="btn btn-md " onclick="closeModaleNuovoAnnoScolastico()">
-          <span class="glyphicon glyphicon-remove"></span>
-      </button>
-  </div>
-  <!--........................../ HEADER...................................-->
+    <div class="modalHeaderGestioneClasse">
+        <h3 id="modalTitleCreaAnnoScolastico">Modifica Anno Scolastico</h3>
+        <button class="btn btn-md " onclick="closeModalCreaAnnoScolastico()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
 
-  <div class="modalBodyCreazioneAnnoScolastico" >
+    <div class="modalBodyGestioneClasse" id="modalBody">
 
-    <form method="POST" id="formCreazioneAnnoScolastico" action="/">
-        <div class="form-group centered">
+      <form method="POST" id="formCreaAnno">
 
-            <div class="col-sm-6">
-                <label for="inizioNuovoAnno">Data Inizio</label>
-                <select class="form-control" name="inizioNuovoAnno" id='inizioNuovoAnno'>
-                </select>
-            </div>
+        <div class="form-row">
 
-            <div class="col-sm-6">
-                <label for="fineNuovoAnno">Data Fine</label>
-                <select class="form-control" name="fineNuovoAnno" id='fineNuovoAnno'>
-                </select>
-            </div>
+          <div class="form-group col-md-6">
+            <label for="annoScolasticoCreaAnno">Anno Scolastico : </label>
+            <select class="form-control" id="annoScolasticoCreaAnno" name="annoScolasticoCreaAnno">
+            </select>
+          </div>
 
         </div>
-        <button class="btn btn-sm btn-blue btn-center" id="saveNuovoAnno">Save</button>
-    </form>
-    </br>
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <button type="submit" class="btn btn-primary">Crea</button>
+          </div>
+        </div>
 
-  </div>
+      </form>
+
+    </div>
 
 </div>

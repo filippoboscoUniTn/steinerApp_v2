@@ -1,0 +1,74 @@
+<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
+    <div class="modalContentGestioneClasse" id="modalContentGestioneSezione">
+
+        <div class="modalHeaderGestioneClasse">
+            <h3 id="modalTitleGestioneSezione"></h3>
+            <button class="btn btn-md " onclick="closeModaleGestioneSezione()">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+
+        <div class="modalBodyGestioneClasse" id="modalBodyGestioneSezione">
+
+          <form method="POST" id="formGestioneSezione">
+
+            <div class="form-row">
+
+              <div class="form-group col-md-6">
+                <label for="inizioAnnoGestioneSezione">Anno Scolastico : </label>
+                <select class="form-control" id="inizioAnnoGestioneSezione" name="inizioAnnoGestioneSezione">
+                </select>
+              </div>
+
+
+              <div class="form-group col-md-3">
+                <label for="classeGestioneSezione">Classe : </label>
+                <select class="form-control" id="classeGestioneSezione" name="classeGestioneSezione">
+                </select>
+              </div>
+
+              <div class="form-group col-md-3">
+                <label for="sezioneGestioneSezione">Sezione : </label>
+                <select class="form-control" id="sezioneGestioneSezione" name="sezioneGestioneSezione">
+                </select>
+              </div>
+
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="materieGestioneSezione">Materie :</label>
+                <input type="text" class="form-control" id="materieGestioneSezione" name="materieGestioneSezione" placeholder="Storia,Italiano,Matematica,...">
+                <small>Inserire le materie separate da una virgola</small>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <label>Maestro di Classe</label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nomeMaestroGestioneSezione">Nome :</label>
+                <input type="text" class="form-control" id="nomeMaestroGestioneSezione" name="nomeMaestroGestioneSezione">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="cognomeMaestroGestioneSezione">Cognome :</label>
+                <input type="text" class="form-control" id="cognomeMaestroGestioneSezione" name="cognomeMaestroGestioneSezione">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <button type="submit" class="btn btn-primary">Modifica Sezione</button>
+                <button type="button" class="btn btn-primary" id="deleteSezioneBtn">Elimina</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+        <div class="modalFooterGestioneSezione" id="modalFooterGestioneSezione">
+            <h4 id="modalFooterContentGestioneSezione"></h4>
+        </div>
+
+    </div>

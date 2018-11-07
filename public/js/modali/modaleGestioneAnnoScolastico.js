@@ -1,36 +1,26 @@
 function closeModalGestioneAnnoScolastico(){
-    $("#inizioAnno").empty();
-    $("#fineAnno").empty();
     $(".modalContentGestioneAnnoScolastico").css("display","none");
     $(".modal").css("display","none");
+    $("#annoScolasticoGestioneAnno").empty();
+
 }
 
-function openModaleGestioneAnnoScolastico(anno,formAction,title){
-    $("#modalTitleGestioneAnnoScolastico").html(title);
-    let inizioAnno = anno.split("/")[0];
-    let fineAnno = String.prototype.concat("20",anno.split("/")[1]);
+function openModaleGestioneAnnoScolastico(annoScolastico,formAction,title){
+    let currentYear = Number(annoScolastico.split("/")[0])
 
-    for(let i=(Number(inizioAnno)-4);i<(Number(inizioAnno)+6);i++){
-        let newOption = $('<option></option>');
-        let newOption2 = $('<option></option>');
-
-        newOption.val(String(i));
-        newOption.html(String(i));
-        newOption2.val(String(i+1));
-        newOption2.html(String(i+1));
-
-        if(i === Number(inizioAnno)){
-            newOption.attr("selected","selected");
-        }
-        if(i === Number(fineAnno)-1){
-            newOption2.attr("selected","selected");
-        }
-        $("#inizioAnno").append(newOption);
-        $("#fineAnno").append(newOption2);
+    for(let i=currentYear-5;i<currentYear+5; i++){
+      let anno = String(i).concat("/").concat(String(i+1))
+      let value = String(i).concat("/").concat(String(i+1).slice(2,4))
+      let selected = false
+      if(i==currentYear){selected = true}
+      $("#annoScolasticoGestioneAnno").append(new Option(anno,value,true,selected))
     }
 
-    $("#formGestioneAnnoScolastico").attr("action",formAction);
-    $("#deleteAnnoBtn").attr("onclick","eliminaAnnoScolastico('"+anno+"')");
+    $("#modalTitleGestioneAnnoScolastico").html(title);
+    $("#formGestioneAnno").attr("action",formAction);
+    console.log(formAction)
+    $("#deleteAnnoBtn").attr("onclick","eliminaAnnoScolastico('"+annoScolastico+"')");
+
     $(".modalContentGestioneAnnoScolastico").css("display","block");
     $(".modal").css("display","block");
 }
@@ -42,6 +32,8 @@ function eliminaAnnoScolastico(anno){
         method:"POST",
         data:"annoScolastico="+anno
     }).done( (res) =>{
-        alert(res);
+      window.location.reload(true);
+    }).fail(err=>{
+      window.location.reload(true);
     })
 }

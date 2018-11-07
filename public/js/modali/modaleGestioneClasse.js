@@ -1,30 +1,50 @@
 function openModaleGestioneClasse(annoScolastico,classe,formAction,title){
-    let opt_id = "optionGestioneClasse_" + classe;
-    console.log("Opt_id = " + opt_id)
-    $("#" + opt_id).attr("selected","selected");
+  console.log("formAction = " + annoScolastico)
+    let currentYear = Number(annoScolastico.split("/")[0])
+
+    for(let i=currentYear-2;i<currentYear+5; i++){
+      let anno = String(i).concat("/").concat(String(i+1))
+      let value = String(i).concat("/").concat(String(i+1).slice(2,4))
+      let selected = false
+      if(i==currentYear){selected = true}
+      $("#inizioAnnoGestioneClasse").append(new Option(anno,value,true,selected))
+    }
+
+    for(let i=1;i<9;i++){
+      let selected = false;
+      if(i==classe){
+        selected = true;
+      }
+      $("#classeGestioneClasse").append(new Option(i,i,true,selected))
+    }
+
     $("#modalTitleGestioneClasse").html(title);
     $("#deleteClasseBtn").attr("onclick","eliminaClasse('"+annoScolastico+"','"+classe+"')");
-    $("#formClasseGestioneClasse").attr("action",formAction);
-    $(".modalContentGestioneClasse").css("display","block");
+    $("#formGestioneClasse").attr("action",formAction);
+
+    $("#modalContentGestioneClasse").css("display","block");
     $(".modal").css("display","block");
 }
 
 function closeModaleGestioneClasse(){
-  for(let i=0;i<8;i++){
-    let opt_id =  "optionGestioneClasse_" + i;
-    $("#" + opt_id).attr("selected",false);
-  }
-    $(".modalContentGestioneClasse").css("display","none");
+    $("#modalContentGestioneClasse").css("display","none");
     $(".modal").css("display","none");
+    $("#inizioAnnoGestioneClasse").empty()
+    $("#classeGestioneClasse").empty()
+
 }
 
 function eliminaClasse(anno,classe) {
+  console.log("eliminaClasse")
   let reqUrl = "/admin/gestioneAnni/eliminaClasse/" + anno + "/" + classe;
   $.ajax({
       url:reqUrl,
       method:"POST",
       data:{"annoScolastico": anno, "classe": classe}
   }).done( (res) =>{
-      alert(res);
+      window.location.reload(true);
+  }).fail(err=>{
+      window.location.reload(true);
   })
+
 }

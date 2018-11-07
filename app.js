@@ -122,7 +122,6 @@ function(conf) {
         console.log('SteinerApp is running on port', app.get('port'));
     });
 
-
     module.exports = app;
 
 });

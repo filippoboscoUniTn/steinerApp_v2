@@ -51,7 +51,7 @@ router.get('/annoScolastico/:as(20[0-9][0-9]/[0-9][0-9])/:materia/:classe([1-8])
         cognome:req.params.cognome,
         id : req.params.id
     };
-    Pagelle.getPagellaFromStudente(annoScolastico,materia,classe,sezione,studente,function (err,pagelle){
+    Pagelle.getPagellaFromStudenteCb(annoScolastico,materia,classe,sezione,studente,function(err,pagelle){
         if(err){
             next(err);
         }

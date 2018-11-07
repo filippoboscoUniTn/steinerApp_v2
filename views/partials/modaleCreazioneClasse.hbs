@@ -1,42 +1,64 @@
-<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
-    <div class="modalContentNuovaClasse" id="modalContentNuovaClasse">
+<!-- >Modale per la GESTIONE di una CLASSE <!-->
+<div class="modalContentGestioneClasse" id="modalContentCreaClasse">
 
-        <div class="modalHeaderNuovaClasse">
-            <h3 id="modalTitleNuovaClasse"></h3>
-            <button class="btn btn-md " onclick="closeModaleNuovaClasse()">
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
+    <div class="modalHeaderGestioneClasse">
+        <h3 id="modalTitleCreaClasse"></h3>
+        <button class="btn btn-md " onclick="closeModaleCreaClasse()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+
+    <div class="modalBodyGestioneClasse" id="modalBodyCreaClasse">
+
+      <form method="POST" id="formCreaClasse">
+
+        <div class="form-row">
+
+
+          <div class="form-group col-md-6">
+            <label for="classeCreaClasse">Classe : </label>
+            <select class="form-control" id="classeCreaClasse" name="classeCreaClasse">
+            </select>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="sezioneCreaClasse">Sezione : </label>
+            <select class="form-control" id="sezioneCreaClasse" name="sezioneCreaClasse">
+            </select>
+          </div>
+
         </div>
 
-        <div class="modalBodyNuovaClasse">
-            <form method="POST" id="formNuovaClasse">
-
-                <div class="form-group">
-                    <div class="row">
-
-                        <div class="col-sm-12">
-                            <label for="classeNuovaClasse">Classe : </label>
-                            <select class="form-control" id="classeNuovaClasse">
-                                <option value="1" selected>1 </option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                            </select>
-                        </div>
-
-                    </div>
-                </div>
-                <button class="btn btn-md btn-blue btn-center" id="saveNuovaClasse">Crea!</button>
-                <br>
-
-            </form>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="materieCreaClasse">Materie :</label>
+            <input type="text" class="form-control" id="materieCreaClasse" name="materieCreaClasse" placeholder="Storia,Italiano,Matematica,...">
+            <small>Inserire le materie separate da una virgola</small>
+          </div>
         </div>
-        <div class="modalFooterNuovaClasse" id="modalFooterNuovaClasse">
-            <h4 id="modalFooterContentNuovaClasse"></h4>
+
+        <div class="col-sm-12">
+          <label>Maestro di Classe</label>
         </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="nomeMaestroCreaClasse">Nome :</label>
+            <input type="text" class="form-control" id="nomeMaestroCreaClasse" name="nomeMaestroCreaClasse">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="cognomeMaestroCreaClasse">Cognome :</label>
+            <input type="text" class="form-control" id="cognomeMaestroCreaClasse" name="cognomeMaestroCreaClasse">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <button type="submit" class="btn btn-primary">Crea</button>
+          </div>
+        </div>
+      </form>
 
     </div>
+
+</div>

@@ -5,6 +5,7 @@ function closeModaleStampa(){
 }
 
 function openModaleStampa(formAction,title) {
+    console.log("openModaleStampa\nformAction = " + formAction + "\ntitle = " + title)
     $("#modalTitleStampaPDF").html(title);
     $("#formStampaPDF").attr("action",formAction);
     $(".modal").css("display","block");

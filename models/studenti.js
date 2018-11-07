@@ -10,7 +10,7 @@ const util = require('util');
 let studentiSchema = new Schema({
     id:{
         type: Number,
-        require: true
+        //require: true
     },
     nome:{
         type: String,
@@ -22,7 +22,8 @@ let studentiSchema = new Schema({
     },
     ammesso:{
         type: Boolean,
-        default:true},
+        default:true
+    },
     luogoNascita:{
         type:String,
     },
@@ -76,3 +77,83 @@ module.exports.getStudentiFromID = function (idStudenti,callback){
   })
 };
 
+module.exports.getInfoStudentiById = function(idStudenti){
+  let promises = idStudenti.map(id=>{
+    let promise = new Promise(function(resolve, reject) {
+      Studenti.find({id:id},{_id:0})
+              .then(results=>{
+                resolve(results[0])
+              })
+              .catch(err=>{
+                reject(err)
+              })
+    });
+    return promise
+  })
+
+  return promises
+}
+module.exports.getInfoStudente = async id =>{
+  return new Promise(function(resolve, reject) {
+    Studenti.find({id:id},{__v:0,_id:0},(err,res)=>{
+      if(err){reject(err)}
+      else{resolve(res[0])}
+    })
+  });
+}
+module.exports.removeStudente = function(id){
+  let prom = new Promise(function(resolve, reject) {
+    Studenti.deleteOne({id:id},function(err,numAffected){
+      console.log("removeStudente")
+      if(err){
+        console.log("err")
+        reject(err)
+      }
+      else{
+        console.log("resolvig")
+        resolve()
+      }
+    })
+  });
+  return prom
+}
+
+module.exports.deleteStudenteById = function (id){
+  return new Promise(function(resolve, reject) {
+    Studenti.deleteMany({id:id},function (err,numAffected){
+        if(err){
+          throw err
+          //reject(err)
+        }
+        else{
+          resolve()
+        }
+      })
+  });
+}
+module.exports.updateStudente = (id,modifiche) =>{
+  return new Promise(function(resolve, reject) {
+    Studenti.update({id:id},modifiche,function(err,numAffected){
+      console.log("numAffected = " + numAffected[0])
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve()
+      }
+    })
+  });
+}
+
+module.exports.saveWrapper = studente => {
+  return new Promise(function(resolve, reject) {
+    studente.save((err,studente)=>{
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(studente)
+      }
+    })
+  });
+}
