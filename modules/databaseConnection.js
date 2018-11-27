@@ -3,7 +3,8 @@ const dbPop = require('./databasePopulation');
 const dbClean = require('./databaseCleanup');
 const mongoose = require('mongoose');
 
-
+//TO BE REMOVED
+const util = require('util')
 
 
 
@@ -26,13 +27,17 @@ require('no-config')({
                   switch (val) {
                     case "-c":
                       console.log("-c catched")
-                      dbClean.cleanDb().then(()=>{console.log("database clean")})
-                                       .catch(err=>{console.log(err)})
+                      dbClean.dropCollections().then(()=>{
+                                                  console.log("database cleaned")
+                                                })
+                                               .catch(err=>{
+                                                 console.log("Errore durante il drop delle collezioni : " + util.inspect(err) )
+                                               })
                       break;
                     case "-p":
                       console.log("-p catched")
                       dbPop.popDb().then(()=>{console.log("database popolato")})
-                                   .catch((err)=>{console.log("err")})
+                                   .catch((err)=>{console.log("Errore durante il popolamento del databse : \n\n " + util.inspect(err) ) })
                       break;
                   }
                 })

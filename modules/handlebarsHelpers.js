@@ -6,10 +6,6 @@ const util = require('util');
 //----------------------------------- END --------------------------------------
 
 
-//--------------------------------- MODULI -------------------------------------
-const compareModule = require('./comparisonFunctions');
-//----------------------------------- END --------------------------------------
-
 
 //--------------------- HANDLEBARS HELPER FUNCTIONS ----------------------------
 let handlebarsHelpers = {
@@ -20,12 +16,17 @@ let handlebarsHelpers = {
         if(anniScolastici != null){
             for(let i=0;i<anniScolastici.length;i++){
                 if( (i+2)%2===0){
-                    ret+='<div class="col-sm-5 gray">';
+                  ret += '<div class="row mt-2">'
+                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                      ret+='<a href="/pagelle/annoScolastico/'+anniScolastici[i].nome+'" class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
+                    ret+='</div>'
                 }
                 else{
-                    ret+='<div class="col-sm-5 col-sm-offset-1 gray">'
+                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                      ret+='<a href="/pagelle/annoScolastico/'+anniScolastici[i].nome+'" class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
+                    ret+='</div>'
+                  ret+='</div>'
                 }
-                ret+='<a class="centered" href="/pagelle/annoScolastico/'+anniScolastici[i].nome + '"><h3>'+anniScolastici[i].nome+'</h3></a></div>';
             }
             return ret;
         }
@@ -38,12 +39,17 @@ let handlebarsHelpers = {
         if(materie !== null){
             for(let i=0;i<materie.length;i++){
                 if( (i+2)%2==0){
-                    ret+='<div class="col-sm-5 gray">';
+                  ret += '<div class="row mt-2">'
+                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                      ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+ materie[i] +'" class="h4 text-center text-primary">'+materie[i]+'</a>'
+                    ret+='</div>'
                 }
                 else{
-                    ret+='<div class="col-sm-5 col-sm-offset-1 gray">';
+                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                      ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+ materie[i] +'" class="h4 text-center text-primary">'+materie[i]+'</a>'
+                    ret+='</div>'
+                  ret+='</div>'
                 }
-                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+ materie[i] +'"><h3 class="centered">'+ materie[i] +'</h3></a></div>';
             }
         }
         return ret;
@@ -51,72 +57,100 @@ let handlebarsHelpers = {
     printClassi:function (annoScolastico,materia,classi){
         let ret = "";
         for(let i = 0; i<classi.length; i++){
-            if( (i+4)%4 === 0 ){
-                ret+='<div class="col-sm-2 gray">'
+            if( (i+2)%2 === 0 ){
+              ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">'+classi[i]+'</a>'
+                ret+='</div>'
             }
             else{
-                ret+='<div class="col-sm-2 col-sm-offset-1 gray">'
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">'+classi[i]+'</a>'
+              ret+='</div>'
+            ret+='</div>'
             }
-            ret+='<a class="centered" href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'"><h3>'+classi[i]+'</h3></a></div>'
         }
         return ret;
     },
     printSezioni:function (annoScolastico,materia,classe,sezioni){
         let ret = "";
         for(let i=0;i<sezioni.length;i++){
-            if((i+4)%4 === 0){
-                ret+='<div class="col-sm-2 gray">'
+            if((i+2)%2 === 0){
+              ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[i]+'" class="h4 text-center text-primary">'+sezioni[i]+'</a>'
+                ret+='</div>'
             }
             else{
-                ret+='<div class="col-sm-2 col-sm-offset-1 gray">'
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[i]+'" class="h4 text-center text-primary">'+sezioni[i]+'</a>'
+              ret+='</div>'
+            ret+='</div>'
             }
-            ret+='<a class="centered" href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[i]+'"><h3>'+sezioni[i]+'</h3></a></div>'
         }
         return ret;
     },
     printStudenti:function (annoScolastico,materia,classe,sezione,studenti){
-      console.log("in printStudenti\nstudenti = \n\n" + studenti + "\n\n")
         let ret = "";
         for(let i=0;i<studenti.length;i++){
             if( (i+2)%2 === 0){
-                ret +='<div class="col-sm-5 gray">'
+              ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'" class="h4 text-center text-primary">'+studenti[i].nome+ ' ' + studenti[i].cognome+'</a>'
+                ret+='</div>'
             }
             else{
-                ret+='<div class="col-sm-5 col-sm-offset-1 gray">'
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'" class="h4 text-center text-primary">'+studenti[i].nome + ' ' + studenti[i].cognome+'</a>'
+              ret+='</div>'
+            ret+='</div>'
             }
-            ret+='<a class="centered" href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'"><h3>'+studenti[i].nome+' '+studenti[i].cognome+'</h3></a></div>'
         }
         return ret;
     },
     printPagelle: function (annoScolastico,materia,classe,sezione,studente,pagellaPrimoSemestre,pagellaSecondoSemestre){
         let ret = "";
+        //--------------------------- PRIMO SEMESTRE ---------------------------
+        ret += '<div class="row">'
+          ret += '<div class="col-sm-12 col-lg-11 offset-lg-1 mt-2">';
+            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_1\')">&times</button>';
+            ret += '<p class="h4 text-primary mt-2">Primo Semestre</p>'
+            ret += '<form id="textArea_1">'
+              ret += '<textarea class="text-area-xxl w-100" name="1">'
+                ret += pagellaPrimoSemestre;
+              ret += '</textarea>'
+              ret += '<button type="button" class="btn btn-md btn-success my-2" id="1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',1,this)">Save</button>'
+            ret +='</form>'
+          ret += '</div>'
+        ret += '</div>'
+        //--------------------------------- END --------------------------------
 
-        //Prima Area testo
-        ret += '<div class="textareaContainer"><p class="myP">Primo Semestre</p>';
-        ret += '<button class="glyphRight btn-blue" onclick="collapseForm(\'textArea_1\')"><span class="glyphicon glyphicon-menu-down"></span></button>';
-        ret += '<form id="textArea_1"><textarea class="myTextArea" name="1">';
-        ret += pagellaPrimoSemestre;
-        ret += '</textarea><br><button type="button" class="btn btn-md btn-blue btn1" id="1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',1,this)">Save</button></form>';
-
-        //Seconda Area testo
-        ret += '</div><br><div class="textareaContainer"><p class="myP">Secondo Semestre</p>';
-        ret += '<button class="glyphRight btn-blue" onclick="collapseForm(\'textArea_2\')"><span class="glyphicon glyphicon-menu-down"></span></button>';
-        ret += '<form id="textArea_2"><textarea class="myTextArea" name="2">';
-        ret += pagellaSecondoSemestre;
-        ret+='</textarea><br><button type="button" class="btn btn-md btn-blue btn1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',2,this)" id="2">Save</button></form>';
-        ret +='</div>';
+        //--------------------------- SECONDO SEMESTRE ---------------------------
+        ret += '<div class="row">'
+          ret += '<div class="col-sm-12 col-lg-11 offset-lg-1 mt-2">';
+            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_2\')">&times</button>';
+            ret += '<p class="h4 text-primary mt-2">Secondo Semestre</p>'
+            ret += '<form id="textArea_2">'
+              ret += '<textarea class="text-area-xxl w-100" name="1">'
+                ret += pagellaSecondoSemestre;
+              ret += '</textarea>'
+              ret += '<button type="button" class="btn btn-md btn-success my-2" id="1" onclick="savePagella(\''+annoScolastico+'\',\''+materia+'\',\''+classe+'\',\''+sezione+'\',\''+studente.nome+'\',\''+studente.cognome+'\',\''+studente.id+'\',1,this)">Save</button>'
+            ret +='</form>'
+          ret += '</div>'
+        ret += '</div>'
+        //--------------------------------- END --------------------------------
 
         return ret;
     },
     //--------------------------------- END ------------------------------------
 
 
-    //---------------------- HELPERS AREA AMMINISTRATORE -----------------------
+    //------------------------ HELPERS GESTIONE ANNI ---------------------------
     printAnniGestione:function (anniScolastici){
         let ret= "";
         let reqUrlCreazioneNuovoAnnoScolastico = "/admin/gestioneAnni/creaNuovoAnnoScolastico";
         let titleModaleNuovoAnnoScolastico = "Crea Nuovo Anno Scolastico";
-        ret += "<div class='row'>";
+
         for(let i=0;i<anniScolastici.length;i++){
 
             let formActionModaleStampa = "/admin/stampaPDF/stampaAnnoScolastico/" + anniScolastici[i].nome ;
@@ -126,23 +160,28 @@ let handlebarsHelpers = {
             let titleModaleGestione = "Gestione Anno " + anniScolastici[i].nome;
 
             if( (i+2)%2 === 0 ){
-                ret+= '<div class="col-sm-12 col-md-5 gray">';
+              ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a href="/admin/gestioneAnni/'+anniScolastici[i].nome+'"class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
+                  ret += '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModaleGestioneAnnoScolastico(\''+anniScolastici[i].nome+'\',\''+formActionModaleGestione+'\',\''+titleModaleGestione+'\')" ><i class="fas fa-cogs"></i></button>';
+                  ret += '<button class="btn btn-md btn-right5 btn-blue" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"><i class="fas fa-print"></i></button>';
+                ret+='</div>'
             }
             else{
-                ret +='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">';
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                ret+='<a href="/admin/gestioneAnni/'+anniScolastici[i].nome+'"class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
+                ret += '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModaleGestioneAnnoScolastico(\''+anniScolastici[i].nome+'\',\''+formActionModaleGestione+'\',\''+titleModaleGestione+'\')" ><i class="fas fa-cogs"></i></span></button>';
+                ret += '<button class="btn btn-md btn-right5 btn-blue" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"><i class="fas fa-print"></i></button>';
+              ret+='</div>'
+            ret+='</div>'
             }
-            ret += '<a href="/admin/gestioneAnni/'+anniScolastici[i].nome+'"><h3>'+anniScolastici[i].nome+'</h3></a>';
-            ret += '<button type="button" class="btn btn-md btn-right4 btn-blue" onclick="openModaleGestioneAnnoScolastico(\''+anniScolastici[i].nome+'\',\''+formActionModaleGestione+'\',\''+titleModaleGestione+'\')" ><span class="glyphicon glyphicon-cog blue"></span></button>';
-            ret += '<button class="btn btn-md btn-right5 btn-blue" onclick="openModaleStampa(\''+formActionModaleStampa+'\',\''+titleModaleStampa+'\')"><span class="glyphicon glyphicon-print blue"></span></button>';
-            ret += '</div>';
-
         }
-        if(anniScolastici.length === 0 || (anniScolastici.length) % 2 === 0){
-            ret +='<div class="col-sm-12 col-md-5 gray">';
+        if(anniScolastici.length % 2 === 0){
+          ret += '<div class="row mt-2">'
+          ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
         }
         else{
-
-            ret+='<div class="col-sm-12 col-md-5 col-md-offset-1 gray">';
+          ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
         }
         ret+='<a id="btnNuovoAnnoScolastico" onclick="openModaleNuovoAnnoScolastico(\''+ reqUrlCreazioneNuovoAnnoScolastico +'\',\''+ titleModaleNuovoAnnoScolastico +'\')"><h3>Nuovo Anno</h3></a></div>';
         ret+='</div></div>';
@@ -273,6 +312,244 @@ let handlebarsHelpers = {
       ret+='</div>';
 
       return ret;
+    },
+    //------------------------------------ END ---------------------------------
+
+    //------------------------ HELPERS GESTIONE UTENTI -------------------------
+    printUtentiGestione:function(utenti,admins){
+      let ret = '';
+      if(admins != null){
+        ret += '<br>'
+        ret += '<p class="offset-1 h5 mt-2"> Amministratori'
+          for(let i=0;i<admins.length;i++){
+              if( (i+2)%2 === 0 ){
+                ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+admins[i].id+'"><h3>'+admins[i].nome+' '+admins[i].cognome+'</h3></a>';
+                ret+='</div>'
+              }
+              else{
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                  ret+='<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+admins[i].id+'"><h3>'+admins[i].nome+' '+admins[i].cognome+'</h3></a>';
+                  ret+='</div>'
+                ret+='</div>'
+              }
+          }
+          if(admins.length%2 !=0){
+            ret += '</div>'
+          }
+      }
+      ret += '<br>'
+      ret += '<div class="w-100"></div>'
+      if(utenti != null){
+          ret += '<p class="offset-1 h5 mt-2"> Insegnati'
+          for(let i=0;i<utenti.length;i++){
+              if( (i+2)%2===0){
+                ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret+='<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utenti[i].id+'"><h3>'+utenti[i].nome+' '+utenti[i].cognome+'</h3></a>';
+                ret+='</div>'
+              }
+              else{
+                ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                  ret+='<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utenti[i].id+'"><h3>'+utenti[i].nome+' '+utenti[i].cognome+'</h3></a>';
+                  ret+='</div>'
+                ret+='</div>'
+              }
+          }
+          if(utenti.length%2 !=0){
+            ret += '</div>'
+          }
+      }
+      // console.log("ret = " + ret)
+      return ret;
+    },
+    printUtenteGestione:function(utente,permessi){
+      let ret='<br>';
+      ret += '<p class="offset-1 h5 mt-2"> Anni Scolastici'
+      if(permessi != null){
+          for(let i=0;i<permessi.length;i++){
+              if( (i)%2===0 || i==0){
+                ret += '<div class="row mt-2">'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+permessi[i].nome+'"><h3>'+permessi[i].nome+'</h3>'
+                ret+='</div>'
+              }
+              else{
+                ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+permessi[i].nome+'"><h3>'+permessi[i].nome+'</h3>'
+                  ret+='</div>'
+                ret+='</div>'
+              }
+          }
+          if(permessi.length%2!=0){
+            ret += '</div>'
+          }
+      }
+      return ret;
+    },
+    printPermessiGestione:function(utente,permessiAnno){
+      let ret='<br>';
+      ret += '<p class="offset-md-1 h5 mt-2"> Permessi Utente';
+      for(let i=0;i<permessiAnno[0].permessi.length;i++){
+        let formAction ="" ;
+        let deleteParams ="";
+        if((i+2)%2===0){
+          ret += '<div class="row">'
+          ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl"><h4>'+permessiAnno[0].permessi[i].materia+'</h4>'
+          ret += '<button class="btn btn-sm btn-danger top-right text-white">&times</button>'
+            ret += '<form action="/" method="POST" class="form-inline">'
+                for(let c=0;c<8;c++){
+                  ret += '<div class="form-check form-check-inline">';
+                    ret += '<input class="form-check-input" type="checkbox" value="'+(c+1)+'" id="defaultCheck'+c+ '"';
+                    if(permessiAnno[0].permessi[i].classi.indexOf((c+1)) !== -1 ){
+                      ret += ' checked>';
+                    }
+                    else{
+                      ret += '>';
+                    }
+                    ret += '<label class="form-check-label" for="defaultCheck'+c+'">'+ (c+1) + '</label>'
+                  ret += '</div>'
+                }
+                ret+="<div class='w-100'></div>"
+                ret+= '<button class="btn btn-sm btn-success mt-3" type="submit">Salva</button>'
+                ret+= '<button class="btn btn-sm btn-danger mt-3 ml-2" type="button" onclick="eliminaPermesso('+deleteParams+')">Elimina</button>'
+            ret += '</form>'
+        ret +='</div>'
+        }
+        else{
+          ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl"><h4>'+permessiAnno[0].permessi[i].materia+'</h4>'
+          ret += '<button class="btn btn-sm btn-danger top-right text-white">&times</button>'
+            ret += '<form action="/" method="POST" class="form-inline">'
+                for(let c=0;c<8;c++){
+                  ret += '<div class="form-check form-check-inline">';
+                    ret += '<input class="form-check-input" type="checkbox" value="' +(c+1)+ '" id="defaultCheck' +c+ '"';
+                    if(permessiAnno[0].permessi[i].classi.indexOf((c+1)) !== -1 ){
+                      ret += ' checked>';
+                    }
+                    else{
+                      ret += '>';
+                    }
+                    ret += '<label class="form-check-label" for="defaultCheck'+c+'">'+ (c+1) + '</label>'
+                  ret += '</div>'
+                }
+                ret+="<div class='w-100'></div>"
+                ret+= '<button class="btn btn-sm btn-danger mt-3" type="button" onclick="eliminaPermesso()">Elimina</button>'
+                ret+= '<button class="btn btn-sm btn-success mt-3 ml-2" type="button" onclick="eliminaPermesso()">Salva</button>'
+            ret += '</form>'
+        ret +='</div>'
+        ret += '</div>'
+        }
+      }
+      if(permessiAnno[0].permessi.length%2 != 0){
+        ret += '</div>'
+      }
+      return ret;
+    },
+    printInfoUtente:function(utente){
+      let ret ='';
+      ret += '<br>'
+      ret += '<p class="offset-md-1 h5 mt-2">'
+
+      ret += '<form">'
+
+        //------------------------------- NOME - COGNOME -----------------------
+        ret += '<div class="form-row">'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3 offset-md-2">'
+            ret += '<label for="nome">Nome</label>'
+            ret += '<input id="nome" type="text" class="form-control" placeholder="Nome" value="'+utente.nome+'">'
+          ret += '</div>'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3">'
+            ret += '<label for="cognome">Cognome</label>'
+            ret += '<input id="cognome" type="text" class="form-control" placeholder="Cognome" value="'+utente.cognome+'">'
+          ret += '</div>'
+        ret += '</div>'
+        //-------------------------------- END ---------------------------------
+
+        ret += '<br>'
+
+        //----------------------------- EMAIL - USERNAME -----------------------
+        ret += '<div class="form-row">'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3 offset-md-2">'
+            ret += '<label for="email">Email</label>'
+            ret += '<input id="email" type="text" class="form-control" placeholder="Email" value="'+utente.email+'">'
+          ret += '</div>'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3">'
+            ret += '<label for="username">Username</label>'
+            ret += '<input id="username" type="text" class="form-control" placeholder="Username" value="'+utente.username+'">'
+          ret += '</div>'
+        ret += '</div>'
+        //-------------------------------- END ---------------------------------
+
+        ret += '<br>'
+
+        //----------------------- AUTHORIZATION - STATUS -----------------------
+        ret += '<div class="form-row">'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3 offset-md-2">'
+            ret += '<label for="auth">Autorizzazione</label>'
+            ret += '<select id="auth" class="form-control">'
+              if(utente.authorization === 'ADMIN'){
+                console.log("if")
+                ret += '<option selected>Amministratore</option>'
+                ret += '<option>Insegnante</option>'
+              }
+              else{
+                ret += '<option>Amministratore</option>'
+                ret += '<option selected>Insegnante</option>'
+              }
+            ret += '</select>'
+          ret += '</div>'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3">'
+          ret += '<p>Stato Utente'
+          ret += '<div class="form-check form-check-inline pl-5 ">'
+          ret += '<b class="text-danger">Bloccato</label>'
+            if(utente.status === 'PENDING'){
+                ret += '<input class="form-check-input " type="radio" name="statusOptions" id="status_pending" value="PENDING" checked>'
+              ret += '</div>'
+
+              ret += '<div class="form-check form-check-inline">'
+                ret += '<b class="text-success">Attivo</label>'
+                ret += '<input class="form-check-input ml-2" type="radio" name="statusOptions" id="status_accepted" value="ACCEPTED" >'
+              ret += '</div>'
+
+            }
+            else{
+                ret += '<input class="form-check-input " type="radio" name="statusOptions" id="status_pending" value="PENDING">'
+              ret += '</div>'
+
+              ret += '<div class="form-check form-check-inline pl-5 ">'
+                ret += '<b class="text-success">Attivo</label>'
+                ret += '<input class="form-check-input " type="radio" name="statusOptions" id="status_accepted" value="ACCEPTED" checked>'
+              ret += '</div>'
+            }
+          ret += '</div>'
+        ret += '</div>'
+        //-------------------------------- END ---------------------------------
+
+        ret += '<br>'
+        ret += '<br>'
+
+        //-------------------------------- BOTTONI -----------------------------
+        ret += '<div class="form-row">'
+          ret += '<div class="col-sm-10 offset-sm-1 col-md-3 offset-md-2">'
+            ret += '<button class="btn btn-lg btn-success mb-2" type="submit" > Salva </button>'
+            ret += '<button class="btn btn-lg btn-danger ml-2 mb-2" type="button" onclick="deleteUtente()"> Elimina </button>'
+          ret += '</div>'
+        ret += '</div>'
+        //-------------------------------- END ---------------------------------
+
+      ret += '</form>'
+
+      ret += ''
+      ret += ''
+      ret += ''
+      ret += ''
+
+
+
+
+      return ret;
+
     }
     //--------------------------------- END ------------------------------------
 

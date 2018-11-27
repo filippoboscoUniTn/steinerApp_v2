@@ -1,11 +1,17 @@
 html,body{
     height: 100%;
 }
-
+.text-area-xxl{
+  height: 200px;
+}
 .mysidebar{
     display: none;
 }
-
+.top-right{
+  top:5px;
+  right:5px;
+  position: absolute;
+}
 @media(min-width: 768px) {
     .mysidebar{
         height:90%;
@@ -245,23 +251,40 @@ html,body{
     margin-bottom:5px;
 }
 .glyphRight{
-    height: 27px;
+    height: 30px;
     width: 30px;
     border-style: none;
     display: inline;
-    position: absolute;
+    position: fixed;
+    float:left;
     left: 94.5%;
     top: 2px;
 }
+.gray-xl{
+  height:auto;
+  padding-bottom:20px;
+  margin-top: 10px;
+
+  padding-left: 20px;
+  padding-top:20px;
+  background-color:#eee;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: #337AB7;
+}
 .gray{
     height: 70px;
+    margin-top: 10px;
+
     padding-left: 20px;
-    margin-bottom: 10px;
+    padding-top:20px;
     background-color:#eee;
     border-style: solid;
     border-radius: 5px;
     border-width: 1px;
     border-color: #337AB7;
+
 }
 .btn-right2{
     position: absolute;
@@ -804,8 +827,3 @@ html,body{
 	overflow-y: auto;
 }
 */
-
-
-
-
-

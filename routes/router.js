@@ -1,12 +1,12 @@
 "use strict";
 const express = require("express");
 
-const loginRoute = require('./loginRoute');
-const logoutRoute = require('./logoutRoute');
-const registerRoute = require('./registerRoute');
-const indexRoute = require('./indexRoute');
+const loginRouter = require('./loginRouter');
+const logoutRouter = require('./logoutRoute');
+const registerRouter = require('./registerRouter');
+const indexRouter = require('./indexRouter');
 const adminRouter = require('./adminRouter');
-const pagelleRoute = require('./pagelleRoute');
+const pagelleRouter = require('./pagelleRoute');
 
 const userAuthentication = require('../modules/userAuthentication');
 const adminAuthentication = require('../modules/adminAuthentication');
@@ -14,27 +14,44 @@ const adminAuthentication = require('../modules/adminAuthentication');
 let router = express.Router();
 
 
-router.use('/login',loginRoute);
-router.use('/register',registerRoute);
-router.use('/logout',logoutRoute);
+//----------------------- MIDDLEWARE PER MESSAGGI FLASH ------------------------
+router.use(function(req,res,next){
+  if(req.session.successMsg != null){
+    res.locals.successMsg = req.session.successMsg;
+    delete req.session.successMsg;
+  }
+  if(req.session.errorMsg != null){
+    res.locals.errorMsg = req.session.errorMsg;
+    delete req.session.errorMsg;
+  }
+  next();
+});
+//----------------------------------- END --------------------------------------
+
+
+router.use('/login',loginRouter); //ok
+router.use('/register',registerRouter); //ok
+router.use('/logout',logoutRouter); //ok
 
 router.use('/admin',adminAuthentication,adminRouter);
 
-router.use('/index',indexRoute);
-router.use('/pagelle',pagelleRoute);
+router.use('/index',indexRouter); //ok
+
+router.use('/pagelle',pagelleRouter); //ok
+
 router.use('/',userAuthentication,function (req,res){
     res.redirect('/index');
 });
 
 router.use(function(req,res,next){
-  console.log("404")
     let err = new Error('Page Not Found!');
     err.status = 404;
     next(err);
 });
 
 router.use(function(err,req,res,next){
-  console.log("Error handler")
+  console.log("herror handler")
+  throw err
     res.status = (err.status || 500);
     if(req.isAuthenticated()){
         res.render('./errorPages/authedError',{layout:'authLayout',error_n:(err.status||500),error_message:err.message})

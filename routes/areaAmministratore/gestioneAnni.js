@@ -24,24 +24,9 @@ let router = express.Router();
 //----------------------------------- END --------------------------------------
 
 
-//----------------------- MIDDLEWARE PER MESSAGGI FLASH ------------------------
-router.use(function(req,res,next){
-  if(req.session.successMsg != null){
-    res.locals.successMsg = req.session.successMsg;
-    delete req.session.successMsg;
-  }
-  if(req.session.errorMsg != null){
-    res.locals.errorMsg = req.session.errorMsg;
-    delete req.session.errorMsg;
-  }
-  next();
-});
-//----------------------------------- END --------------------------------------
-
-
 
 //-------------------- HANDLERS RICHIESTE ASINCRONE AJAX -----------------------
-router.get('/getInfoStudente/:idStudente$',function(req,res,next){
+router.get('/getInfoStudente/:idStudente$',async function(req,res,next){
     let ids = [req.params.idStudente];
     Promise.all(Studenti.getInfoStudentiById(ids)).then(results=>{
       res.send(results[0])
@@ -50,21 +35,18 @@ router.get('/getInfoStudente/:idStudente$',function(req,res,next){
       res.send(err)
     })
 })
-
-router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([0-9])$',function(req,res,next){
+router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([0-9])$',async function(req,res,next){
   let annoScolastico = req.params.as;
   let classe = req.params.classe;
-  Classi.getMaterieFromClasseAndAnnoScolastico(annoScolastico,classe,function (err,materie){
-    if(err){
-      res.send(err);
-    }
-    else{
-      res.send(materie);
-    }
-  })
+  Classi.getMaterieFromClasseAndAnnoScolastico(annoScolastico,classe)
+    .then(materie=>{
+      res.send(materie)
+    })
+    .catch(err=>{
+      res.send(err)
+    })
 });
-
-router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-Z])$',function (req,res,next){
+router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-Z])$',async function (req,res,next){
   let annoScolastico = req.params.as;
   let classe = req.params.classe;
   let sezione = req.params.sezione;
@@ -85,7 +67,7 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
 
   //------------------------ CREA NUOVO STUDENTE ---------------------------
-  router.post('/creaNuovoStudente/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function (req,res,next){
+  router.post('/creaNuovoStudente/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',async function (req,res,next){
     let annoScolastico = req.params.as;
     let classe = req.params.classe;
     let sezione = req.params.sezione;
@@ -139,7 +121,7 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   //--------------------------------- END --------------------------------------
 
   //---------------------------- MODIFICA STUDENTE ------------------------------
-  router.post('/modificaStudente/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione/:id',function(req,res,next){
+  router.post('/modificaStudente/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione/:id',async function(req,res,next){
     console.log("hello from modificha")
     let id = req.params.id
 
@@ -224,7 +206,7 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 //------------------------- HANDLERS MODIFICHE SEZIONE -------------------------
 
   //------------------------ CREAZIONE NUOVA SEZIONE ---------------------------
-  router.post('/creaNuovaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function (req,res,next){
+  router.post('/creaNuovaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',async function (req,res,next){
 
       let newSezione = {
         annoScolastico: req.body.inizioAnnoCreaSezione,
@@ -278,62 +260,55 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   //Quando viene modificata una sezione bisogna controllare se le materie sono cambiate
   //In caso per ogni materia che non fa piu parte della sezione vanno eliminate le pagelle
   //---------------------------- MODIFICA SEZIONE ------------------------------
-  router.post('/modificaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function(req,res,next){
+  router.post('/modificaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',async function(req,res,next){
 
     let oldAnno = req.params.as;
     let oldClasse = req.params.classe;
     let oldSezione = req.params.sezione;
-    let stessaSezione;
-    let newSezione = {}
-    newSezione.annoScolastico = req.body.inizioAnnoGestioneSezione;
-    newSezione.classe= req.body.classeGestioneSezione;
-    newSezione.sezione= req.body.sezioneGestioneSezione;
-    newSezione.materie=req.body.materieGestioneSezione.split(",");
-    newSezione.maestroClasse = {}
-      newSezione.maestroClasse.nome=req.body.nomeMaestroGestioneSezione;
-      newSezione.maestroClasse.cognome=req.body.cognomeMaestroGestioneSezione;
+    let newSezione = {
+      annoScolastico: req.body.inizioAnnoGestioneSezione,
+      classe: req.body.classeGestioneSezione,
+      sezione: req.body.sezioneGestioneSezione,
+      materie: req.body.materieGestioneSezione.split(","),
+      maestroClasse: {
+        nome: req.body.nomeMaestroGestioneSezione,
+        cognome: req.body.cognomeMaestroGestioneSezione
+      }
+    }
+    let stessaSezione = (newSezione.annoScolastico == oldAnno && newSezione.classe == oldClasse && newSezione.sezione == oldSezione)
 
-    stessaSezione = (newSezione.annoScolastico == oldAnno && newSezione.classe == oldClasse && newSezione.sezione == oldSezione)
+    try{
 
-    Classi.sezioneGiaEsistente(newSezione.annoScolastico,newSezione.classe,newSezione.sezione)
-          .then(esistente=>{
-            if(esistente && !stessaSezione){
-              req.session.errorMsg = "Esiste già una sezione " + newSezione.sezione + " per la classe " + newSezione.classe + " dell'anno " + newSezione.annoScolastico;
-              res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
-            }
-            else{
-              AnniScolastici.annoGiaEsistente(newSezione.annoScolastico)
-                            .then(esistente=>{
-                              if(!esistente){
-                                req.session.errorMsg = "Impossibile modificare la sezione, l'anno " + newSezione.annoScolastico + " non esiste"
-                                res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
-                              }
-                              else{
-                                Promise.all([Classi.updateSezione(oldAnno,oldClasse,oldSezione,newSezione),
-                                            Pagelle.updateSezione(oldAnno,oldClasse,oldSezione,newSezione) ])
-                                        .then(()=>{
-                                          req.session.successMsg = "Sezione modificata con successo!";
-                                          res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
-                                        })
-                                        .catch(err=>{
-                                          throw err
-                                        })
-                              }
-                            })
-                            .catch(err=>{
-                              throw err
-                            })
-            }
-          })
-          .catch(err=>{
-            req.session.errorMsg = "Errore nella modifica della sezione : " + err;
-            res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
-          })
+      const sezioneEsistente = await Classi.sezioneGiaEsistente(newSezione.annoScolastico,newSezione.classe,newSezione.sezione)
+      if(sezioneEsistente && !stessaSezione){
+        req.session.errorMsg = "Esiste già una sezione " + newSezione.sezione + " per la classe " + newSezione.classe + " dell'anno " + newSezione.annoScolastico;
+        res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
+      }
+
+      const annoEsistente = await AnniScolastici.annoGiaEsistente(newSezione.annoScolastico)
+      if(!esistente){
+        req.session.errorMsg = "Impossibile modificare la sezione, l'anno " + newSezione.annoScolastico + " non esiste"
+        res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
+      }
+
+      const updateResults = Promise.all([ Classi.updateSezione(oldAnno,oldClasse,oldSezione,newSezione),
+                                          Pagelle.updateSezione(oldAnno,oldClasse,oldSezione,newSezione) ])
+
+      req.session.successMsg = "Sezione modificata con successo!";
+      res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
+
+    }
+    catch(err){
+
+      req.session.errorMsg = "Errore nella modifica della sezione : " + err;
+      res.redirect("/admin/gestioneAnni/" +oldAnno+"/"+oldClasse)
+
+    }
   })
   //--------------------------------- END --------------------------------------
 
   //--------------------------- ELIMINA SEZIONE --------------------------------
-  router.post('/eliminaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function(req,res,next){
+  router.post('/eliminaSezione/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',async function(req,res,next){
     let annoScolastico = req.params.as;
     let classe = req.params.classe;
     let sezione = req.params.sezione;
@@ -364,93 +339,79 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
 
   //------------------------ CREAZIONE NUOVA CLASSE ----------------------------
-  router.post('/creaNuovaClasse/:as(20[0-9][0-9]/[0-9][0-9])',function (req,res,next){
+  router.post('/creaNuovaClasse/:as(20[0-9][0-9]/[0-9][0-9])',async function (req,res,next){
 
-      let newClasse = {
-        annoScolastico : req.params.as,
-        classe : Number(req.body.classeCreaClasse),
-        sezione : req.body.sezioneCreaClasse,
-        materie : req.body.materieCreaClasse.split(","),
-        maestroClasse:{
-          nome : req.body.nomeMaestroCreaClasse,
-          cognome : req.body.cognomeMaestroCreaClasse
-        },
-        studenti:[]
+    let newClasse = {
+      annoScolastico : req.params.as,
+      classe : Number(req.body.classeCreaClasse),
+      sezione : req.body.sezioneCreaClasse,
+      materie : req.body.materieCreaClasse.split(","),
+      maestroClasse:{
+        nome : req.body.nomeMaestroCreaClasse,
+        cognome : req.body.cognomeMaestroCreaClasse
+      },
+      studenti:[]
+    }
+
+    try{
+      const esistente = await Classi.classeGiaEsistente(newClasse.annoScolastico,newClasse.classe);
+      if(esistente){
+        req.session.errorMsg = "Errore nella creazione della classe : classe " + newClasse.classe + " già esistente";
+        res.redirect("/admin/gestioneAnni/"+newClasse.annoScolastico);
       }
-      Classi.classeGiaEsistente(newClasse.annoScolastico,newClasse.classe,function (err,esistente){
-        if(err){
-          throw err
-          req.session.errorMsg = "Errore nella creazione della classe : " + err;
-          res.redirect("/admin/gestioneAnni/"+annoScolastico);
-        }
-        else if(esistente){
-          req.session.errorMsg = "Errore nella creazione della classe : classe " + newClasse.classe + " già esistente";
-          res.redirect("/admin/gestioneAnni/"+newClasse.annoScolastico);
-        }
-        else{
-          new Classi(newClasse).save().then(()=>{
-                                        req.session.successMsg = "Classe " + newClasse.classe + " salvata con successo!";
-                                        res.redirect("/admin/gestioneAnni/"+newClasse.annoScolastico)  })
-                                      .catch(err=>{
-                                        req.session.errorMsg = "Errore nel salvataggio della classe nel database : " + err;
-                                        res.redirect("/admin/gestioneAnni/"+ newClasse.annoScolastico); })
-
-        }
-      });
+      else{
+      const saved = await (new Classi(newClasse)).save()
+      req.session.successMsg = "Classe " + newClasse.classe + " salvata con successo!";
+      res.redirect("/admin/gestioneAnni/"+newClasse.annoScolastico)
+      }
+    }
+    catch(err){
+      req.session.errorMsg = "Errore nella creazione della classe : " + err;
+      res.redirect("/admin/gestioneAnni/"+annoScolastico);
+    }
   });
   //-------------------------------- END ---------------------------------------
 
   //--------------------------- MODIFICA CLASSE --------------------------------
-  router.post('/modificaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
+  router.post('/modificaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',async function(req,res){
     let oldAnno = req.params.as;
-    let newAnno = req.body.inizioAnnoGestioneClasse
+    let newAnno = req.body.inizioAnnoGestioneClasse;
     let oldClasse = req.params.classe;
     let newClasse = req.body.classeGestioneClasse;
-    //------------------ CLASSI UGUALI, NESSUNA MODIFICA -----------------------
+
     if( (newClasse === oldClasse)&&(newAnno == oldAnno) ){
       req.session.errorMsg = "Le classe ha già il valore specificato."
       res.redirect("/admin/gestioneAnni/"+oldAnno);
     }
-    //-------------------------------- END -------------------------------------
-    else{
-      Classi.classeGiaEsistente(newAnno,newClasse,function (err,esistente){
-        //----------------------------- ERRORE ---------------------------------
-        if(err){
-          req.session.errorMsg = "Errore interno.\n" + err + "\n";
-          res.redirect("/admin/gestioneAnni/"+oldAnno);
-        }
-        //--------------------------------- END --------------------------------
-                                            //
-        //----------------------- CLASSE GIÀ ESISTENTE -------------------------
-        else if(esistente){
-          req.session.errorMsg = "L'anno scolastico " + newAnno + " contiene già la classe " + newClasse
-          res.redirect("/admin/gestioneAnni/"+oldAnno);
-        }
-        //--------------------------------- END --------------------------------
-        else{
-          Classi.updateClassi(oldAnno,newAnno,oldClasse,newClasse)
-                .then(Pagelle.updateClasse(oldAnno,newAnno,oldClasse,newClasse))
-                .then(()=>{
-                  req.session.successMsg = "Classe modificata con successo!"
-                  res.redirect("/admin/gestioneAnni/"+oldAnno);
-                })
-                .catch(err=>{
-                  req.session.errorMsg = "Errore interno.\n" + err + "\n";
-                  res.redirect("/admin/gestioneAnni/"+oldAnno);
-                })
-        }
-      })
+    try{
+      const esistente = await Classi.classeGiaEsistente(newAnno,newClasse);
+      if(esistente){
+        req.session.errorMsg = "L'anno scolastico " + newAnno + " contiene già la classe " + newClasse
+        res.redirect("/admin/gestioneAnni/"+oldAnno);
+      }
+      else{
+        const updateClassiProm = Classi.updateClassi(oldAnno,newAnno,oldClasse,newClasse)
+        const updatePagelleProm = Pagelle.updateClasse(oldAnno,newAnno,oldClasse,newClasse)
+        let results = await Promise.all([updateClassiProm,updatePagelleProm]);
+
+        req.session.successMsg = "Classe modificata con successo!"
+        res.redirect("/admin/gestioneAnni/"+oldAnno);
+      }
     }
+    catch(err){
+      req.session.errorMsg = "Errore interno.\n" + err + "\n";
+      res.send("error");
+    }
+
   })
   //---------------------------------- END -------------------------------------
 
   //------------------------------- ELIMINA CLASSE -----------------------------
-  router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res){
+  router.post('/eliminaClasse/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',async function(req,res){
     let classe = req.params.classe;
     let annoScolastico = req.params.as
     Classi.getStudentiClasse(annoScolastico,classe)
           .then(idStudenti=>{
-            console.log("idStudenti = " + idStudenti)
             let chainDeletePagelle = idStudenti.map(v=>{ return Pagelle.deletePagelleStudente(v)});
             let chainDeleteStudente = idStudenti.map(v=>{ return Studenti.deleteStudenteById(v)});
             let chainDeleteClasse = Classi.deleteClasse(annoScolastico,classe);
@@ -476,162 +437,77 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
 
   //----------------------- CREAZIONE NUOVO ANNO SCOLASTICO --------------------
-  router.post('/creaNuovoAnnoScolastico',function (req,res,next){
-    let newAnno = req.body.annoScolasticoCreaAnno
-    AnniScolastici.annoGiaEsistente(newAnno)
-                  .then(esistente=>{
-                    if(esistente){
-                      req.session.errorMsg = "L'anno scolastico " + newAnno + " esiste già!"
-                      res.redirect("/admin/gestioneAnni");
-                    }
-                    else{
-                      new AnniScolastici({nome:newAnno})
-                      .save()
-                      .then(()=>{
-                        req.session.successMsg = "Anno " + newAnno + " creato con successo!"
-                        res.redirect("/admin/gestioneAnni")
-                      })
-                      .catch(err=>{throw err})
-                    }
-                  })
-                  .catch(err=>{
-                    throw err
-                    req.session.errorMsg = "Errore interno : " + err;
-                    res.redirect("/admin/gestioneAnni")
-                  })
+  router.post('/creaNuovoAnnoScolastico',async function (req,res,next){
+    try{
+      let newAnno = req.body.annoScolasticoCreaAnno;
+
+      const esistente = await AnniScolastici.annoGiaEsistente(newAnno)
+      if(esistente){
+        req.session.errorMsg = "L'anno scolastico " + newAnno + " esiste già!"
+        res.redirect("/admin/gestioneAnni");
+      }
+
+      let anno = new AnniScolastici({nome:newAnno});
+      const saved = await anno.save()
+
+      req.session.successMsg = "Anno " + newAnno + " creato con successo!"
+      res.redirect("/admin/gestioneAnni")
+    }
+    catch(err){
+      req.session.errorMsg = "Errore interno : " + err;
+      res.redirect("/admin/gestioneAnni")
+    }
   })
   //------------------------------------ END -----------------------------------
 
 
   //----------------------- MODIFICA ANNO SCOLASTICO ---------------------------
-  router.post('/modificaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function(req,res,next){
+  router.post('/modificaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',async function(req,res,next){
     let oldAnno = req.params.as
     let newAnno = req.body.annoScolasticoGestioneAnno
-    AnniScolastici.annoGiaEsistente(newAnno)
-                  .then(esistente=>{
-                    if(esistente){
-                      req.session.errorMsg = "L'anno scolastico " + newAnno + " esiste già!"
-                      res.redirect("/admin/gestioneAnni");
-                    }
-                    else{
-                      return AnniScolastici.updateAnnoScolastico({nome:oldAnno},{nome:newAnno},{multi:true})
-                                    .then((numAffected)=>{
-                                      return Classi.updateAnnoScolastico({annoScolastico:oldAnno},{annoScolastico:newAnno},{multi:true})
-                                    })
-                                    .then((numAffected)=>{
-                                      return Pagelle.updateAnnoScolastico({annoScolastico:oldAnno},{annoScolastico:newAnno},{multi:true})
-                                    })
-                                    .then((numAffected)=>{
-                                      req.session.successMsg = "Anno modificato con successo!"
-                                      res.redirect("/admin/gestioneAnni")
-                                    })
-                                    .catch(err=>{
-                                      throw err
-                                    })
-                    }
-                  })
-                  .catch(err=>{
-                    req.session.errorMsg = "Errore interno.\n" + err + "\n";
-                    res.redirect("/admin/gestioneAnni");
-                  })
+
+    try{
+      const esistente = await AnniScolastici.annoGiaEsistente(newAnno)
+      if(esiste){
+        req.session.errorMsg = "L'anno scolastico " + newAnno + " esiste già!"
+        res.redirect("/admin/gestioneAnni");
+      }
+      const updateAnniProm = AnniScolastici.updateAnnoScolastico(oldAnno,newAnno);
+      const updateClassiProm = Classi.updateAnnoScolastico(oldAnno,newAnno);
+      const updatePagelleProm = Pagelle.updateAnnoScolastico(oldAnno,newAnno);
+
+      const results = await Promise.all(updateAnniProm,updateClassiProm,updatePagelleProm);
+      req.session.successMsg = "Anno modificato con successo!"
+      res.redirect("/admin/gestioneAnni")
+    }
+    catch(err){
+        req.session.errorMsg = "Errore interno.\n" + err + "\n";
+        res.redirect("/admin/gestioneAnni");
+      }
   });
   //------------------------------------ END -----------------------------------
 
 
   //----------------------- ELIMINA ANNO SCOLASTICO ----------------------------
-  router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',function (req,res,next){
+  router.post('/eliminaAnnoScolastico/:as(20[0-9][0-9]/[0-9][0-9]$)',async (req,res,next)=>{
+    try{
       let annoScolastico = req.params.as;
-      Classi.getStudentiFromAnnoScolastico(annoScolastico,function (err,studenti){
+      const studenti = await Classi.getStudentiFromAnnoScolastico(annoScolastico)
+      console.log(require('util').inspect(studenti, { depth: null }));
+      const deletePagelleProm = Promise.all( studenti.map(s=>{ return Pagelle.deletePagelleStudente(s) }) )
+      const deleteStudentiProm = Promise.all( studenti.map(s=>{ return Studenti.deleteStudenteById(s)  }) )
+      const deleteClassiProm = Classi.deleteAnno(annoScolastico)
+      const deletePermessiProm = PermessiUtente.deleteAnno(annoScolastico)
+      const deleteAnniProm = Anni.deleteAnno(annoScolastico)
+      let results = await Promise.all([deletePagelleProm,deleteStudentiProm,deleteClassiProm,deletePermessiProm,deleteAnniProm])
 
-        let cleanUpPromiseChain = [];
-
-        //------------- PROMESSA RIMOZIONE STUDENTI E PAGELLE ------------------
-        for(let i=0;i<studenti.length;i++){
-          let deletePagellePromise = new Promise(function(resolve, reject) {
-            Pagelle.deleteMany({idStudente:studenti[i]},function (err){
-              if(err){
-                reject(err);
-              }
-              else{
-                resolve();
-              }
-            })
-          });
-          let deleteStudentePromise = new Promise(function(resolve, reject) {
-            Studenti.deleteOne({id:studenti[i]},function (err){
-              if(err){
-                reject(err);
-              }
-              else{
-                resolve();
-              }
-            })
-          });
-          cleanUpPromiseChain.push(deletePagellePromise);
-          cleanUpPromiseChain.push(deleteStudentePromise);
-        }
-        //-------------------------------- END ---------------------------------
-
-
-        //--------------------- PROMESSA RIMOZIONE CLASSI ----------------------
-        let removeClassiPromise = new Promise(function(resolve, reject) {
-          Classi.deleteMany({annoScolastico:annoScolastico},function (err){
-            if(err){
-              reject(err);
-            }
-            else{
-              resolve();
-            }
-          })
-        });
-        cleanUpPromiseChain.push(removeClassiPromise);
-        //-------------------------------- END ---------------------------------
-
-
-        //------------------- PROMESSA RIMOZIONE PERMESSI ----------------------
-        let removePermessiPromise = new Promise(function(resolve, reject) {
-          PermessiUtente.deleteMany({annoScolastico:annoScolastico},function (err){
-            if(err){
-              reject(err);
-            }
-            else{
-              resolve();
-            }
-          })
-        });
-        cleanUpPromiseChain.push(removePermessiPromise);
-        //-------------------------------- END ---------------------------------
-
-
-        //---------------- PROMESSA RIMOZIONE ANNO SCOLASTICO ------------------
-        let removeAnnoScolasticoPromise = new Promise(function(resolve, reject) {
-          AnniScolastici.deleteOne({nome:annoScolastico},function (err){
-            if(err){
-              reject(err);
-            }
-            else{
-              resolve();
-            }
-          })
-        });
-        cleanUpPromiseChain.push(removeAnnoScolasticoPromise);
-        //-------------------------------- END ---------------------------------
-
-
-        //------------------- SUCCESSFULL CHAIN RESOLUTION ---------------------
-        Promise.all(cleanUpPromiseChain).then(()=>{
-          req.session.successMsg = "Anno " + annoScolastico + " eliminato con successo!";
-          res.send("success");
-        //-------------------------------- END ---------------------------------
-
-
-        //--------------------- ERROR IN CHAIN RESOLUTION ----------------------
-        },err=>{
-          req.session.errorMsg = "Errore interno.\n" + err + "\n";
-          res.send("error");
-        })
-        //-------------------------------- END ---------------------------------
-      })
+      req.session.successMsg = "Anno " + annoScolastico + " eliminato con successo!";
+      res.send("success");
+    }
+    catch(err){
+      req.session.errorMsg = "Errore interno.\n" + err + "\n";
+      res.send("error");
+    }
   });
   //------------------------------------ END -----------------------------------
 
@@ -644,7 +520,7 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
 //------------------------- PAGINE AREA AMMINISTRATORE -------------------------
 
-
+  //ok
   //---------------------------- GESTIONE STUDENTI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function(req,res,next){
     let annoScolastico = req.params.as;
@@ -652,18 +528,18 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
     let sezione = req.params.sezione;
     Classi.getStudentiFromAnnoScolasticoAndClasseAndSezione(annoScolastico,classe,sezione)
       .then(idStudenti=>{
-        return Promise.all(Studenti.getInfoStudentiById(idStudenti))
+        return Studenti.getInfoStudentiById(idStudenti)
       })
       .then(infoStudenti=>{
         res.render('./areaAmministratore/gestioneDB/gestioneStudenti',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Studenti',subTitle:'Gestione Studenti Classe ' + classe + ' Sezione ' +sezione ,annoScolastico:annoScolastico,classe:classe,sezione:sezione,studenti:infoStudenti})
       })
       .catch(err=>{
-      throw err
+        next(err);
       })
   });
   //----------------------------------- END ------------------------------------
 
-
+  //ok
   //----------------------------- GESTIONE SEZIONI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res,next){
     let annoScolastico = req.params.as;
@@ -678,32 +554,31 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   });
   //----------------------------------- END ------------------------------------
 
-
+  //ok
   //------------------------------ GESTIONE CLASSI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9]$)',function(req,res,next){
       let annoScolastico = req.params.as;
-      Classi.getClassiFromAnnoScolastico(annoScolastico,function(err,classi){
-          if(err){
-              next(err);
-          }
-          else{
-              res.render('./areaAmministratore/gestioneDB/gestioneClassi',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Classi',subTitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
-          }
-      })
+      Classi.getClassiFromAnnoScolastico(annoScolastico)
+        .then(classi=>{
+          res.render('./areaAmministratore/gestioneDB/gestioneClassi',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Classi',subTitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
+        })
+        .catch(err=>{
+          next(err)
+        })
   });
   //----------------------------------- END ------------------------------------
 
-
+  //ok
   //------------------------- GESTIONE ANNI SCOLASTICI -------------------------
   router.get('/',function(req,res,next){
-      AnniScolastici.getAnniScolastici(function(err,anniScolastici){
-          if(err){
-              next(err)
-          }
-          else{
-              res.render('./areaAmministratore/gestioneDB/gestioneAnni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Anni Scolastici',subTitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
-          }
-      })
+      AnniScolastici.getAnniScolastici()
+        .then(anniScolastici=>{
+          console.log(require('util').inspect(anniScolastici, { depth: null }));
+          res.render('./areaAmministratore/gestioneDB/gestioneAnni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Anni Scolastici',subtitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
+        })
+        .catch(err=>{
+          next(err)
+        })
   });
   //----------------------------------- END ------------------------------------
 

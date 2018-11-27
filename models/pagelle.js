@@ -1,44 +1,50 @@
 "use strict";
+//------------------------------- NODE_MODULES ---------------------------------
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+//--------------------------------- /END ---------------------------------------
 
+//------------------------------- MY MODULES -----------------------------------
 const util = require('util');
+//-------------------------------- /END ----------------------------------------
 
+
+//---------------------------- PAGELLE  MODEL -----------------------------------
 let pagelleSchema = new Schema({
-    idStudente:{
-        type:Number,
-        require:true,
-        unique:false
-    },
-    materia:{
-        type:String,
-        require:true,
-        unique:false
-    },
-    classe:{
-        type:Number,
-        require:true,
-        unique:false
-    },
-    sezione:{
-        type:String,
-        enum:['A','B','C','D','E','F','G','H','I'],
-        require:true,
-        unique:false
-    },
-    annoScolastico:{
-        type:String,
-        require:true,
-        unique:false
-    },
-    primoSemestre:{
-        type:String,
-        default:""
-    },
-    secondoSemestre:{
-        type:String,
-        default:""
-    }
+  idStudente:{
+    type:Number,
+    require:true,
+    unique:false
+  },
+  materia:{
+    type:String,
+    require:true,
+    unique:false
+  },
+  classe:{
+    type:Number,
+    require:true,
+    unique:false
+  },
+  sezione:{
+    type:String,
+    enum:['A','B','C','D','E','F','G','H','I'],
+    require:true,
+    unique:false
+  },
+  annoScolastico:{
+    type:String,
+    require:true,
+    unique:false
+  },
+  primoSemestre:{
+    type:String,
+    default:""
+  },
+  secondoSemestre:{
+    type:String,
+    default:""
+  }
 },{collection:"Pagelle"});
 
 pagelleSchema.index({idStudente:1,materia:1,classe:1,sezione:1,annoScolastico:1},{unique:true});
@@ -46,25 +52,11 @@ pagelleSchema.index({idStudente:1,materia:1,classe:1,sezione:1,annoScolastico:1}
 let Pagelle = mongoose.model('Pagelle',pagelleSchema);
 
 module.exports = Pagelle;
+//-------------------------------- /END ----------------------------------------
 
-module.exports.getPagellaFromStudenteCb = function (annoScolastico,materia,classe,sezione,studente,callback){
-    Pagelle.find({idStudente:studente.id,annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione},{primoSemestre:1,secondoSemestre:1,_id:0},function (err,results){
-        if(err){
-            callback(err,null);
-        }
-        else{
-            if(results[0].length > 2){
-                let error = new Error("Errore : lo studente detiene piu di 2 pagelle!");
-                next(error,null);
-            }
-            else {
-                callback(null,results[0]);
-            }
-        }
-    })
-};
+
+//-------------------------------- GET QUERIES ---------------------------------
 module.exports.getPagellaFromStudente = function(annoScolastico,classe,sezione,materia,id){
-  console.log(annoScolastico + " " + classe + " " +sezione + " " + materia + " " + id)
   return new Promise(function(resolve, reject) {
       Pagelle.find({idStudente:id,annoScolastico:annoScolastico,classe:classe,sezione:sezione,materia:materia},{primoSemestre:1,secondoSemestre:1,_id:0},function (err,results){
           if(err){
@@ -81,34 +73,32 @@ module.exports.getPagellaFromStudente = function(annoScolastico,classe,sezione,m
       })
   })
 };
+//-------------------------------- /END ----------------------------------------
 
-module.exports.updatePagellaFromSemestre = function (annoScolastico,materia,classe,sezione,studente,semestre,nuovaPagella,callback){
-    console.log("in update, semestre = " + semestre);
-    if(semestre === String(1)){
-        Pagelle.update({annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,idStudente:studente.id},{$set:{primoSemestre:nuovaPagella}},function(err,numAffected){
-            if(err){
-                callback(err,null);
-            }
-            else{
-                callback(null,numAffected);
-            }
-        });
-    }
-    else if(semestre === String(2)){
-        Pagelle.update({annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,idStudente:studente.id},{$set:{secondoSemestre:nuovaPagella}},function (err,numAffected){
-            if(err){
-                callback(err,null);
-            }
-            else{
-                callback(null,numAffected);
-            }
-        })
+
+//------------------------------ UPDATE QUERIES --------------------------------
+module.exports.updatePagella = (anno,classe,sezione,semestre,materia,idStudente,pagella)=>{
+  return new Promise(function(resolve, reject) {
+    console.log("hello")
+    let update;
+    if(semestre == 1){
+      update = {primoSemestre:pagella}
     }
     else{
-        let err = new Error("Semestre NON valido");
-        callback(err,null);
+      update = {secondoSemestre:pagella}
     }
-};
+    console.log("update = " + update)
+    Pagelle.update({annoScolastico:anno,classe:classe,sezione:sezione,materia:materia,idStudente:idStudente},update,(err,numAffected)=>{
+      if(err){
+        reject(err)
+      }
+      else{
+        console.log("numAffected = " + numAffected)
+        resolve()
+      }
+    })
+  });
+}
 
 module.exports.updateAnnoScolastico = function (cond,update,options){
   return new Promise(function(resolve, reject) {
@@ -125,22 +115,21 @@ module.exports.updateAnnoScolastico = function (cond,update,options){
 
 module.exports.updateClasse = function (oldAnno,newAnno,oldClasse,newClasse){
 
-    let updatePromise = new Promise(function(resolve,reject){
+  let updatePromise = new Promise(function(resolve,reject){
 
-      let condition = {annoScolastico:oldAnno,classe:oldClasse};
-      let update = {annoScolastico:newAnno,classe:newClasse};
-      let opts = {multi:true};
+    let condition = {annoScolastico:oldAnno,classe:oldClasse};
+    let update = {annoScolastico:newAnno,classe:newClasse};
+    let opts = {multi:true};
 
-      Pagelle.update(condition,update,opts,function (err,numAffected){
-        if(err){
-          reject(err);
-        }
-        else{
-          console.log("updatePagelle resolving, numAffected = " + numAffected);
-          resolve();
-        }
-      })
+    Pagelle.update(condition,update,opts,function (err,numAffected){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
     })
+  })
 
   return updatePromise
 
@@ -154,7 +143,6 @@ module.exports.updateSezione = function (oldAnno,oldClasse,oldSezione,newSezione
       classe:newSezione.classe,
       sezione:newSezione.sezione
     }
-    console.log("updates pagelle = " + updates)
 
     let options = {multi:true}
     Pagelle.update(conditions,updates,options,function(err,numAffected){
@@ -162,7 +150,6 @@ module.exports.updateSezione = function (oldAnno,oldClasse,oldSezione,newSezione
         reject(err)
       }
       else{
-        console.log("numAffected" + util.inspect(numAffected) )
         resolve()
       }
     })
@@ -170,24 +157,25 @@ module.exports.updateSezione = function (oldAnno,oldClasse,oldSezione,newSezione
 }
 
 module.exports.updateClasseStudente = function(id,newAnno,newClasse,newSezione,oldAnno,oldClasse,oldSezione){
-  console.log("hello from updateClasseStudente")
   return new Promise(function(resolve, reject) {
     Pagelle.update({idStudente:id,annoScolastico:oldAnno,classe:oldClasse,sezione:oldSezione},  //condition
-                    {annoScolastico:newAnno,classe:newClasse,sezione:newSezione},     //update
-                    {multi:true}                                                        //options
-                  ,function(err,numAffected){                                         //callback
-                    console.log("updatePagelle " + numAffected)
-                    if(err){
-                      throw err
-                      reject(err)
-                    }
-                    else{
-                      resolve()
-                    }
-                  })
-  });
-}
+      {annoScolastico:newAnno,classe:newClasse,sezione:newSezione},     //update
+      {multi:true}                                                        //options
+      ,function(err,numAffected){                                         //callback
+        if(err){
+          throw err
+          reject(err)
+        }
+        else{
+          resolve()
+        }
+      })
+    });
+  }
+//-------------------------------- /END ----------------------------------------
 
+
+//------------------------------ DELETE QUERIES --------------------------------
 module.exports.deletePagelleStudente = function (id){
   return new Promise(function(resolve, reject) {
     Pagelle.deleteMany({idStudente:id},function (err,numAffected){
@@ -200,7 +188,10 @@ module.exports.deletePagelleStudente = function (id){
       })
   });
 }
+//-------------------------------- /END ----------------------------------------
 
+
+//------------------------------ MISCELLANEOUS ---------------------------------
 module.exports.popolaPagelleStudente = (id,anno,classe,sezione,materie)=>{
   return Promise.all( materie.map(m=>{
                         return new Promise(function(resolve, reject) {
@@ -214,8 +205,57 @@ module.exports.popolaPagelleStudente = (id,anno,classe,sezione,materie)=>{
                           })
                         });
                       })
-                    )
-}
+                    )}
+//-------------------------------- /END ----------------------------------------
+
+
+//                         TO BE REMOVED
+// module.exports.getPagellaFromStudenteCb = function (annoScolastico,materia,classe,sezione,studente,callback){
+//     Pagelle.find({idStudente:studente.id,annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione},{primoSemestre:1,secondoSemestre:1,_id:0},function (err,results){
+//         if(err){
+//             callback(err,null);
+//         }
+//         else{
+//             if(results[0].length > 2){
+//                 let error = new Error("Errore : lo studente detiene piu di 2 pagelle!");
+//                 next(error,null);
+//             }
+//             else {
+//                 callback(null,results[0]);
+//             }
+//         }
+//     })
+// };
+//                      DA CANCELLARE OLD updatePagella
+// module.exports.updatePagellaFromSemestre = function (annoScolastico,materia,classe,sezione,studente,semestre,nuovaPagella,callback){
+//     console.log("in update, semestre = " + semestre);
+//     if(semestre === String(1)){
+//         Pagelle.update({annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,idStudente:studente.id},{$set:{primoSemestre:nuovaPagella}},function(err,numAffected){
+//             if(err){
+//                 callback(err,null);
+//             }
+//             else{
+//                 callback(null,numAffected);
+//             }
+//         });
+//     }
+//     else if(semestre === String(2)){
+//         Pagelle.update({annoScolastico:annoScolastico,materia:materia,classe:classe,sezione:sezione,idStudente:studente.id},{$set:{secondoSemestre:nuovaPagella}},function (err,numAffected){
+//             if(err){
+//                 callback(err,null);
+//             }
+//             else{
+//                 callback(null,numAffected);
+//             }
+//         })
+//     }
+//     else{
+//         let err = new Error("Semestre NON valido");
+//         callback(err,null);
+//     }
+// };
+
+
 
 
 

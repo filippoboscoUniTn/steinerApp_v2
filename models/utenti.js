@@ -1,93 +1,146 @@
 "use strict";
+
+//------------------------------- NODE_MODULES ---------------------------------
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bCrypt = require('bcryptjs');
+const util = require('util')
+//--------------------------------- /END ---------------------------------------
 
+
+//------------------------------- MY MODULES -----------------------------------
 const dbConnection = require('../modules/databaseConnection');
 const rounds = 10;
+//-------------------------------- /END ----------------------------------------
 
 
+
+
+//------------------------------- UTENTI  MODEL --------------------------------
 let userSchema = new Schema({
-    nome : String,
-    cognome : String,
-    email : String,
-    username : String,
-    password : String,
-    authorization:{
-        type:String,
-        enum:['ADMIN','TEACHER'],
-        default:'TEACHER'
-    },
-    status :{
-        type:String,
-        enum:['PENDING','ACCEPTED'],
-        default:'PENDING'
-    }
+  nome : String,
+  cognome : String,
+  email : String,
+  username : String,
+  password : String,
+  authorization:{
+    type:String,
+    enum:['ADMIN','TEACHER'],
+    default:'TEACHER'
+  },
+  status :{
+    type:String,
+    enum:['PENDING','ACCEPTED'],
+    default:'PENDING'
+  }
 },{collection:'Utenti'});
 
-// userSchema.methods.insertUser = function(user,callback){
-//     //Generate hash's salt
-//     bCrypt.genSalt(rounds,function(err,salt){
-//         //error generating salt
-//         if(err){
-//             callback(err,null,null)
-//         }
-//         //hash user's password with generated salt
-//         bCrypt.hash(user.password,salt,function(err,hash){
-//             //error generating salt
-//             if(err){
-//                 callback(err,null,null)
-//             }
-//             user.password = hash;
-//             //save user to database
-//             user.save(function(err,user,numAffected){
-//                 //error saving user to database
-//                 if(err){
-//                     callback(err,null,null);
-//                 }
-//                 callback(null,user,numAffected);
-//             })
-//         })
-//     })
-// };
-userSchema.methods.insertUser = function(){
-  bCrypt.genSalt(rounds).then(salt=>
-                              bCrypt.hash(this.password,salt))
-                        .then((hash)=>{
-                              this.password = hash;
-                              return this.save()})
+userSchema.methods.insertUser = function (){
+  let newUser = this;
+  return new Promise(function(resolve, reject) {
+    bCrypt.genSalt(rounds).then(salt=>{ return bCrypt.hash(newUser.password,salt)})
+    .then(hash=>{
+      newUser.password = hash;
+      return newUser.save() })
+      .then(user=>{
+        resolve()
+      })
+      .catch(err=>{
+        reject(err)
+      })
+    });
+  }
+
+let Utenti = mongoose.model('Utenti',userSchema);
+
+module.exports = Utenti;
+//-------------------------------- /END ----------------------------------------
+
+
+//-------------------------------- GET QUERIES ---------------------------------
+module.exports.getUserByUsername = username=>{
+  return new Promise(function(resolve, reject) {
+    Utenti.find({username:username},function(err,res){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(res[0])
+      }
+    })
+  });
 }
-
-
-let Users = mongoose.model('User',userSchema);
-module.exports = Users;
-
-//Find a user given its name
-module.exports.findByName = function (username,callback){
-    Users.findOne({username:username},function (err,user){
-        if(err){
-            callback(err,null)
-        }
-        else{
-            //user might be null, checking is done in invoking function
-            callback(null,user)
-        }
+module.exports.getUserById = id=>{
+  return new Promise(function(resolve, reject) {
+    Utenti.find({_id:id},function(err,res){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(res[0])
+      }
     })
-};
+  });
+}
+module.exports.getUserForDeserialize = function(id,callback){
+  Utenti.findOne({_id:id},function(err,res){
+    if(err){
+      callback(null,err)
+    }
+    else{
+      callback(null,res)
+    }
+  })
+}
+module.exports.getTeachers = ()=>{
+  return new Promise(function(resolve, reject) {
+    Utenti.find({status:'ACCEPTED',authorization:"TEACHER"},{nome:1,cognome:1,_id:1},function(err,results){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(results);
+      }
+    })
+  });
+}
+module.exports.getAdmins = ()=>{
+  return new Promise(function(resolve, reject) {
+    Utenti.find({status:'ACCEPTED',authorization:"ADMIN"},{nome:1,cognome:1,_id:1},function(err,results){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(results);
+      }
+    })
+  });
+}
+//-------------------------------- /END ----------------------------------------
 
+
+//------------------------------ UPDATE QUERIES --------------------------------
+
+//-------------------------------- /END ----------------------------------------
+
+
+//------------------------------ DELETE QUERIES --------------------------------
+
+//-------------------------------- /END ----------------------------------------
+
+
+//------------------------------ MISCELLANEOUS ---------------------------------
 //Compares input password and user's password from the database
-module.exports.comparePasswords = function (password,userPassword,callback){
-    bCrypt.compare(password,userPassword,function(err,isMatch){
-        if(err){
-            callback(err,null)
-        }
-        else{
-            callback(null,isMatch)
-        }
+module.exports.comparePasswords = (passwordToTest,userPassword)=>{
+  return new Promise(function(resolve, reject) {
+    bCrypt.compare(passwordToTest,userPassword,function(err,isMatch){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve(isMatch)
+      }
     })
+  });
 };
-
-//Finds a user given its ID
-module.exports.findUserById = function(id,callback){
-    Users.findById(id,callback)
-};
+//-------------------------------- /END ----------------------------------------

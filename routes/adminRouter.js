@@ -12,7 +12,7 @@ let router = express.Router();
 
 router.use('/gestioneAnni',gestioneAnniRouter);
 
-//router.use('/gestioneUtenti',gestioneUtentiRoute);
+router.use('/gestioneUtenti',gestioneUtentiRouter);
 
 router.use('/stampaPDF',stampaPdfRouter);
 

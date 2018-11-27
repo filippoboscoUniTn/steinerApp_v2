@@ -3,6 +3,7 @@
 <html>
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,74 +15,37 @@
     <link rel="stylesheet" type="text/css" href="/css/sideBar.css">
     <link rel="stylesheet" type="text/css" href="/css/customBootstrap.css">
     <link rel="stylesheet" type="text/css" href="/css/modals.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+                           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+                           crossorigin="anonymous">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous" >
-
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous">
+    </script>
+
+
 </head>
 
 
 <body>
-<div class="mycontainer-fluid">
-    <div class="row">
-
-        <div class="col-sm-3 col-md-2 mysidebar">
-
-            <ul class="nav nav-sidebar myNav" id='ul_1'>
-                <li id='li_1'>
-                    <div class="myA lvl1" onclick="myfunc2(this,1)" id='li_1_div'>
-                        <a href="/admin" id='li_1_a' class="atest">Area Amministratore</a>
-                    </div>
-                </li>
-            </ul>
-
-            <ul class='nav nav-sidebar myHidden' id="ul_1_hiddenUl_1">
-                <li>
-                    <div class='myA lvl2' onclick="myfunc2(this,1)">
-                        <a href="/admin/gestioneUtenti" class="atest">Gestione Utenti</a>
-                    </div>
-                    <ul class="nav-sidebar myHidden" id='ul_1_hiddenUl_1_subUl_1'>
-                        <li>
-                            <div class="myA lvl3">
-                                <a href="/admin/gestioneUtenti/permessi" class="atest">Gestione Permessi</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="myA lvl3">
-                                <a href="/admin/gestioneUtenti/richieste" class="atest">Gestione Richieste</a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <div class="myA lvl2">
-                        <a href="/admin/gestioneAnni" class="atest">Gestione Database</a>
-                    </div>
-                </li>
-            </ul>
-
-
+  <div class="container-fluid">
+    {{> navBar}}
+    <div class="body">
+      <div class="row">
+        <div class="col-md-11 d-none d-md-block offset-md-1 pl-0 mt-2">
+          <p class="h4 text-primary">{{{subtitle}}} :</p>
         </div>
-
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <div class="header clearfix">
-
-                <nav>
-
-                    <ul class="nav nav-pills pull-right">
-                        <li role="presentation" class="active"><a href="/index">Home</a></li>
-                        <li role="presentation" class="active"><a href="/logout">Logout</a></li>
-                    </ul>
-                </nav>
-                <h3 id="pageInfo">{{{subTitle}}}</h3>
-            </div>
-            {{{body}}}
-        </div>
+      </div>
+    {{{body}}}
     </div>
-</div>
+  </div>
+  <script type="text/jscript" src="/js/modali/navBar.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
 </body>
 
 </html>

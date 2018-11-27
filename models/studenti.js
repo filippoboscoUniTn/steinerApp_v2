@@ -1,16 +1,26 @@
 "use strict";
+//------------------------------- NODE_MODULES ---------------------------------
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-const autoInc = require('./autoIncrement');
-const dbConnection = require('../modules/databaseConnection');
-
 const util = require('util');
+//--------------------------------- /END ---------------------------------------
+
+//------------------------------- MY MODULES -----------------------------------
+const dbConnection = require('../modules/databaseConnection');
+//-------------------------------- /END ----------------------------------------
+
+//-------------------------------- MODELS --------------------------------------
+const autoInc = require('./autoIncrement');
+//-------------------------------- /END ----------------------------------------
+
+
+
+
+//--------------------------------   MODEL -------------------------------------
 
 let studentiSchema = new Schema({
     id:{
         type: Number,
-        //require: true
     },
     nome:{
         type: String,
@@ -54,29 +64,10 @@ studentiSchema.pre('save',function(next){
 let Studenti = mongoose.model('Studente',studentiSchema);
 
 module.exports = Studenti;
+//-------------------------------- /END ----------------------------------------
 
-module.exports.getStudentiFromID = function (idStudenti,callback){
-  let promiseChainStudenti = [];
-  for(let i=0;i<idStudenti.length;i++){
-      let promiseInfoStudente = new Promise(function (resolve,reject){
-          Studenti.find({id:idStudenti[i]},function (err,results){
-              if(err){
-                  reject(err)
-              }
-              else{
-                  resolve(results[0]);
-              }
-          })
-      });
-      promiseChainStudenti.push(promiseInfoStudente);
-  }
-  Promise.all(promiseChainStudenti).then(studenti =>{
-        callback(null,studenti)
-  },err =>{
-      callback(err,null);
-  })
-};
 
+//-------------------------------- GET QUERIES ---------------------------------
 module.exports.getInfoStudentiById = function(idStudenti){
   let promises = idStudenti.map(id=>{
     let promise = new Promise(function(resolve, reject) {
@@ -91,9 +82,10 @@ module.exports.getInfoStudentiById = function(idStudenti){
     return promise
   })
 
-  return promises
+  return Promise.all(promises)
 }
-module.exports.getInfoStudente = async id =>{
+
+module.exports.getInfoStudente = id =>{
   return new Promise(function(resolve, reject) {
     Studenti.find({id:id},{__v:0,_id:0},(err,res)=>{
       if(err){reject(err)}
@@ -101,6 +93,45 @@ module.exports.getInfoStudente = async id =>{
     })
   });
 }
+
+//-------------------------------- /END ----------------------------------------
+
+
+//------------------------------ UPDATE QUERIES --------------------------------
+module.exports.updateStudente = (id,modifiche) =>{
+  return new Promise(function(resolve, reject) {
+    Studenti.update({id:id},modifiche,function(err,numAffected){
+      console.log("numAffected = " + numAffected[0])
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve()
+      }
+    })
+  });
+}
+//-------------------------------- /END ----------------------------------------
+
+
+//------------------------------ DELETE QUERIES --------------------------------
+module.exports.deleteStudenteById = function (id){
+  return new Promise(function(resolve, reject) {
+    Studenti.deleteMany({id:id},function (err,numAffected){
+        if(err){
+          throw err
+          //reject(err)
+        }
+        else{
+          resolve()
+        }
+      })
+  });
+}
+//-------------------------------- /END ----------------------------------------
+
+
+//------------------------------ MISCELLANEOUS ---------------------------------
 module.exports.removeStudente = function(id){
   let prom = new Promise(function(resolve, reject) {
     Studenti.deleteOne({id:id},function(err,numAffected){
@@ -117,34 +148,6 @@ module.exports.removeStudente = function(id){
   });
   return prom
 }
-
-module.exports.deleteStudenteById = function (id){
-  return new Promise(function(resolve, reject) {
-    Studenti.deleteMany({id:id},function (err,numAffected){
-        if(err){
-          throw err
-          //reject(err)
-        }
-        else{
-          resolve()
-        }
-      })
-  });
-}
-module.exports.updateStudente = (id,modifiche) =>{
-  return new Promise(function(resolve, reject) {
-    Studenti.update({id:id},modifiche,function(err,numAffected){
-      console.log("numAffected = " + numAffected[0])
-      if(err){
-        reject(err)
-      }
-      else{
-        resolve()
-      }
-    })
-  });
-}
-
 module.exports.saveWrapper = studente => {
   return new Promise(function(resolve, reject) {
     studente.save((err,studente)=>{
@@ -157,3 +160,4 @@ module.exports.saveWrapper = studente => {
     })
   });
 }
+//-------------------------------- /END ----------------------------------------

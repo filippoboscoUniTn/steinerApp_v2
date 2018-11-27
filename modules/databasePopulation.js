@@ -4,7 +4,6 @@ const util = require("util")
 const app = require('../app')
 const dbConnection = require('./databaseConnection')
 const dbClean = require('./databaseCleanup')
-//const collection = dbConnection.connection.collection("Studenti");
 //-------------------------------- MODELLI -------------------------------------
 const AutoIncrement = require('../models/autoIncrement');
 const AnniScolastici = require('../models/anniScolastici');
@@ -31,7 +30,7 @@ function populatePagelle(pagelle){
   return Promise.all(promises)
 }
 function populatePermessiUtente(permessi){
-  let promises = users.map(v => new PermessiUtente(v).save())
+  let promises = permessi.map(v => new PermessiUtente(v).save())
   return Promise.all(promises)
 }
 function populateStudenti(students){
@@ -43,7 +42,8 @@ function inserStudenti(students){
   return Promise.all(promises)
 }
 function populateUtenti(users){
-  let promises = users.map(v => new Utenti(v).insertUser())
+  let newUsers = users.map(v=> new Utenti(v));
+  let promises = newUsers.map(nu=> nu.insertUser())
   return Promise.all(promises)
 }
 function insertPagelle(pagelle){
@@ -206,6 +206,75 @@ function popDb(){
     status :'ACCEPTED'
   }]
 
+  let permessiUtenti = [{
+    nome:"admin",
+    cognome:"admin",
+    annoScolastico:"2017/18",
+    permessi:[{
+      materia:"Storia",
+      classi:[8,5,3]
+    },{
+      materia:"Italiano",
+      classi:[1,5,6,2]
+    }]
+  },{
+    nome:"admin",
+    cognome:"admin",
+    annoScolastico:"2018/19",
+    permessi:[{
+      materia:"Geografia",
+      classi:[1,2,3]
+    },{
+      materia:"Fisica",
+      classi:[4,2]
+    }]
+  },{
+    nome:"admin",
+    cognome:"admin",
+    annoScolastico:"2019/20",
+    permessi:[{
+      materia:"italiano",
+      classi:[7,6,8]
+    },{
+      materia:"Italiano",
+      classi:[1,5,2]
+    }]
+  },{
+    nome:"alessio",
+    cognome:"zanella",
+    annoScolastico:"2017/18",
+    permessi:[{
+      materia:"Storia",
+      classi:[1,5,7]
+    },{
+      materia:"Italiano",
+      classi:[1,2,4,6,8]
+    }]
+  },{
+    nome:"alessio",
+    cognome:"zanella",
+    annoScolastico:"2018/19",
+    permessi:[{
+      materia:"Storia",
+      classi:[6,3]
+    },{
+      materia:"Musica",
+      classi:[6,2]
+    }]
+  },{
+    nome:"alessio",
+    cognome:"zanella",
+    annoScolastico:"2018/20",
+    permessi: [{
+      materia:"Storia",
+      classi:[1,4,2,5,6,3]
+    },{
+      materia:"Italiano",
+      classi:[1,5]
+    }]
+  }]
+  let permessiPromise = permessiUtenti.map(v=>new PermessiUtente(v).save());
+
   let samples = generateSampleDb();
 
   let classiChain = [];
@@ -216,15 +285,17 @@ function popDb(){
     classiChain.push(populateClassi(samples[i].classi))
     studentChain.push(inserStudenti(samples[i].studenti))
     pagelleChain.push(insertPagelle(samples[i].pagelle))
-
   }
 
-  return populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico])
-    .then(populateCunters(samples[samples.length-1]))
-    .then(populateUtenti(users))
-    .then(Promise.all(classiChain))
-    .then(Promise.all(studentChain))
-    .then(Promise.all(pagelleChain))
+    return Promise.all([populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico]),
+                        populateCunters(samples[samples.length-1]),
+                        populateUtenti(users),
+                        Promise.all(classiChain),
+                        Promise.all(studentChain),
+                        Promise.all(pagelleChain),
+                        Promise.all(permessiPromise)
+                      ])
+
 }
 
 module.exports = {popDb}
@@ -235,74 +306,6 @@ module.exports = {popDb}
 
 
 
-/*----------------------------------- RITAGLI ----------------------------------
-let samples = generateSampleDb();
-let chain = []
-samples.forEach((sample)=>{
-  sample.classi.forEach((classe)=>{
-    chain.push(populateStudenti(classe.studenti,classe))
-  })
-})
-  console.log("chain completed, = " + util.inspect(samples[0].classi[0].studenti[0]) );
-  return populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico]).then( //ANNI SCOLASTICI WILL BE REMOVED
-  populateCunters(counters).then(populateUtenti(users))
-                           .then(Promise.all(chain))
-                           .then(()=>{
-                             samples.forEach(sample=>{
-                               console.log("sample.classe.studenti = " + sample.classi[0].studenti[0])
-                               populateClassi(sample.classi)
-                             })
-                           })
-                           //.catch(err=>{console.log(err)})
-                         )
+//----------------------------------- RITAGLI ----------------------------------
 
-
-  //.catch(err=>{console.log(err)})
-
-
-
-
-
-
-
-
-
-
-
-populateStudenti(classe.studenti,classe).then((students)=>{
-                                   classe.studenti = students.map((student)=>{return student.id});
-                                   console.log("classe.studenti = \n\n" + classe.studenti)
-                                 })
-                                 .catch((err)=>{console.log(err)})
-
-
-let promiseChain = []
-for(let n=0;n<objs.length;n++){
-  let populateCunterPromise = new Promise(function(resolve, reject) {
-    let newCounter = new AutoIncrement(objs[n]);
-    newCounter.save(function(err){
-      if(err) reject(err);
-      resove()
-    });
-  });
-  promiseChain.push(populateCunterPromise)
-}
-return promiseChain
-
-
-let promiseChain = [];
-objs.forEach(function(val,index,array){
-  let populateUtentePromise = new Promise(function(resolve, reject) {
-    let newUtente = new Utenti(val);
-    newUtente.save(function(err){
-      if(err) reject(err)
-      resove()
-    })
-  });
-  promiseChain.push(populateUtentePromise)
-});
-return promiseChain
-
-
-
-//------------------------------------ END -----------------------------------*/
+//------------------------------------ END -------------------------------------
