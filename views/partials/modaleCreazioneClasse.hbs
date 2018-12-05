@@ -1,64 +1,45 @@
-<!-- >Modale per la GESTIONE di una CLASSE <!-->
-<div class="modalContentGestioneClasse" id="modalContentCreaClasse">
-
-    <div class="modalHeaderGestioneClasse">
-        <h3 id="modalTitleCreaClasse"></h3>
-        <button class="btn btn-md " onclick="closeModaleCreaClasse()">
-            <span class="glyphicon glyphicon-remove"></span>
+<div class="modal fade" id="modaleNuovaClasse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white" id="modalTitleCreaClasse"></h4>
+        <button type="button" class="btn btn-danger" onclick="closeModaleCreaClasse()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
-    </div>
+      </div>
+      <div class="modal-body">
 
-    <div class="modalBodyGestioneClasse" id="modalBodyCreaClasse">
+        <form method="POST" id="formCreaClasse">
+          <label for="classeCreaClasse">Classe : </label>
+          <select class="form-control" id="classeCreaClasse" name="classeCreaClasse">
+          </select>
 
-      <form method="POST" id="formCreaClasse">
+          <label for="sezioneCreaClasse">Sezione : </label>
+          <select class="form-control" id="sezioneCreaClasse" name="sezioneCreaClasse">
+          </select>
 
-        <div class="form-row">
+          <label for="materieCreaClasse">Materie :</label>
+          <input type="text" class="form-control" id="materieCreaClasse" name="materieCreaClasse" placeholder="Storia,Italiano,Matematica,...">
+          <small>Inserire le materie separate da una virgola</small>
+          <br>
+          <br>
+          <p class="h5">Maestro di Classe</p>
+          <label for="nomeMaestroCreaClasse">Nome :</label>
+          <input type="text" class="form-control" id="nomeMaestroCreaClasse" name="nomeMaestroCreaClasse">
+
+          <label for="cognomeMaestroCreaClasse">Cognome :</label>
+          <input type="text" class="form-control" id="cognomeMaestroCreaClasse" name="cognomeMaestroCreaClasse">
 
 
-          <div class="form-group col-md-6">
-            <label for="classeCreaClasse">Classe : </label>
-            <select class="form-control" id="classeCreaClasse" name="classeCreaClasse">
-            </select>
-          </div>
 
-          <div class="form-group col-md-6">
-            <label for="sezioneCreaClasse">Sezione : </label>
-            <select class="form-control" id="sezioneCreaClasse" name="sezioneCreaClasse">
-            </select>
-          </div>
+              <div class="mt-3">
+                <button type="submit" class="btn btn-success">Crea</button>
+              </div>
 
-        </div>
+        </form>
 
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="materieCreaClasse">Materie :</label>
-            <input type="text" class="form-control" id="materieCreaClasse" name="materieCreaClasse" placeholder="Storia,Italiano,Matematica,...">
-            <small>Inserire le materie separate da una virgola</small>
-          </div>
-        </div>
-
-        <div class="col-sm-12">
-          <label>Maestro di Classe</label>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="nomeMaestroCreaClasse">Nome :</label>
-            <input type="text" class="form-control" id="nomeMaestroCreaClasse" name="nomeMaestroCreaClasse">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="cognomeMaestroCreaClasse">Cognome :</label>
-            <input type="text" class="form-control" id="cognomeMaestroCreaClasse" name="cognomeMaestroCreaClasse">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <button type="submit" class="btn btn-primary">Crea</button>
-          </div>
-        </div>
-      </form>
+      </div>
 
     </div>
-
+  </div>
 </div>

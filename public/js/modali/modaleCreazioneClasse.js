@@ -1,12 +1,4 @@
 function openModaleNuovaClasse(reqUrl,title){
-  let currentYear = (new Date()).getFullYear();
-  for(let i=currentYear-2;i<currentYear+5; i++){
-    let anno = String(i).concat("/").concat(String(i+1))
-    let value = String(i).concat("/").concat(String(i+1).slice(2,4))
-    let selected = false
-    if(i==currentYear){selected = true}
-    $("#inizioAnnoCreaClasse").append(new Option(anno,value,true,selected))
-  }
   for(let i=1;i<9;i++){
     let selected = false
     if(i==1){selected = true}
@@ -19,12 +11,10 @@ function openModaleNuovaClasse(reqUrl,title){
   }
   $("#formCreaClasse").attr("action",reqUrl);
   $("#modalTitleCreaClasse").html(title);
-  $("#modalContentCreaClasse").css("display","block");
-  $(".modal").css("display","block");
+  $("#modaleNuovaClasse").modal("show")
 }
 function closeModaleCreaClasse(){
-    $("#modalContentCreaClasse").css("display","none");
-    $(".modal").css("display","none");
+    $("#modaleNuovaClasse").modal("hide")
     $("#classeCreaClasse").empty();
     $("#sezioneCreaClasse").empty();
 }

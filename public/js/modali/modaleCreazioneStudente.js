@@ -1,10 +1,8 @@
 function openModaleNuovoStudente (reqUrl,title){
   $("#modalTitleCreaStudente").html(title)
   $("#formCreaStudente").attr("action",reqUrl)
-  $("#modalContentCreaStudente").css("display","block")
-  $(".modal").css("display","block")
+  $("#openModaleNuovoStudente").modal("show")
 }
 function closeModaleCreaStudente (){
-  $("#modalContentCreaStudente").css("display","none")
-  $(".modal").css("display","none")
+  $("#openModaleNuovoStudente").modal("hide")
 }

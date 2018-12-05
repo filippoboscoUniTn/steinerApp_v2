@@ -1,110 +1,111 @@
-<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
-    <div class="modalContentGestioneClasse" id="modalContentGestioneStudente">
+<div class="modal fade" id="modaleGestioneStudente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
 
-        <div class="modalHeaderGestioneClasse">
-            <h3 id="modalTitleGestioneStudente"></h3>
-            <button class="btn btn-md " onclick="closeModaleGestioneStudente()">
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-        </div>
+    <div class="modal-content">
 
-        <div class="modalBodyGestioneClasse" id="modalBodyGestioneStudente">
+      <div class="modal-header bg-primary">
 
-          <form method="POST" id="formGestioneStudente">
+        <h4 class="modal-title text-white" id="modalTitleGestioneStudente"></h4>
+        <button type="button" class="btn btn-danger" onclick="closeModaleGestioneStudente()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
 
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="annoScolasticoGestioneStudente">Anno Scolastico : </label>
-                <select class="form-control" id="inizioAnnoGestioneStudente" name="inizioAnnoGestioneStudente">
-                </select>
-              </div>
+      </div>
 
-              <div class="form-group col-md-3">
-                <label for="classeGestioneStudente">Classe : </label>
-                <select class="form-control" id="classeGestioneStudente" name="classeGestioneStudente">
-                </select>
-              </div>
+      <div class="modal-body">
 
-              <div class="form-group col-md-3">
-                <label for="sezioneGestioneStudente">Sezione : </label>
-                <select class="form-control" id="sezioneGestioneStudente" name="sezioneGestioneStudente">
-                </select>
-              </div>
+        <form method="POST" id="formGestioneStudente">
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="annoScolasticoGestioneStudente">Anno Scolastico : </label>
+              <select class="form-control" id="inizioAnnoGestioneStudente" name="inizioAnnoGestioneStudente">
+              </select>
             </div>
 
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="nomeGestioneStudente">Nome :</label>
-                <input type="text" class="form-control" id="nomeGestioneStudente" name="nomeGestioneStudente">
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="cognomeGestioneStudente">Cognome :</label>
-                <input type="text" class="form-control" id="cognomeGestioneStudente" name="cognomeGestioneStudente">
-              </div>
+            <div class="form-group col-md-3">
+              <label for="classeGestioneStudente">Classe : </label>
+              <select class="form-control" id="classeGestioneStudente" name="classeGestioneStudente">
+              </select>
             </div>
 
+            <div class="form-group col-md-3">
+              <label for="sezioneGestioneStudente">Sezione : </label>
+              <select class="form-control" id="sezioneGestioneStudente" name="sezioneGestioneStudente">
+              </select>
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="luogoNascitaGestioneStudente">luogo di nascità :</label>
-                <input type="text" class="form-control" id="luogoNascitaGestioneStudente" name="luogoNascitaGestioneStudente">
-              </div>
 
-              <div class="form-group col-md-6">
-                <label for="dataNascitaGestioneStudente">data di nascità :</label>
-                <input type="text" class="form-control" id="dataNascitaGestioneStudente" name="dataNascitaGestioneStudente" placeholder="YYYY-MM-DD">
-              </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="nomeGestioneStudente">Nome :</label>
+              <input type="text" class="form-control" id="nomeGestioneStudente" name="nomeGestioneStudente">
             </div>
 
+            <div class="form-group col-md-6">
+              <label for="cognomeGestioneStudente">Cognome :</label>
+              <input type="text" class="form-control" id="cognomeGestioneStudente" name="cognomeGestioneStudente">
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="comuneGestioneStudente">comune :</label>
-                <input type="text" class="form-control" id="comuneGestioneStudente" name="comuneGestioneStudente">
-              </div>
 
-              <div class="form-group col-md-6">
-                <label for="capGestioneStudente">cap :</label>
-                <input type="text" class="form-control" id="capGestioneStudente" name="capGestioneStudente">
-              </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="luogoNascitaGestioneStudente">luogo di nascità :</label>
+              <input type="text" class="form-control" id="luogoNascitaGestioneStudente" name="luogoNascitaGestioneStudente">
             </div>
 
+            <div class="form-group col-md-6">
+              <label for="dataNascitaGestioneStudente">data di nascità :</label>
+              <input type="text" class="form-control" id="dataNascitaGestioneStudente" name="dataNascitaGestioneStudente" placeholder="YYYY-MM-DD">
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="viaGestioneStudente">via :</label>
-                <input type="text" class="form-control" id="viaGestioneStudente" name="viaGestioneStudente">
-              </div>
 
-              <div class="form-group col-md-6">
-                <label for="numeroCivicoGestioneStudente">numero civico :</label>
-                <input type="text" class="form-control" id="numeroCivicoGestioneStudente" name="numeroCivicoGestioneStudente">
-              </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="comuneGestioneStudente">comune :</label>
+              <input type="text" class="form-control" id="comuneGestioneStudente" name="comuneGestioneStudente">
             </div>
 
+            <div class="form-group col-md-6">
+              <label for="capGestioneStudente">cap :</label>
+              <input type="text" class="form-control" id="capGestioneStudente" name="capGestioneStudente">
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-12">
-                <label for="statoAmmissioneGestioneStudente">Stato Ammissione :</label>
-                <input id="statoAmmissioneGestioneStudente" type="checkbox" name="statoAmmissioneGestioneStudente" value="ammesso">
-              </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="viaGestioneStudente">via :</label>
+              <input type="text" class="form-control" id="viaGestioneStudente" name="viaGestioneStudente">
             </div>
 
-
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <button type="submit" class="btn btn-primary">Modifica</button>
-                <button type="button" class="btn btn-primary" id="deleteStudenteBtn">Elimina</button>
-              </div>
+            <div class="form-group col-md-6">
+              <label for="numeroCivicoGestioneStudente">numero civico :</label>
+              <input type="text" class="form-control" id="numeroCivicoGestioneStudente" name="numeroCivicoGestioneStudente">
             </div>
+          </div>
 
-          </form>
 
-        </div>
-        <div class="modalFooterGestioneClasse" id="modalFooterGestioneClasse">
-            <h4 id="modalFooterContentGestioneStudente"></h4>
-        </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="statoAmmissioneGestioneStudente">Stato Ammissione :</label>
+              <input id="statoAmmissioneGestioneStudente" type="checkbox" name="statoAmmissioneGestioneStudente" value="ammesso">
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success">Modifica</button>
+            <button type="button" class="btn btn-danger" id="deleteSezioneBtn">Elimina</button>
+          </div>
+
+        </form>
+
+      </div>
 
     </div>
+
+  </div>
+</div>

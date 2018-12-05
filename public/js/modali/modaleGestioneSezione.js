@@ -34,13 +34,10 @@ function openModaleGestioneSezione (annoScolastico,classe,sezione,formAction,tit
   $("#deleteSezioneBtn").attr("onclick","eliminaSezione('"+annoScolastico+"','"+classe+"','"+sezione+"')");
   $("#formGestioneSezione").attr("action",formAction);
   console.log("formAction = " + formAction)
-
-  $("#modalContentGestioneSezione").css("display","block");
-  $("#modal").css("display","block");
+  $("#modaleGestioneSezione").modal("show")
 }
 function closeModaleGestioneSezione (){
-  $("#modalContentGestioneSezione").css("display","none");
-  $("#modal").css("display","none");
+  $("#modaleGestioneSezione").modal('hide');
   $("#inizioAnnoGestioneSezione").empty()
   $("#classeGestioneSezione").empty()
   $("#sezioneGestioneSezione").empty()

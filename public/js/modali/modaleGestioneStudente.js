@@ -40,13 +40,11 @@ function openModaleGestioneStudente (annoScolastico,classe,sezione,nome,cognome,
   $("#deleteStudenteBtn").attr("onclick","eliminaStudente('"+id+"','"+annoScolastico+"','"+classe+"','"+sezione+"')")
   $("#formGestioneStudente").attr("action",formAction);
 
-  $("#modalContentGestioneStudente").css("display","block");
-  $("#modal").css("display","block");
+  $("#modaleGestioneStudente").modal("show")
 }
 
 function closeModaleGestioneStudente (){
-  $("#modalContentGestioneStudente").css("display","none");
-  $("#modal").css("display","none");
+  $("#modaleGestioneStudente").modal("hide")
   $("#inizioAnnoGestioneStudente").empty()
   $("#classeGestioneStudente").empty()
   $("#sezioneGestioneStudente").empty()

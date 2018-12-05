@@ -1,8 +1,6 @@
 function closeModalGestioneAnnoScolastico(){
-    $(".modalContentGestioneAnnoScolastico").css("display","none");
-    $(".modal").css("display","none");
+    $("#modaleGestioneAnnoScolastico").modal("hide")
     $("#annoScolasticoGestioneAnno").empty();
-
 }
 
 function openModaleGestioneAnnoScolastico(annoScolastico,formAction,title){
@@ -18,11 +16,8 @@ function openModaleGestioneAnnoScolastico(annoScolastico,formAction,title){
 
     $("#modalTitleGestioneAnnoScolastico").html(title);
     $("#formGestioneAnno").attr("action",formAction);
-    console.log(formAction)
     $("#deleteAnnoBtn").attr("onclick","eliminaAnnoScolastico('"+annoScolastico+"')");
-
-    $(".modalContentGestioneAnnoScolastico").css("display","block");
-    $(".modal").css("display","block");
+    $("#modaleGestioneAnnoScolastico").modal("show");
 }
 
 function eliminaAnnoScolastico(anno){

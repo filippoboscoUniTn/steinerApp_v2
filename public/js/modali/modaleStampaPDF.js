@@ -1,13 +1,10 @@
 "use strict";
 function closeModaleStampa(){
-    $(".modalContentStampaPDF").css("display","none");
-    $(".modal").css("display","none")
+  $("#modaleStampaPDF").modal("hide");
 }
 
 function openModaleStampa(formAction,title) {
-    console.log("openModaleStampa\nformAction = " + formAction + "\ntitle = " + title)
     $("#modalTitleStampaPDF").html(title);
     $("#formStampaPDF").attr("action",formAction);
-    $(".modal").css("display","block");
-    $(".modalContentStampaPDF").css("display","block");
+    $("#modaleStampaPDF").modal("show");
 }

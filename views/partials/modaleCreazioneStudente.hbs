@@ -1,89 +1,51 @@
-<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
-    <div class="modalContentGestioneClasse" id="modalContentCreaStudente">
+<div class="modal fade" id="openModaleNuovoStudente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white" id="modalTitleCreaStudente"></h4>
+        <button type="button" class="btn btn-danger" onclick="closeModaleCreaStudente()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
 
-        <div class="modalHeaderGestioneClasse">
-            <h3 id="modalTitleCreaStudente"></h3>
-            <button class="btn btn-md " onclick="closeModaleCreaStudente()">
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-        </div>
+        <form method="POST" id="formCreaStudente">
 
-        <div class="modalBodyGestioneClasse" id="modalBodyCreaStudente">
+          <label for="nomeCreaStudente">Nome :</label>
+          <input type="text" class="form-control" id="nomeCreaStudente" name="nomeCreaStudente">
+          <br>
+          <label for="cognomeCreaStudente">Cognome :</label>
+          <input type="text" class="form-control" id="cognomeCreaStudente" name="cognomeCreaStudente">
+          <br>
+          <label for="luogoNascitaCreaStudente">Luogo di nascità :</label>
+          <input type="text" class="form-control" id="luogoNascitaCreaStudente" name="luogoNascitaCreaStudente">
+          <br>
+          <label for="dataNascitaCreaStudente">Data di nascità :</label>
+          <input type="text" class="form-control" id="dataNascitaCreaStudente" name="dataNascitaCreaStudente" placeholder="YYYY-MM-DD">
+          <br>
+          <label for="comuneCreaStudente">Comune :</label>
+          <input type="text" class="form-control" id="comuneCreaStudente" name="comuneCreaStudente">
+          <br>
+          <label for="capCreaStudente">Cap :</label>
+          <input type="text" class="form-control" id="capCreaStudente" name="capCreaStudente">
+          <br>
+          <label for="viaCreaStudente">Via :</label>
+          <input type="text" class="form-control" id="viaCreaStudente" name="viaCreaStudente">
+          <br>
+          <label for="numeroCivicoCreaStudente">Numero civico :</label>
+          <input type="text" class="form-control" id="numeroCivicoCreaStudente" name="numeroCivicoCreaStudente">
+          <br>
+          <label for="statoAmmissioneCreaStudente">Stato ammissione :</label>
+          <input id="statoAmmissioneCreaStudente" type="checkbox" name="statoAmmissioneCreaStudente" value="ammesso">
+          <br>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success">Crea</button>
+          </div>
 
-          <form method="POST" id="formCreaStudente">
+        </form>
 
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="nomeCreaStudente">Nome :</label>
-                <input type="text" class="form-control" id="nomeCreaStudente" name="nomeCreaStudente">
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="cognomeCreaStudente">Cognome :</label>
-                <input type="text" class="form-control" id="cognomeCreaStudente" name="cognomeCreaStudente">
-              </div>
-            </div>
-
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="luogoNascitaCreaStudente">Luogo di nascità :</label>
-                <input type="text" class="form-control" id="luogoNascitaCreaStudente" name="luogoNascitaCreaStudente">
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="dataNascitaCreaStudente">Data di nascità :</label>
-                <input type="text" class="form-control" id="dataNascitaCreaStudente" name="dataNascitaCreaStudente" placeholder="YYYY-MM-DD">
-              </div>
-            </div>
-
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="comuneCreaStudente">Comune :</label>
-                <input type="text" class="form-control" id="comuneCreaStudente" name="comuneCreaStudente">
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="capCreaStudente">Cap :</label>
-                <input type="text" class="form-control" id="capCreaStudente" name="capCreaStudente">
-              </div>
-            </div>
-
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="viaCreaStudente">Via :</label>
-                <input type="text" class="form-control" id="viaCreaStudente" name="viaCreaStudente">
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="numeroCivicoCreaStudente">Numero civico :</label>
-                <input type="text" class="form-control" id="numeroCivicoCreaStudente" name="numeroCivicoCreaStudente">
-              </div>
-            </div>
-
-
-            <div class="form-row">
-              <div class="form-group col-md-12">
-                <label for="statoAmmissioneCreaStudente">Stato ammissione :</label>
-                <input id="statoAmmissioneCreaStudente" type="checkbox" name="statoAmmissioneCreaStudente" value="ammesso">
-              </div>
-            </div>
-
-
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <button type="submit" class="btn btn-primary">Crea Nuovo Studente</button>
-              </div>
-            </div>
-
-          </form>
-
-        </div>
-        <div class="modalFooterGestioneClasse" id="modalFooterGestioneClasse">
-            <h4 id="modalFooterContentCreaStudente"></h4>
-        </div>
+      </div>
 
     </div>
+  </div>
+</div>

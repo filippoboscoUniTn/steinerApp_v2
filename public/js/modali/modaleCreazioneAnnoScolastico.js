@@ -9,13 +9,10 @@ function openModaleNuovoAnnoScolastico(reqUrl,title){
     if(i==currentYear){selected = true}
     $("#annoScolasticoCreaAnno").append(new Option(anno,value,true,selected))
   }
-
-  $("#modalContentCreaAnnoScolastico").css("display","block");
-  $(".modal").css("display","block");
+  $("#modaleNuovoAnno").modal('show');
 }
 
 function closeModalCreaAnnoScolastico() {
-  $("#modalContentCreaAnnoScolastico").css("display","none");
-  $(".modal").css("display","none");
   $("#annoScolasticoCreaAnno").empty();
+  $("#modaleNuovoAnno").modal("hide");
 }

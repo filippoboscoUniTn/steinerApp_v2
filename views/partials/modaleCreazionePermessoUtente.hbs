@@ -1,0 +1,69 @@
+<div class="modal fade" id="modaleCreaPermesso" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white" id="modalTitleCreaPermesso"></h4>
+        <button type="button" class="btn btn-danger" onclick="closeModaleCreaPermesso()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form method="POST" id="formCreaPermesso">
+          <p class="h5"> Materia : </p>
+          <input type="text" name="materia" id="materiaPermesso" placeholder="Inserire una materia">
+          <br>
+          <br>
+          <p class="h5"> Classi : </p>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
+            <label class="form-check-label" for="inlineCheckbox1">1</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
+            <label class="form-check-label" for="inlineCheckbox2">2</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3">
+            <label class="form-check-label" for="inlineCheckbox1">3</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox4" value="4">
+            <label class="form-check-label" for="inlineCheckbox2">4</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox5" value="5">
+            <label class="form-check-label" for="inlineCheckbox1">5</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox6" value="6">
+            <label class="form-check-label" for="inlineCheckbox2">6</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox7" value="7">
+            <label class="form-check-label" for="inlineCheckbox1">7</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input name="classi" class="form-check-input" type="checkbox" id="inlineCheckbox8" value="8">
+            <label class="form-check-label" for="inlineCheckbox2">8</label>
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success">Crea</button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>

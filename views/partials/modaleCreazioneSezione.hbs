@@ -1,73 +1,48 @@
-<!-- >Modale per la CREAZIONE di una nuova CLASSE <!-->
-    <div class="modalContentGestioneClasse" id="modalContentCreaSezione">
+<div class="modal fade" id="modaleNuovaSezione" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white" id="modalTitleCreaSezione"></h4>
+        <button type="button" class="btn btn-danger" onclick="closeModaleCreaSezione()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
 
-        <div class="modalHeaderGestioneClasse">
-            <h3 id="modalTitleCreaSezione"></h3>
-            <button class="btn btn-md " onclick="closeModaleCreaSezione()">
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-        </div>
+        <form method="POST" id="formCreaSezione">
 
-        <div class="modalBodyGestioneClasse" id="modalBodyCreaSezione">
+          <label for="annoScolasticoCreaSezione">Anno Scolastico : </label>
+          <select class="form-control" id="inizioAnnoCreaSezione" name="inizioAnnoCreaSezione">
+          </select>
 
-          <form method="POST" id="formCreaSezione">
+          <label for="classeCreaClasse">Classe : </label>
+          <select class="form-control" id="classeCreaSezione" name="classeCreaClasse">
+          </select>
 
-            <div class="form-row">
+          <label for="sezioneCreaClasse">Sezione : </label>
+          <select class="form-control" id="sezioneCreaSezione" name="sezioneCreaClasse">
+          </select>
 
-              <div class="form-group col-md-6">
-                <label for="annoScolasticoCreaSezione">Anno Scolastico : </label>
-                <select class="form-control" id="inizioAnnoCreaSezione" name="inizioAnnoCreaSezione">
-                </select>
-              </div>
+          <label for="materieCreaClasse">Materie :</label>
+          <input type="text" class="form-control" id="materieCreaSezione" name="materieCreaClasse" placeholder="Storia,Italiano,Matematica,...">
+          <small>Inserire le materie separate da una virgola</small>
+          <br>
+          <br>
+          <p class="h5">Maestro di Classe</p>
+          <label for="nomeMaestroCreaClasse">Nome :</label>
+          <input type="text" class="form-control" id="nomeMaestroCreaSezione" name="nomeMaestroCreaClasse">
 
+          <label for="cognomeMaestroCreaClasse">Cognome :</label>
+          <input type="text" class="form-control" id="cognomeMaestroCreaSezione" name="cognomeMaestroCreaClasse">
 
-              <div class="form-group col-md-3">
-                <label for="classeCreaSezione">Classe : </label>
-                <select class="form-control" id="classeCreaSezione" name="classeCreaSezione">
-                </select>
-              </div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success">Crea</button>
+          </div>
 
-              <div class="form-group col-md-3">
-                <label for="sezioneCreaSezione">Sezione : </label>
-                <select class="form-control" id="sezioneCreaSezione" name="sezioneCreaSezione">
-                </select>
-              </div>
+        </form>
 
-            </div>
-
-            <div class="form-row">
-              <div class="form-group col-md-12">
-                <label for="materieCreaSezione">Materie :</label>
-                <input type="text" class="form-control" id="materieCreaSezione" name="materieCreaSezione" placeholder="Storia,Italiano,Matematica,...">
-                <small>Inserire le materie separate da una virgola</small>
-              </div>
-            </div>
-
-            <div class="col-sm-12">
-              <label>Maestro di Classe</label>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="nomeMaestroCreaSezione">Nome :</label>
-                <input type="text" class="form-control" id="nomeMaestroCreaSezione" name="nomeMaestroCreaSezione">
-              </div>
-              <div class="form-group col-md-6">
-                <label for="cognomeMaestroCreaSezione">Cognome :</label>
-                <input type="text" class="form-control" id="cognomeMaestroCreaSezione" name="cognomeMaestroCreaSezione">
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <button type="submit" class="btn btn-primary">Crea</button>
-              </div>
-            </div>
-          </form>
-
-        </div>
-        <div class="modalFooterCreaSezione" id="modalFooterCreaSezione">
-            <h4 id="modalFooterContentCreaSezione"></h4>
-        </div>
+      </div>
 
     </div>
+  </div>
+</div>

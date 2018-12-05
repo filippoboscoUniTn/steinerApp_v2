@@ -1,12 +1,4 @@
-/*Contenitore modali*/
-.modal{
-    display: none;
-    position: all;
-    height: 100%;
-    width: 100%;
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+
 
 
 
@@ -17,7 +9,7 @@
     position: fixed;
     top: 10%;
     left: 30%;
-    height: 200px;
+    height: 250px;
     width: 500px;
     background-color: #eee;
 }
@@ -47,10 +39,9 @@
 .modalBodyStampaPDF{
     position: absolute;
     top:20%;
-    height: 80%;
+    height: 100%;
     width: 100%;
     padding: 10px;
-    overflow-y: auto;
 }
 
 
@@ -257,6 +248,7 @@
     background-color: #eee;
     position: absolute;
     right: 0;
+    float: right;
 
 }
 .modalHeaderGestioneClasse > button> span{

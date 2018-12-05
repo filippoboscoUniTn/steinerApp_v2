@@ -19,14 +19,11 @@ function openModaleNuovaSezione (reqUrl,title){
   }
   $("#modalTitleCreaSezione").html(title)
   $("#formCreaSezione").attr("action",reqUrl)
-  $("#modalContentCreaSezione").css("display","block")
-  $(".modal").css("display","block")
+  $("#modaleNuovaSezione").modal("show")
 }
 function closeModaleCreaSezione (){
-  $("#modalContentCreaSezione").css("display","none")
-  $(".modal").css("display","none")
+  $("#modaleNuovaSezione").modal("hide")
   $("#inizioAnnoCreaSezione").empty();
   $("#classeCreaSezione").empty();
   $("#sezioneCreaSezione").empty();
-
 }

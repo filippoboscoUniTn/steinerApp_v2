@@ -28,8 +28,5 @@ router.get('/',async function(req,res,next){
   }
 });
 
-router.get('/test',async (req,res,next)=>{
-  res.render('test',{layout:'testLayout',title:'Test'})
-})
 
 module.exports = router;

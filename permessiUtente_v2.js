@@ -11,38 +11,25 @@ const utenti = require('./utenti');
 //-------------------------------- /END ----------------------------------------
 
 
-// let permessiUtente = new Schema ({
-//   idUtente: Schema.Types.ObjectId,
-//   annoScolastico: String,
-//   materia: String,
-//   classi: [Number]
-// })
+//------------------------------ PERMESSI  SCHEMA ------------------------------
+let schemaPermessiUtente = new Schema ({
+  idUtente: Schema.Types.ObjectId,
+  annoScolastico: String,
+  materia: String,
+  classi: [Number]
+},{collection:'PermessiUtente'})
 
-
-//------------------------------- PERMESSI  MODEL ------------------------------
-let permessiUtenteSchema = new Schema ({
-  nome : String,
-  cognome : String,
-  annoScolastico : String,
-  permessi : [
-    {
-      materia : String,
-      classi : [ Number ]
-    }
-  ]
-},{collection:'PermessiUtente'});
-
-let PermessiUtente = mongoose.model('PermessiUtente', permessiUtenteSchema);
+schemaPermessiUtente.index({idUtente:1,annoScolastico:1,materia:1},{unique:true});
+let PermessiUtente = mongoose.model('PermessiUtente', schemaPermessiUtente);
 
 module.exports = PermessiUtente;
 //-------------------------------- /END ----------------------------------------
 
 
 //-------------------------------- GET QUERIES ---------------------------------
-                        //to check ret val
-module.exports.getAnniScolasticiUtente = function (nome,cognome){
+module.exports.getAnniScolasticiUtente = function (id){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({nome:nome,cognome:cognome},{annoScolastico:1,_id:0},function (err,results){
+    PermessiUtente.find({idUtente:id},{annoScolastico:1,_id:0},function (err,results){
       if(err){
         reject(err)
       }
@@ -57,44 +44,36 @@ module.exports.getAnniScolasticiUtente = function (nome,cognome){
     })
   });
 };
-                        //to check ret val
-module.exports.getMaterieFromAnnoScolastico = function (nome,cognome,annoScolastico) {
+module.exports.getMaterieFromAnnoScolastico = function (id,annoScolastico) {
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({nome:nome,cognome:cognome,annoScolastico:annoScolastico},{permessi:1,_id:0},function (err,permessi){
+    PermessiUtente.find({idUtente:id,annoScolastico:annoScolastico},function (err,permessi){
       if(err){
         reject(err)
       }
-      let materie = [];
-      for(let i=0;i<permessi[0].permessi.length;i++){
-        materie.push(permessi[0].permessi[i].materia)
-      }
+
+      let materie = results.map(r=>r.materia)
+      console.log("getMaterieFromAnnoScolastico, materie = > " + materie);
       resolve(materie);
     })
   });
 };
 
-module.exports.getClassiFromAnnoScolasticoMateria = function (nome,cognome,annoScolastico,materia){
+module.exports.getClassiFromAnnoScolasticoMateria = function (id,annoScolastico,materia){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({nome:nome,cognome:cognome,annoScolastico:annoScolastico,'permessi.materia':materia},{'permessi.$':1,_id:0},function (err,results){
+    PermessiUtente.findOne({idUtente:id,annoScolastico:annoScolastico,materia:materia},function (err,result){
       if(err){
         reject(err)
       }
       else{
-        let classi = [];
-        for(let i=0;i<results[0].permessi.length;i++){
-          for(let j=0;j<results[0].permessi[i].classi.length;j++){
-            classi.push(results[0].permessi[i].classi[j]);
-          }
-        }
-        resolve(classi)
+        resolve(result.classi)
       }
     })
   });
 };
-
-module.exports.getPermessiUtente = function(utente){
+//eliminabile, non usata
+module.exports.getPermessiUtente = function(id){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({nome:utente.nome,cognome:utente.cognome},function(err,results){
+    PermessiUtente.find({idUtente:id},function(err,results){
       if(err){
         reject(err)
       }
@@ -104,10 +83,10 @@ module.exports.getPermessiUtente = function(utente){
     })
   });
 }
-
-module.exports.getPermessiUtenteByAnno = async(utente,anno)=>{
+//controllare dove viene usata
+module.exports.getPermessiUtenteByAnno = function(id,anno){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({nome:utente.nome,cognome:utente.cognome,annoScolastico:anno},(err,results)=>{
+    PermessiUtente.find({idUtente:id,annoScolastico:anno},(err,results)=>{
       if(err){
         reject(err)
       }
@@ -119,6 +98,9 @@ module.exports.getPermessiUtenteByAnno = async(utente,anno)=>{
 }
 //-------------------------------- /END ----------------------------------------
 
+//-------------------------------- UPDATE QUERIES ------------------------------
+
+//----------------------------------- /END -------------------------------------
 
 //------------------------------ DELETE QUERIES --------------------------------
 module.exports.deleteAnno = anno=>{

@@ -468,17 +468,19 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
     try{
       const esistente = await AnniScolastici.annoGiaEsistente(newAnno)
-      if(esiste){
+      if(esistente){
         req.session.errorMsg = "L'anno scolastico " + newAnno + " esiste già!"
         res.redirect("/admin/gestioneAnni");
       }
-      const updateAnniProm = AnniScolastici.updateAnnoScolastico(oldAnno,newAnno);
-      const updateClassiProm = Classi.updateAnnoScolastico(oldAnno,newAnno);
-      const updatePagelleProm = Pagelle.updateAnnoScolastico(oldAnno,newAnno);
+      else{
+        const updateAnniProm = AnniScolastici.updateAnnoScolastico(oldAnno,newAnno);
+        const updateClassiProm = Classi.updateAnnoScolastico(oldAnno,newAnno);
+        const updatePagelleProm = Pagelle.updateAnnoScolastico(oldAnno,newAnno);
 
-      const results = await Promise.all(updateAnniProm,updateClassiProm,updatePagelleProm);
-      req.session.successMsg = "Anno modificato con successo!"
-      res.redirect("/admin/gestioneAnni")
+        const results = await Promise.all(updateAnniProm,updateClassiProm,updatePagelleProm);
+        req.session.successMsg = "Anno modificato con successo!"
+        res.redirect("/admin/gestioneAnni")
+      }
     }
     catch(err){
         req.session.errorMsg = "Errore interno.\n" + err + "\n";
@@ -493,7 +495,6 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
     try{
       let annoScolastico = req.params.as;
       const studenti = await Classi.getStudentiFromAnnoScolastico(annoScolastico)
-      console.log(require('util').inspect(studenti, { depth: null }));
       const deletePagelleProm = Promise.all( studenti.map(s=>{ return Pagelle.deletePagelleStudente(s) }) )
       const deleteStudentiProm = Promise.all( studenti.map(s=>{ return Studenti.deleteStudenteById(s)  }) )
       const deleteClassiProm = Classi.deleteAnno(annoScolastico)
@@ -520,7 +521,6 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
 
 //------------------------- PAGINE AREA AMMINISTRATORE -------------------------
 
-  //ok
   //---------------------------- GESTIONE STUDENTI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione',function(req,res,next){
     let annoScolastico = req.params.as;
@@ -531,7 +531,7 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
         return Studenti.getInfoStudentiById(idStudenti)
       })
       .then(infoStudenti=>{
-        res.render('./areaAmministratore/gestioneDB/gestioneStudenti',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Studenti',subTitle:'Gestione Studenti Classe ' + classe + ' Sezione ' +sezione ,annoScolastico:annoScolastico,classe:classe,sezione:sezione,studenti:infoStudenti})
+        res.render('./areaAmministratore/gestioneDB/gestioneAnni/gestioneStudenti',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Studenti',subtitle:'Gestione Studenti Classe ' + classe + ' Sezione ' +sezione ,annoScolastico:annoScolastico,classe:classe,sezione:sezione,studenti:infoStudenti})
       })
       .catch(err=>{
         next(err);
@@ -539,14 +539,13 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   });
   //----------------------------------- END ------------------------------------
 
-  //ok
   //----------------------------- GESTIONE SEZIONI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])',function(req,res,next){
     let annoScolastico = req.params.as;
     let classe = req.params.classe;
     Classi.getSezioniFromAnnoScolasticoAndClasse(annoScolastico,classe)
           .then(sezioni=>{
-            res.render('./areaAmministratore/gestioneDB/gestioneSezioni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Sezioni',subTitle:'Gestione Sezioni Classe ' + classe ,annoScolastico:annoScolastico,classe:classe,sezioni:sezioni})
+            res.render('./areaAmministratore/gestioneDB/gestioneAnni/gestioneSezioni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Sezioni',subtitle:'Gestione Sezioni Classe ' + classe ,annoScolastico:annoScolastico,classe:classe,sezioni:sezioni})
           })
           .catch(err=>{
             next(err);
@@ -554,13 +553,12 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   });
   //----------------------------------- END ------------------------------------
 
-  //ok
   //------------------------------ GESTIONE CLASSI -----------------------------
   router.get('/:as(20[0-9][0-9]/[0-9][0-9]$)',function(req,res,next){
       let annoScolastico = req.params.as;
       Classi.getClassiFromAnnoScolastico(annoScolastico)
         .then(classi=>{
-          res.render('./areaAmministratore/gestioneDB/gestioneClassi',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Classi',subTitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
+          res.render('./areaAmministratore/gestioneDB/gestioneAnni/gestioneClassi',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Classi',subtitle:'Gestione Classi '+ annoScolastico,annoScolastico:annoScolastico,classi:classi})
         })
         .catch(err=>{
           next(err)
@@ -568,13 +566,11 @@ router.get('/getMaterie/:as(20[0-9][0-9]/[0-9][0-9])/:classe([1-8])/:sezione([A-
   });
   //----------------------------------- END ------------------------------------
 
-  //ok
   //------------------------- GESTIONE ANNI SCOLASTICI -------------------------
   router.get('/',function(req,res,next){
       AnniScolastici.getAnniScolastici()
         .then(anniScolastici=>{
-          console.log(require('util').inspect(anniScolastici, { depth: null }));
-          res.render('./areaAmministratore/gestioneDB/gestioneAnni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Anni Scolastici',subtitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
+          res.render('./areaAmministratore/gestioneDB/gestioneAnni/gestioneAnni',{layout:'authLayout',success_msg:res.locals.successMsg,error_msg:res.locals.errorMsg,title:'Gestione Anni Scolastici',subtitle:'Gestione Anni Scolastici',anniScolastici:anniScolastici})
         })
         .catch(err=>{
           next(err)

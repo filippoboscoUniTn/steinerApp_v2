@@ -21,14 +21,11 @@ function openModaleGestioneClasse(annoScolastico,classe,formAction,title){
     $("#modalTitleGestioneClasse").html(title);
     $("#deleteClasseBtn").attr("onclick","eliminaClasse('"+annoScolastico+"','"+classe+"')");
     $("#formGestioneClasse").attr("action",formAction);
-
-    $("#modalContentGestioneClasse").css("display","block");
-    $(".modal").css("display","block");
+    $("#modaleGestioneClasse").modal("show");
 }
 
 function closeModaleGestioneClasse(){
-    $("#modalContentGestioneClasse").css("display","none");
-    $(".modal").css("display","none");
+    $("#modaleGestioneClasse").modal("hide");
     $("#inizioAnnoGestioneClasse").empty()
     $("#classeGestioneClasse").empty()
 

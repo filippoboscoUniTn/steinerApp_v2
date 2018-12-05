@@ -120,11 +120,43 @@ module.exports.getAdmins = ()=>{
 
 
 //------------------------------ UPDATE QUERIES --------------------------------
-
+module.exports.updateUser = (id,newUser)=>{
+  console.log(require('util').inspect(newUser, { depth: null }));
+  console.log("id = " + id)
+  return new Promise(function(resolve, reject) {
+    Utenti.update({_id:id},{nome:newUser.nome,
+                            cognome:newUser.cognome,
+                            email:newUser.email,
+                            username:newUser.username,
+                            authorization:newUser.authorization,
+                            status:newUser.status},
+        (err,numAffected)=>{
+            if(err){
+              reject(err)
+            }
+            else{
+              console.log(require('util').inspect(numAffected, { depth: null }));
+              resolve()
+            }
+          })
+  });
+}
 //-------------------------------- /END ----------------------------------------
 
 
 //------------------------------ DELETE QUERIES --------------------------------
+module.exports.deleteUtente = (id)=>{
+  return new Promise(function(resolve, reject) {
+    Utenti.remove({_id:id},function(err){
+      if(err){
+        reject(err)
+      }
+      else{
+        resolve();
+      }
+    })
+});
+}
 
 //-------------------------------- /END ----------------------------------------
 
@@ -143,4 +175,26 @@ module.exports.comparePasswords = (passwordToTest,userPassword)=>{
     })
   });
 };
+module.exports.usernameAvalibility = (username,id)=>{
+  console.log("hi")
+  return new Promise(function(resolve, reject) {
+    Utenti.findOne({username:username},(err,user)=>{
+      if(err){
+        reject(err)
+      }
+      else{
+        console.log(require('util').inspect(user, { depth: null }));
+        if(!user){
+          resolve(true);
+        }
+        else if(user && user.id === id){
+          resolve(true)
+        }
+        else{
+          resolve(false);
+        }
+      }
+    })
+  });
+}
 //-------------------------------- /END ----------------------------------------
