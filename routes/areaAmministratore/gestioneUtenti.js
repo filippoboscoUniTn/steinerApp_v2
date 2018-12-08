@@ -50,7 +50,11 @@ let router = express.Router();
                                                                               title:"Gestione Permessi",
                                                                               subtitle:"<a href='\\admin/gestioneUtenti'>Gestione Utenti</a> &gt <a href='\\admin/gestioneUtenti/utente/"+infoUtente.id+"'>Info e Permessi</a> &gt <a href='\\admin/gestioneUtenti/utente/"+infoUtente.id+"/permessi'>" + annoScolastico +"</a>",
                                                                               utente:infoUtente,
-                                                                              permessi:permessiUtente})
+                                                                              permessi:permessiUtente,
+                                                                              annoScolastico:annoScolastico,
+                                                                              success_msg:res.locals.successMsg,
+                                                                              error_msg: res.locals.errorMsg
+                                                                              })
       }
       catch(err){
         next(err)
@@ -59,14 +63,17 @@ let router = express.Router();
 
     router.get("/utente/:id/permessi",async(req,res,next)=>{
       let id = req.params.id;
+      console.log(id);
       try{
         const infoUtente = await Utenti.getUserById(id);
-        const anniPermessi = await PermessiUtente.getAnniScolasticiUtente(infoUtente.nome,infoUtente.cognome);
+        const anniRes = await AnniScolastici.getAnniScolastici(id);
+        let anni = anniRes.map(a=>a.nome);
+        console.log(anni);
         res.render("./areaAmministratore/gestioneDB/gestioneUtenti/gestioneUtente",{ layout:"authLayout",
                                                                       title:"Gestione Utente",
                                                                       subtitle:"<a href='\\admin/gestioneUtenti'>Gestione Utenti</a> &gt <a href='\\admin/gestioneUtenti/utente/"+infoUtente.id+"'>Info e Permessi</a> &gt Permessi Utente",
                                                                       utente:infoUtente,
-                                                                      permessi:anniPermessi})
+                                                                      anniPermessi:anni})
 
       }
       catch(err){
@@ -158,38 +165,66 @@ let router = express.Router();
         res.send("ok")
       }
       catch(err){
-        req.session.errorMsg = "Errore durante l'eliminazione dell'utente!"
+        req.session.errorMsg = "Errore durante l'eliminazione dell'utente!\n" + err
         res.send(err)
       }
     })
     //------------------------------------ END ---------------------------------
 
     //--------------------------- ELIMINA PERMESSO UTENTE ---------------------
-    router.post("/deletePermesso/:id/:annoScolastico(20[0-9][0-9]/[0-9][0-9])/:materia",async(req,res,next)=>{
-
+    router.post("/deletePermesso/:id/:as(20[0-9][0-9]/[0-9][0-9])/:materia",async(req,res,next)=>{
+      let id = req.params.id;
+      let annoScolastico = req.params.as;
+      let materia = req.params.materia;
+      try{
+        const deleteResult = await PermessiUtente.deletePermesso(id,annoScolastico,materia);
+        req.session.successMsg = "Permesso eliminato con successo!";
+        res.sendStatus(200);
+      }catch(err){
+        req.session.errorMsg = "Errore durante l'eliminazione del permesso\n" + err;
+        res.sendStatus(501);
+      }
     })
     //------------------------------------ END ---------------------------------
 
     //-------------------------- MODIFICA PERMESSO UTENTE ----------------------
-    router.post("/creaPermesso/:id/:annoScolastico(20[0-9][0-9]/[0-9][0-9]$)",async(req,res,next)=>{
-      console.log("hello from modifica permesso")
+    router.post("/updatePermesso/:id/:annoScolastico(20[0-9][0-9]/[0-9][0-9])/:materia",async(req,res,next)=>{
       let annoScolastico = req.params.annoScolastico;
       let id = req.params.id;
-      let materia = req.body.materia;
+      let materia = req.params.materia;
       let classi = req.body.classi;
-      console.log(annoScolastico,id,materia,classi);
       try{
-
+        const updateResults = await PermessiUtente.updatePermesso(id,annoScolastico,materia,classi);
+        req.session.successMsg = "Permesso modificato con successo!";
+        res.redirect("/admin/gestioneUtenti/utente/" +id +"/permessi/" + annoScolastico);
       }
       catch(err){
-
+        req.session.errorMsg = "Errore durante la modifica del permesso!\n" + err;
+        res.redirect("/admin/gestioneUtenti/utente/" +id +"/permessi/" + annoScolastico);
       }
     })
     //----------------------------------- END ----------------------------------
 
     //-------------------------- CREA NUOVO PERMESSO ---------------------------
-    router.post("",async(req,res,next)=>{
-
+    router.post("/creaPermesso/:id/:annoScolastico(20[0-9][0-9]/[0-9][0-9]$)",async(req,res,next)=>{
+      let id = req.params.id;
+      let annoScolastico = req.params.annoScolastico;
+      let materia = req.body.materia;
+      let classi = req.body.classi;
+      try{
+        let newPermesso = {
+          idUtente:id,
+          annoScolastico:annoScolastico,
+          materia:materia,
+          classi:classi
+        }
+        const saveResults = await (new PermessiUtente(newPermesso).save());
+        req.session.successMsg = "Permesso creato con successo!"
+        res.sendStatus(200);
+      }catch(err){
+        req.session.errorMsg = "Errore durante la creazione del permesso!\n"+ err;
+        res.sendStatus(501);
+      }
     })
     //----------------------------------- END ----------------------------------
 

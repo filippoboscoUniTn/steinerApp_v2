@@ -285,6 +285,7 @@ html,body{
 }
 .gray-xl{
   height:auto;
+	min-height: 140px;
   padding-bottom:20px;
   margin-top: 10px;
 

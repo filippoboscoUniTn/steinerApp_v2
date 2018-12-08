@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use strict";
 //------------------------------- NODE_MODULES ---------------------------------
 const mongoose = require('mongoose');
@@ -11,25 +31,38 @@ const utenti = require('./utenti');
 //-------------------------------- /END ----------------------------------------
 
 
-//------------------------------ PERMESSI  SCHEMA ------------------------------
-let schemaPermessiUtente = new Schema ({
-  idUtente: Schema.Types.ObjectId,
-  annoScolastico: String,
-  materia: String,
-  classi: [Number]
-},{collection:'PermessiUtente'})
+// let permessiUtente = new Schema ({
+//   idUtente: Schema.Types.ObjectId,
+//   annoScolastico: String,
+//   materia: String,
+//   classi: [Number]
+// })
 
-schemaPermessiUtente.index({idUtente:1,annoScolastico:1,materia:1},{unique:true});
-let PermessiUtente = mongoose.model('PermessiUtente', schemaPermessiUtente);
+
+//------------------------------- PERMESSI  MODEL ------------------------------
+let permessiUtenteSchema = new Schema ({
+  nome : String,
+  cognome : String,
+  annoScolastico : String,
+  permessi : [
+    {
+      materia : String,
+      classi : [ Number ]
+    }
+  ]
+},{collection:'PermessiUtente'});
+
+let PermessiUtente = mongoose.model('PermessiUtente', permessiUtenteSchema);
 
 module.exports = PermessiUtente;
 //-------------------------------- /END ----------------------------------------
 
 
 //-------------------------------- GET QUERIES ---------------------------------
-module.exports.getAnniScolasticiUtente = function (id){
+                        //to check ret val
+module.exports.getAnniScolasticiUtente = function (nome,cognome){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({idUtente:id},{annoScolastico:1,_id:0},function (err,results){
+    PermessiUtente.find({nome:nome,cognome:cognome},{annoScolastico:1,_id:0},function (err,results){
       if(err){
         reject(err)
       }
@@ -44,36 +77,44 @@ module.exports.getAnniScolasticiUtente = function (id){
     })
   });
 };
-module.exports.getMaterieFromAnnoScolastico = function (id,annoScolastico) {
+                        //to check ret val
+module.exports.getMaterieFromAnnoScolastico = function (nome,cognome,annoScolastico) {
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({idUtente:id,annoScolastico:annoScolastico},function (err,permessi){
+    PermessiUtente.find({nome:nome,cognome:cognome,annoScolastico:annoScolastico},{permessi:1,_id:0},function (err,permessi){
       if(err){
         reject(err)
       }
-
-      let materie = results.map(r=>r.materia)
-      console.log("getMaterieFromAnnoScolastico, materie = > " + materie);
+      let materie = [];
+      for(let i=0;i<permessi[0].permessi.length;i++){
+        materie.push(permessi[0].permessi[i].materia)
+      }
       resolve(materie);
     })
   });
 };
 
-module.exports.getClassiFromAnnoScolasticoMateria = function (id,annoScolastico,materia){
+module.exports.getClassiFromAnnoScolasticoMateria = function (nome,cognome,annoScolastico,materia){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.findOne({idUtente:id,annoScolastico:annoScolastico,materia:materia},function (err,result){
+    PermessiUtente.find({nome:nome,cognome:cognome,annoScolastico:annoScolastico,'permessi.materia':materia},{'permessi.$':1,_id:0},function (err,results){
       if(err){
         reject(err)
       }
       else{
-        resolve(result.classi)
+        let classi = [];
+        for(let i=0;i<results[0].permessi.length;i++){
+          for(let j=0;j<results[0].permessi[i].classi.length;j++){
+            classi.push(results[0].permessi[i].classi[j]);
+          }
+        }
+        resolve(classi)
       }
     })
   });
 };
-//eliminabile, non usata
-module.exports.getPermessiUtente = function(id){
+
+module.exports.getPermessiUtente = function(utente){
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({idUtente:id},function(err,results){
+    PermessiUtente.find({nome:utente.nome,cognome:utente.cognome},function(err,results){
       if(err){
         reject(err)
       }
@@ -83,10 +124,10 @@ module.exports.getPermessiUtente = function(id){
     })
   });
 }
-//controllare dove viene usata
-module.exports.getPermessiUtenteByAnno = function(id,anno){
+
+module.exports.getPermessiUtenteByAnno = async(utente,anno)=>{
   return new Promise(function(resolve, reject) {
-    PermessiUtente.find({idUtente:id,annoScolastico:anno},(err,results)=>{
+    PermessiUtente.find({nome:utente.nome,cognome:utente.cognome,annoScolastico:anno},(err,results)=>{
       if(err){
         reject(err)
       }
@@ -98,9 +139,6 @@ module.exports.getPermessiUtenteByAnno = function(id,anno){
 }
 //-------------------------------- /END ----------------------------------------
 
-//-------------------------------- UPDATE QUERIES ------------------------------
-
-//----------------------------------- /END -------------------------------------
 
 //------------------------------ DELETE QUERIES --------------------------------
 module.exports.deleteAnno = anno=>{

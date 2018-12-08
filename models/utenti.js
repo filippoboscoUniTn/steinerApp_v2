@@ -43,7 +43,7 @@ userSchema.methods.insertUser = function (){
       newUser.password = hash;
       return newUser.save() })
       .then(user=>{
-        resolve()
+        resolve(user)
       })
       .catch(err=>{
         reject(err)

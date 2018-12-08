@@ -185,117 +185,169 @@ function generateSampleDb(){
 }
 
 
+
+
+
+
+
+
 function popDb(){
-  let counters = [{_id:"studentCounter",seq:10}];
-  let users = [{
-      nome : "admin",
-      cognome : "admin",
-      email : "admin@server.com",
-      username : "admin",
-      password : "admin",
-      authorization:'ADMIN',
+  return new Promise(async function(resolve, reject) {
+    let counters = [{_id:"studentCounter",seq:10}];
+    let users = [{
+        nome : "admin",
+        cognome : "admin",
+        email : "admin@server.com",
+        username : "admin",
+        password : "admin",
+        authorization:'ADMIN',
+        status :'ACCEPTED'
+    },
+    {
+      nome : "alessio",
+      cognome : "zanella",
+      email : "alessio.zll@server.com",
+      username : "alessio",
+      password : "alessio",
+      authorization:'TEACHER',
       status :'ACCEPTED'
-  },
-  {
-    nome : "alessio",
-    cognome : "zanella",
-    email : "alessio.zll@server.com",
-    username : "alessio",
-    password : "alessio",
-    authorization:'TEACHER',
-    status :'ACCEPTED'
-  }]
-
-  let permessiUtenti = [{
-    nome:"admin",
-    cognome:"admin",
-    annoScolastico:"2017/18",
-    permessi:[{
-      materia:"Storia",
-      classi:[8,5,3]
-    },{
-      materia:"Italiano",
-      classi:[1,5,6,2]
     }]
-  },{
-    nome:"admin",
-    cognome:"admin",
-    annoScolastico:"2018/19",
-    permessi:[{
-      materia:"Geografia",
-      classi:[1,2,3]
+    let permessiUtenti = [
+    //permessi admin
+    {
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2017/18",
+      materia:"Storia",
+      classi:[1,2,3,4]
     },{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2017/18",
+      materia:"Inglese",
+      classi:[3,4]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2017/18",
       materia:"Fisica",
-      classi:[4,2]
-    }]
-  },{
-    nome:"admin",
-    cognome:"admin",
-    annoScolastico:"2019/20",
-    permessi:[{
-      materia:"italiano",
-      classi:[7,6,8]
+      classi:[7,8]
+
     },{
-      materia:"Italiano",
-      classi:[1,5,2]
-    }]
-  },{
-    nome:"alessio",
-    cognome:"zanella",
-    annoScolastico:"2017/18",
-    permessi:[{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2018/19",
       materia:"Storia",
-      classi:[1,5,7]
+      classi:[2,3,4,5]
+
     },{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2018/19",
+      materia:"Inglese",
+      classi:[4,5]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2018/19",
+      materia:"Fisica",
+      classi:[8]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdb",
+      annoScolastico:"2018/19",
       materia:"Italiano",
-      classi:[1,2,4,6,8]
-    }]
-  },{
-    nome:"alessio",
-    cognome:"zanella",
-    annoScolastico:"2018/19",
-    permessi:[{
+      classi:[1,3,2]
+    },
+    //permessi alessio-zanella
+    {
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2017/18",
       materia:"Storia",
-      classi:[6,3]
+      classi:[1,2,3,4]
     },{
-      materia:"Musica",
-      classi:[6,2]
-    }]
-  },{
-    nome:"alessio",
-    cognome:"zanella",
-    annoScolastico:"2018/20",
-    permessi: [{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2017/18",
+      materia:"Inglese",
+      classi:[3,4]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2017/18",
+      materia:"Fisica",
+      classi:[7,8]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2018/19",
       materia:"Storia",
-      classi:[1,4,2,5,6,3]
+      classi:[2,3,4,5]
+
     },{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2018/19",
+      materia:"Inglese",
+      classi:[4,5]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2018/19",
+      materia:"Fisica",
+      classi:[8]
+
+    },{
+      idUtente:"5c07e45c6d12561ee6916fdc",
+      annoScolastico:"2018/19",
       materia:"Italiano",
-      classi:[1,5]
+      classi:[1,3,2]
     }]
-  }]
-  let permessiPromise = permessiUtenti.map(v=>new PermessiUtente(v).save());
+    let permessiPromise = permessiUtenti.map(v=>new PermessiUtente(v).save());
+    for(let i=0;i<users.length;i++){
+      let newUser = new Utenti(users[i]);
+      const res = await newUser.insertUser();
+      console.log("res = " + res._id);
+      if(i==0){
+        for(let k=0;k<permessiUtenti.length;k++){
+          if(permessiUtenti[k].idUtente === "5c07e45c6d12561ee6916fdb"){
+            permessiUtenti[k].idUtente = String(res._id);
+            let newPermesso = new PermessiUtente(permessiUtenti[k]);
+            const np = await newPermesso.save();
+          }
+        }
+      }
+      else {
+        for(let k=0;k<permessiUtenti.length;k++){
+          if(permessiUtenti[k].idUtente === "5c07e45c6d12561ee6916fdc"){
+            permessiUtenti[k].idUtente = res._id;
+            let newPermesso = new PermessiUtente(permessiUtenti[k]);
+            const np = await newPermesso.save();
+          }
+      }
+    }
 
-  let samples = generateSampleDb();
+    }
+    let samples = generateSampleDb();
 
-  let classiChain = [];
-  let studentChain = [];
-  let pagelleChain = [];
+    let classiChain = [];
+    let studentChain = [];
+    let pagelleChain = [];
 
-  for(let i=0;i<samples.length-1;i++){
-    classiChain.push(populateClassi(samples[i].classi))
-    studentChain.push(inserStudenti(samples[i].studenti))
-    pagelleChain.push(insertPagelle(samples[i].pagelle))
-  }
+    for(let i=0;i<samples.length-1;i++){
+      classiChain.push(populateClassi(samples[i].classi))
+      studentChain.push(inserStudenti(samples[i].studenti))
+      pagelleChain.push(insertPagelle(samples[i].pagelle))
+    }
 
-    return Promise.all([populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico]),
-                        populateCunters(samples[samples.length-1]),
-                        populateUtenti(users),
-                        Promise.all(classiChain),
-                        Promise.all(studentChain),
-                        Promise.all(pagelleChain),
-                        Promise.all(permessiPromise)
-                      ])
+    Promise.all([populateAnniScolastici([samples[0].annoScolastico,samples[1].annoScolastico,samples[2].annoScolastico]),
+                          populateCunters(samples[samples.length-1]),
+                          Promise.all(classiChain),
+                          Promise.all(studentChain),
+                          Promise.all(pagelleChain)
+                        ]).then(()=>{
+                          console.log("promise.all finished");
+                          resolve()
+                        }).catch(err=>{
+                          console.log("err = " + err);
+                          reject(err)
+                        })
 
+  })
 }
 
 module.exports = {popDb}

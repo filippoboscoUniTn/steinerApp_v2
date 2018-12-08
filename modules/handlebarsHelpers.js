@@ -17,12 +17,12 @@ let handlebarsHelpers = {
             for(let i=0;i<anniScolastici.length;i++){
                 if( (i+2)%2===0){
                   ret += '<div class="row mt-2">'
-                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray text-center">';
                       ret+='<a href="/pagelle/annoScolastico/'+anniScolastici[i].nome+'" class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
                     ret+='</div>'
                 }
                 else{
-                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray text-center">';
                       ret+='<a href="/pagelle/annoScolastico/'+anniScolastici[i].nome+'" class="h4 text-center text-primary">'+anniScolastici[i].nome+'</a>'
                     ret+='</div>'
                   ret+='</div>'
@@ -40,12 +40,12 @@ let handlebarsHelpers = {
             for(let i=0;i<materie.length;i++){
                 if( (i+2)%2==0){
                   ret += '<div class="row mt-2">'
-                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                    ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray text-center">';
                       ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+ materie[i] +'" class="h4 text-center text-primary">'+materie[i]+'</a>'
                     ret+='</div>'
                 }
                 else{
-                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+                    ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray text-center">';
                       ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+ materie[i] +'" class="h4 text-center text-primary">'+materie[i]+'</a>'
                     ret+='</div>'
                   ret+='</div>'
@@ -59,13 +59,13 @@ let handlebarsHelpers = {
         for(let i = 0; i<classi.length; i++){
             if( (i+2)%2 === 0 ){
               ret += '<div class="row mt-2">'
-                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
-                  ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">'+classi[i]+'</a>'
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray text-center">';
+                  ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">Classe '+classi[i]+'</a>'
                 ret+='</div>'
             }
             else{
-              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
-                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">'+classi[i]+'</a>'
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray text-center">';
+                ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classi[i]+'" class="h4 text-center text-primary">Classe '+classi[i]+'</a>'
               ret+='</div>'
             ret+='</div>'
             }
@@ -77,12 +77,12 @@ let handlebarsHelpers = {
         for(let i=0;i<sezioni.length;i++){
             if((i+2)%2 === 0){
               ret += '<div class="row mt-2">'
-                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray text-center">';
                   ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[i]+'" class="h4 text-center text-primary">'+sezioni[i]+'</a>'
                 ret+='</div>'
             }
             else{
-              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray text-center">';
                 ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezioni[i]+'" class="h4 text-center text-primary">'+sezioni[i]+'</a>'
               ret+='</div>'
             ret+='</div>'
@@ -95,12 +95,12 @@ let handlebarsHelpers = {
         for(let i=0;i<studenti.length;i++){
             if( (i+2)%2 === 0){
               ret += '<div class="row mt-2">'
-                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
+                ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray text-center">';
                   ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'" class="h4 text-center text-primary">'+studenti[i].nome+ ' ' + studenti[i].cognome+'</a>'
                 ret+='</div>'
             }
             else{
-              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
+              ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray text-center">';
                 ret+='<a href="/pagelle/annoScolastico/'+annoScolastico+'/'+materia+'/'+classe+'/'+sezione+'/'+studenti[i].nome+'/'+studenti[i].cognome+'/'+studenti[i].id+'" class="h4 text-center text-primary">'+studenti[i].nome + ' ' + studenti[i].cognome+'</a>'
               ret+='</div>'
             ret+='</div>'
@@ -113,7 +113,7 @@ let handlebarsHelpers = {
         //--------------------------- PRIMO SEMESTRE ---------------------------
         ret += '<div class="row">'
           ret += '<div class="col-sm-12 col-lg-11 offset-lg-1 mt-2">';
-            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_1\')">&times</button>';
+            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_1\')"><i class="fas fa-angle-down"></i></button>';
             ret += '<p class="h4 text-primary mt-2">Primo Semestre</p>'
             ret += '<form id="textArea_1">'
               ret += '<textarea class="text-area-xxl w-100" name="1">'
@@ -128,7 +128,7 @@ let handlebarsHelpers = {
         //--------------------------- SECONDO SEMESTRE ---------------------------
         ret += '<div class="row">'
           ret += '<div class="col-sm-12 col-lg-11 offset-lg-1 mt-2">';
-            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_2\')">&times</button>';
+            ret += '<button class="btn btn-sm btn-danger float-right position-relative mr-0" onclick="collapseForm(\'textArea_2\')"><i class="fas fa-angle-down"></i></button>';
             ret += '<p class="h4 text-primary mt-2">Secondo Semestre</p>'
             ret += '<form id="textArea_2">'
               ret += '<textarea class="text-area-xxl w-100" name="1">'
@@ -374,96 +374,76 @@ let handlebarsHelpers = {
       // console.log("ret = " + ret)
       return ret;
     },
-    printUtenteGestione:function(utente,permessi){
+    printUtenteGestione:function(utente,anniPermessi){
       let ret='<br>';
       ret += '<p class="offset-1 h5 mt-2"> Anni Scolastici'
-      if(permessi != null){
-          for(let i=0;i<permessi.length;i++){
+      if(anniPermessi != null){
+          for(let i=0;i<anniPermessi.length;i++){
               if( (i)%2===0 || i==0){
                 ret += '<div class="row mt-2">'
                 ret+='<div class="col-sm-12 col-lg-4 offset-lg-1 gray">';
-                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+permessi[i].nome+'"><h3>'+permessi[i].nome+'</h3>'
+                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+anniPermessi[i]+'"><h3>'+anniPermessi[i]+'</h3>'
                 ret+='</div>'
               }
               else{
                 ret+='  <div class="col-sm-12 col-lg-4 offset-lg-2 gray">';
-                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+permessi[i].nome+'"><h3>'+permessi[i].nome+'</h3>'
+                  ret += '<a class="h4 text-center text-primary" href="/admin/gestioneUtenti/utente/'+utente.id+'/permessi/'+anniPermessi[i]+'"><h3>'+anniPermessi[i]+'</h3>'
                   ret+='</div>'
                 ret+='</div>'
               }
           }
-          if(permessi.length%2!=0){
+          if(anniPermessi.length%2!=0){
             ret += '</div>'
           }
       }
       return ret;
     },
     //RIFARE IN ACCORDO CON I PERMESSI V.2
-    printPermessiGestione:function(utente,permessiAnno){
+    printPermessiGestione:function(utente,permessi,annoScolastico){
+      let titleModalePermesso = "Creazione Nuovo Permesso";
+      let formActionModalePermesso = "/admin/gestioneUtenti/creaPermesso/"+utente.id+"/"+annoScolastico;
       let ret='<br>';
       ret += '<p class="offset-md-1 h5 mt-2"> Permessi Utente';
-      for(let i=0;i<permessiAnno[0].permessi.length;i++){
-        let deleteParams;
-        if((i+2)%2===0){
-          ret += '<div class="row">'
-          ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl"><h4>'+permessiAnno[0].permessi[i].materia+'</h4>'
-            ret += '<form action="/" method="POST" class="form-inline">'
-                for(let c=0;c<8;c++){
-                  ret += '<div class="form-check form-check-inline">';
-                    ret += '<input class="form-check-input" type="checkbox" value="'+(c+1)+'" id="defaultCheck'+c+ '"';
-                    if(permessiAnno[0].permessi[i].classi.indexOf((c+1)) !== -1 ){
-                      ret += ' checked>';
-                    }
-                    else{
-                      ret += '>';
-                    }
-                    ret += '<label class="form-check-label" for="defaultCheck'+c+'">'+ (c+1) + '</label>'
-                  ret += '</div>'
-                }
-                ret+="<div class='w-100'></div>"
-                ret+= '<button class="btn btn-sm btn-success mt-3" type="submit">Salva</button>'
-                ret+= '<button class="btn btn-sm btn-danger mt-3 ml-2" type="button" onclick="eliminaPermesso('+deleteParams+')">Elimina</button>'
-            ret += '</form>'
-        ret +='</div>'
+
+      permessi.forEach((v,i,a)=>{
+        let deleteUrl = '\'/admin/gestioneUtenti/deletePermesso/' +utente.id+ '/' +v.annoScolastico+ '/' +v.materia+'\'';
+        let formAction = '/admin/gestioneUtenti/updatePermesso/'+utente.id+'/'+annoScolastico+'/'+v.materia
+        if( (i+2)%2 == 0 ){
+          ret += '<div class="row mt-2">'
         }
-        else{
-          ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl"><h4>'+permessiAnno[0].permessi[i].materia+'</h4>'
-            ret += '<form action="/" method="POST" class="form-inline">'
-                for(let c=0;c<8;c++){
-                  ret += '<div class="form-check form-check-inline">';
-                    ret += '<input class="form-check-input" type="checkbox" value="' +(c+1)+ '" id="defaultCheck' +c+ '"';
-                    if(permessiAnno[0].permessi[i].classi.indexOf((c+1)) !== -1 ){
-                      ret += ' checked>';
-                    }
-                    else{
-                      ret += '>';
-                    }
-                    ret += '<label class="form-check-label" for="defaultCheck'+c+'">'+ (c+1) + '</label>'
-                  ret += '</div>'
-                }
-                ret+="<div class='w-100'></div>"
-                ret+= '<button class="btn btn-sm btn-success mt-3" type="submit">Salva</button>'
-                ret+= '<button class="btn btn-sm btn-danger mt-3 ml-2" type="button" onclick="eliminaPermesso()">Elimina</button>'
-            ret += '</form>'
-        ret +='</div>'
+        ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl"><h4>'+v.materia+'</h4>'
+        ret += '<form action="'+formAction+'" method="POST" class="form-inline">'
+          for(let c=1;c<9;c++){
+            ret += '<div class="form-check form-check-inline">';
+              ret += '<input name="classi" class="form-check-input" type="checkbox" value="' +c+ '" id="defaultCheck'+c+'"';
+              if(v.classi.indexOf(c) !== -1 ){
+                ret += ' checked>';
+              }
+              else{
+                ret += ' >';
+              }
+              ret += '<label class="form-check-label" for="defaultCheck'+c+'">' +c+ '</label>'
+            ret += '</div>'
+          }
+          ret+="<div class='w-100'></div>"
+          ret+= '<button class="btn btn-sm btn-success mt-3" type="submit">Salva</button>'
+          ret+= '<button class="btn btn-sm btn-danger mt-3 ml-2" type="button" onclick="eliminaPermesso('+deleteUrl+')">Elimina</button>'
+        ret += '</form>'
         ret += '</div>'
+        if((i+2)%2 != 0){
+          ret += '</div>'
         }
-      }
-      let titleModalePermesso = "Creazione Nuovo Permesso";
-      let formActionModalePermesso = "/admin/gestioneUtenti/creaPermesso/"+utente.id+"/"+permessiAnno[0].annoScolastico;
-      if(permessiAnno[0].permessi.length%2 != 0){
-        ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl">'
-          ret += '<a href="#" class="h3 text-primary align-middle" onclick="openModaleCreaPermesso(\''+titleModalePermesso+'\',\''+formActionModalePermesso+'\')">Aggiungi Permesso</a>';
-        ret += '</div>'
-      ret += '</div>';
+      })
+
+      if( (permessi.length %2) == 0 ){
+        ret += '<div class="row mt-2">'
       }
       else{
-      ret += '<div class="row mt-2">'
-        ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl">'
-          ret += '<a href="#" class="h3 text-primary align-middle" onclick="openModaleCreaPermesso(\''+titleModalePermesso+'\',\''+formActionModalePermesso+'\')">Aggiungi Permesso</a>';
-        ret += '</div>'
-      ret += '</div>';
       }
+      ret += '<div class="col-sm-12 col-md-4 offset-md-1 gray-xl text-center mt-2 pt-5">'
+      ret += '<a href="#" class="h3 text-primary" onclick="openModaleCreaPermesso(\''+titleModalePermesso+'\',\''+formActionModalePermesso+'\')">Aggiungi Permesso</a>';
+      ret += '</div>'
+      ret += '</div>';
       return ret;
     },
     printInfoUtente:function(utente){

@@ -1,13 +1,13 @@
-<div class="col-lg-12">
+<div class="col-sm-12 col-md-8 offset-md-1">
     {{#if success_msg}}
       <div class="alert alert-success" role="alert">{{success_msg}}</div>
     {{/if}}
     {{#if error_msg}}
       <div class="alert alert-danger" role="alert">{{error_msg}}</div>
     {{/if}}
-    {{{printPermessiGestione utente permessi}}}
-
 </div>
+{{{printPermessiGestione utente permessi annoScolastico}}}
+
 
 {{> modaleCreazionePermessoUtente }}
 
